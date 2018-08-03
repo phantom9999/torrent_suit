@@ -6,14 +6,14 @@
 #include <boost/noncopyable.hpp>
 #include <libtorrent/alert_types.hpp>
 
-#include "bbts/bbts_stat.h"
-#include "bbts/log.h"
-#include "bbts/statistics.hpp"
-#include "bbts/thrift_tracker.h"
-#include "bbts/tool/control_server.h"
-#include "bbts/tool/disk_allocate_thread.h"
-#include "bbts/tool/resume.h"
-#include "bbts/torrent_provider.h"
+#include "bbts-agent/bbts_stat.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/statistics.hpp"
+#include "bbts-agent/thrift_tracker.h"
+#include "bbts-agent/tool/control_server.h"
+#include "bbts-agent/tool/disk_allocate_thread.h"
+#include "bbts-agent/tool/resume.h"
+#include "bbts-agent/torrent_provider.h"
 #include "configure.pb.h"
 #include "message.pb.h"
 

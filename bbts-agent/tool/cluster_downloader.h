@@ -9,7 +9,7 @@
 #include <boost/thread.hpp>
 #include <libtorrent/torrent_handle.hpp>
 
-#include "bbts/speed_limit.h"
+#include "bbts-agent/speed_limit.h"
 #include "configure.pb.h"
 
 namespace bbts {

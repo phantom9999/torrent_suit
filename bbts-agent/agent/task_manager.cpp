@@ -1,6 +1,6 @@
 
 
-#include "bbts/agent/task_manager.h"
+#include "task_manager.h"
 
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
@@ -8,18 +8,18 @@
 #include <libtorrent/extensions/metadata_transfer.hpp>
 #include <libtorrent/session.hpp>
 
-#include "bbts/agent/task.h"
-#include "bbts/agent/task_db.h"
-#include "bbts/torrent_plugin.h"
-#include "bbts/config.h"
-#include "bbts/error_category.h"
-#include "bbts/file.h"
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
-#include "bbts/string_util.h"
-#include "bbts/encode.h"
+#include "task.h"
+#include "task_db.h"
+#include "bbts-agent/torrent_plugin.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/error_category.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/string_util.h"
+#include "bbts-agent/encode.h"
 
 using std::deque;
 using std::make_pair;

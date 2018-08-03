@@ -1,13 +1,13 @@
-#include "bbts/tool/cluster_downloader.h"
+#include "cluster_downloader.h"
 
 #include <boost/system/error_code.hpp>
 #include <libtorrent/torrent_info.hpp>
 
-#include "bbts/bt_info.hpp"
-#include "bbts/cluster_api.h"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
+#include "bbts-agent/bt_info.hpp"
+#include "bbts-agent/cluster_api.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
 
 using std::string;
 using boost::scoped_array;

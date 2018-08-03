@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "bbts/unix_socket_connection.h"
+#include "bbts-agent/unix_socket_connection.h"
 #include "message.pb.h"
 
 namespace bbts {

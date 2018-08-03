@@ -6,7 +6,7 @@
 
 #include <boost/noncopyable.hpp>
 
-#include "bbts/consistent_hash_ring.hpp"
+#include "bbts-agent/consistent_hash_ring.hpp"
 #include "routing.pb.h"
 
 namespace bbts {

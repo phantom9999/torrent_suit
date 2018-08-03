@@ -1,8 +1,8 @@
 #include "minihttpd/current_thread.h"
 #include <sys/types.h>
 #include <sys/syscall.h>
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
 #include <unistd.h>
 
 namespace argus {

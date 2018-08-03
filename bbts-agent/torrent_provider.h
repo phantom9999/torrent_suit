@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "bbts/routing.h"
+#include "bbts-agent/routing.h"
 #include "TorrentProviderService.h"
 
 namespace bbts {

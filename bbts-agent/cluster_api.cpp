@@ -1,4 +1,4 @@
-#include "bbts/cluster_api.h"
+#include "bbts-agent/cluster_api.h"
 
 #include <dlfcn.h>
 #include <ftw.h>
@@ -8,11 +8,11 @@
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
-#include "bbts/string_util.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/string_util.h"
 
 using std::string;
 using std::vector;

@@ -6,7 +6,7 @@
 #include <boost/shared_ptr.hpp>
 #include <libtorrent/torrent_handle.hpp>
 
-#include "bbts/unix_socket_server.h"
+#include "bbts-agent/unix_socket_server.h"
 #include "configure.pb.h"
 
 namespace bbts {

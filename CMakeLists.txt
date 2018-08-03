@@ -71,12 +71,13 @@ add_subdirectory(bbts-agent)
 add_subdirectory(bbts-tracker)
 add_subdirectory(clientmock)
 add_subdirectory(file_utils)
-add_subdirectory(libtorrent_0_16_5)
+#add_subdirectory(libtorrent_0_16_5)
 add_subdirectory(minihttpd)
 
 add_subdirectory(sqlite)
 #add_subdirectory(tracker-protocol)
-add_subdirectory(plugin)
+#add_subdirectory(plugin)
+add_subdirectory(uri)
 
 
 

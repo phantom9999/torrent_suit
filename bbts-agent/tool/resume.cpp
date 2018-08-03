@@ -1,12 +1,12 @@
-#include "bbts/tool/resume.h"
+#include "bbts-agent/tool/resume.h"
 
 #include <string.h>
 #include <sys/stat.h>
 
 #include <boost/system/error_code.hpp>
 
-#include "bbts/file.h"
-#include "bbts/log.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/log.h"
 
 using std::string;
 using std::vector;

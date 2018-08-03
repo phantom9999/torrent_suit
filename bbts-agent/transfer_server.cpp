@@ -1,4 +1,4 @@
-#include "bbts/transfer_server.h"
+#include "bbts-agent/transfer_server.h"
 
 #include <boost/shared_ptr.hpp>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -6,8 +6,8 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/transport/TSocket.h>
 
-#include "bbts/log.h"
-#include "bbts/process_info.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/process_info.h"
 
 using std::string;
 using std::vector;

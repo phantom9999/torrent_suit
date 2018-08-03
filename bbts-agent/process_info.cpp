@@ -1,4 +1,4 @@
-#include "bbts/process_info.h"
+#include "bbts-agent/process_info.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -10,9 +10,9 @@
 
 #include <sstream>
 
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/path.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
 
 using std::string;
 

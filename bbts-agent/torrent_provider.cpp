@@ -1,4 +1,4 @@
-#include "bbts/torrent_provider.h"
+#include "bbts-agent/torrent_provider.h"
 
 #include <algorithm>
 
@@ -9,9 +9,9 @@
 #include <thrift/transport/TSocket.h>
 #include <snappy.h>
 
-#include "bbts/log.h"
-#include "bbts/options_parse.h"
-#include "bbts/process_info.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/options_parse.h"
+#include "bbts-agent/process_info.h"
 #include "configure.pb.h"
 #include "TorrentProvider_types.h"
 

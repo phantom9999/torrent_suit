@@ -1,4 +1,4 @@
-#include "bbts/unix_socket_connection.h"
+#include "bbts-agent/unix_socket_connection.h"
 
 #include <poll.h>
 #include <sys/socket.h>
@@ -13,8 +13,8 @@
 #include <boost/system/error_code.hpp>
 #include <google/protobuf/message.h>
 
-#include "bbts/config.h"
-#include "bbts/log.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/log.h"
 
 using std::vector;
 using boost::posix_time::seconds;

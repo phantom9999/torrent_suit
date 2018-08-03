@@ -1,9 +1,9 @@
-#include "bbts/unix_socket_client.h"
+#include "bbts-agent/unix_socket_client.h"
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 
-#include "bbts/log.h"
+#include "bbts-agent/log.h"
 
 namespace bbts {
 

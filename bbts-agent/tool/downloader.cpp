@@ -1,4 +1,4 @@
-#include "bbts/tool/downloader.h"
+#include "bbts-agent/tool/downloader.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -22,21 +22,21 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/torrent_info.hpp>
 
-#include "bbts/bbts_stat.h"
-#include "bbts/torrent_plugin.h"
-#include "bbts/config.h"
-#include "bbts/encode.h"
-#include "bbts/file.h"
-#include "bbts/options_parse.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
-#include "bbts/routing.h"
-#include "bbts/string_util.h"
-#include "bbts/timer_util.h"
-#include "bbts/tool/bbts_client.h"
-#include "bbts/tool/cluster_downloader.h"
-#include "bbts/torrent_file_util.h"
-#include "bbts/transfer_server.h"
+#include "bbts-agent/bbts_stat.h"
+#include "bbts-agent/torrent_plugin.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/encode.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/options_parse.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/routing.h"
+#include "bbts-agent/string_util.h"
+#include "bbts-agent/timer_util.h"
+#include "bbts-agent/tool/bbts_client.h"
+#include "bbts-agent/tool/cluster_downloader.h"
+#include "bbts-agent/torrent_file_util.h"
+#include "bbts-agent/transfer_server.h"
 #include "transfer_server_types.h"
 
 using std::back_inserter;

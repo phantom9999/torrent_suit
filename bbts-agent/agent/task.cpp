@@ -1,4 +1,4 @@
-#include "bbts/agent/task.h"
+#include "task.h"
 
 #include <fstream>
 
@@ -8,16 +8,16 @@
 #include <libtorrent/entry.hpp>
 #include <libtorrent/session.hpp>
 
-#include "bbts/agent/task_db.h"
-#include "bbts/agent/task_manager.h"
-#include "bbts/encode.h"
-#include "bbts/error_category.h"
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
-#include "bbts/string_util.h"
-#include "bbts/timer_util.h"
+#include "task_db.h"
+#include "task_manager.h"
+#include "bbts-agent/encode.h"
+#include "bbts-agent/error_category.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/string_util.h"
+#include "bbts-agent/timer_util.h"
 #include "configure.pb.h"
 
 using std::pair;

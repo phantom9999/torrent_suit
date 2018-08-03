@@ -1,7 +1,7 @@
-#include "bbts/tool/disk_allocate_thread.h"
+#include "disk_allocate_thread.h"
 
-#include "bbts/log.h"
-#include "bbts/path.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
 
 using std::string;
 using std::vector;

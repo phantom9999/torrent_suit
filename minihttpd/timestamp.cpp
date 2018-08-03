@@ -1,9 +1,9 @@
 #include "minihttpd/timestamp.h"
 #include <sys/time.h>
-#include <time.h>
-#include <stdio.h>
+#include <ctime>
+#include <cstdio>
 #define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+#include <cinttypes>
 #undef __STDC_FORMAT_MACROS
 
 namespace argus {

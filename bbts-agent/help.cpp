@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include <cstdio>
 
-#include "bbts/config.h"
-#include "bbts/lazy_singleton.hpp"
+#include "bbts-agent/config.h"
+#include "bbts-agent/lazy_singleton.hpp"
 #include "configure.pb.h"
 
 namespace bbts {

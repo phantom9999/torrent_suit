@@ -1,13 +1,13 @@
-#include "bbts/routing.h"
+#include "bbts-agent/routing.h"
 
 #include <sstream>
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
-#include "bbts/log.h"
-#include "bbts/pbconf.hpp"
-#include "bbts/process_info.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/pbconf.hpp"
+#include "bbts-agent/process_info.h"
 
 using std::string;
 using std::vector;

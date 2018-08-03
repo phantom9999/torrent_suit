@@ -7,7 +7,7 @@
 #include <libtorrent/torrent_handle.hpp>
 
 //#include "bbts/bbts_stat.hpp"
-#include "bbts/statistics.hpp"
+#include "bbts-agent/statistics.hpp"
 #include "message.pb.h"
 
 namespace bbts {

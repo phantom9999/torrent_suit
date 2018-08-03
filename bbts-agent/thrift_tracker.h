@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "bbts/routing.h"
+#include "bbts-agent/routing.h"
 
 namespace libtorrent {
 class torrent_handle;

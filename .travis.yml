@@ -1,0 +1,22 @@
+sudo: required
+dist: trusty
+language: cpp
+
+compiler:
+    - gcc
+
+before_install:
+    - sudo apt-get update -y
+
+install:
+    - sudo pip install conan
+    - sudo conan install .
+
+script:
+
+
+after_success:
+    -
+
+
+

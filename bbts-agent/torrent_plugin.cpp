@@ -1,12 +1,12 @@
-#include "bbts/torrent_plugin.h"
+#include "bbts-agent/torrent_plugin.h"
 
 #include <libtorrent/bt_peer_connection.hpp>
 #include <libtorrent/peer_connection.hpp>
 #include <libtorrent/peer_info.hpp>
 #include <libtorrent/torrent.hpp>
 
-#include "bbts/path.h"
-#include "bbts/process_info.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
 
 using std::map;
 using std::pair;

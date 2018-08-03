@@ -1,4 +1,4 @@
-#include "bbts/torrent_file_util.h"
+#include "bbts-agent/torrent_file_util.h"
 
 #include <ftw.h>
 
@@ -17,13 +17,13 @@
 #include <libtorrent/hasher.hpp>
 #include <libtorrent/lazy_entry.hpp>
 
-#include "bbts/encode.h"
-#include "bbts/file.h"
-#include "bbts/log.h"
-#include "bbts/options_parse.h"
-#include "bbts/path.h"
-#include "bbts/process_info.h"
-#include "bbts/torrent_provider.h"
+#include "bbts-agent/encode.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/options_parse.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/torrent_provider.h"
 
 using std::string;
 using std::vector;

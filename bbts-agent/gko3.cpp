@@ -2,16 +2,16 @@
 
 #include <boost/assign.hpp>
 
-#include "bbts/file.h"
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/options_parse.h"
-#include "bbts/path.h"
-#include "bbts/pbconf.hpp"
-#include "bbts/process_info.h"
-#include "bbts/string_util.h"
-#include "bbts/tool/bbts_client.h"
-#include "bbts/torrent_file_util.h"
-#include "bbts/tool/downloader.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/options_parse.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/pbconf.hpp"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/string_util.h"
+#include "bbts-agent/tool/bbts_client.h"
+#include "bbts-agent/torrent_file_util.h"
+#include "bbts-agent/tool/downloader.h"
 #include "configure.pb.h"
 
 using std::make_pair;

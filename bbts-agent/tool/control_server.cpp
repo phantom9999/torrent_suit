@@ -1,10 +1,10 @@
-#include "bbts/tool/control_server.h"
+#include "control_server.h"
 
 #include <boost/system/error_code.hpp>
 
-#include "bbts/config.h"
-#include "bbts/error_category.h"
-#include "bbts/log.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/error_category.h"
+#include "bbts-agent/log.h"
 #include "message.pb.h"
 
 using std::vector;

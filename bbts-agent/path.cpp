@@ -1,4 +1,4 @@
-#include "bbts/path.h"
+#include "bbts-agent/path.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -10,7 +10,7 @@
 
 #include <boost/thread/tss.hpp>
 
-#include "bbts/log.h"
+#include "bbts-agent/log.h"
 
 using std::string;
 

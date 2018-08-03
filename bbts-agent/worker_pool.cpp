@@ -1,11 +1,11 @@
-#include "bbts/worker_pool.h"
+#include "bbts-agent/worker_pool.h"
 
 #include <string>
 
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "bbts/log.h"
+#include "bbts-agent/log.h"
 
 namespace bbts {
 

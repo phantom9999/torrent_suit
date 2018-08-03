@@ -12,14 +12,14 @@
 #include <boost/unordered_map.hpp>
 #include <libtorrent/alert_types.hpp>
 
-#include "bbts/statistics.hpp"
-#include "bbts/thrift_tracker.h"
-#include "bbts/unix_socket_server.h"
-#include "bbts/worker_pool.h"
+#include "bbts-agent/statistics.hpp"
+#include "bbts-agent/thrift_tracker.h"
+#include "bbts-agent/unix_socket_server.h"
+#include "bbts-agent/worker_pool.h"
 #include "message.pb.h"
 #include "configure.pb.h"
 
-#include "../uri/uri_agent.hpp"
+#include "uri/uri_agent.hpp"
 
 namespace bbts {
 

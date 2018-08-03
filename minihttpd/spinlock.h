@@ -3,7 +3,7 @@
 
 #include "current_thread.h"
 #include "common.h"
-#include <assert.h>
+#include <cassert>
 #include <pthread.h>
 
 namespace argus {

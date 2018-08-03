@@ -1,4 +1,4 @@
-#include "bbts/options_parse.h"
+#include "bbts-agent/options_parse.h"
 
 #include <grp.h>
 #include <pwd.h>
@@ -12,8 +12,8 @@
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/torrent_info.hpp>
 
-#include "bbts/log.h"
-#include "bbts/string_util.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/string_util.h"
 
 using std::make_pair;
 using std::map;

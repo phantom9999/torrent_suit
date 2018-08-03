@@ -1,14 +1,14 @@
-#include "bbts/tool/bbts_client.h"
+#include "bbts_client.h"
 
 #include <vector>
 
 #include <boost/array.hpp>
 
-#include "bbts/encode.h"
-#include "bbts/config.h"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/unix_socket_client.h"
+#include "bbts-agent/encode.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/unix_socket_client.h"
 
 using std::string;
 using std::vector;

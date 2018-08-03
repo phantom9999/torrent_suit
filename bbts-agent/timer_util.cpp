@@ -1,9 +1,9 @@
-#include "bbts/timer_util.h"
+#include "bbts-agent/timer_util.h"
 
 #include <boost/bind.hpp>
 #include <boost/ref.hpp>
 
-#include "bbts/log.h"
+#include "bbts-agent/log.h"
 
 namespace bbts {
 
