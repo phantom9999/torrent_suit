@@ -2,10 +2,10 @@
 
 #include <boost/bind.hpp>
 
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/string_util.h"
-#include "bbts/timer_util.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/string_util.h"
+#include "bbts-agent/timer_util.h"
 
 namespace bbts {
 

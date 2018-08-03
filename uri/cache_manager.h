@@ -12,8 +12,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "bbts/encode.h"
-#include "bbts/lazy_singleton.hpp"
+#include "bbts-agent/encode.h"
+#include "bbts-agent/lazy_singleton.hpp"
 #include "uri_piece_request.h"
 
 namespace bbts {

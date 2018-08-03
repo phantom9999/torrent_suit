@@ -1,6 +1,7 @@
+/*
 #include "tcp_server.h"
 #include "disk_manager.h"
-#include "bbts/log.h"
+#include "bbts-agent/log.h"
 
 using boost::system::error_code;
 using boost::asio::ip::tcp;
@@ -33,4 +34,4 @@ int main(int argc, char* argv[]) {
     bbts::g_disk_manager->join();
     return 0;
 }
-
+*/

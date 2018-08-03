@@ -5,11 +5,14 @@ language: cpp
 compiler:
     - gcc
 
+cache:
+    directories:
+     - /home/travis/.conan/
+
 before_install:
     - sudo apt-get update -y
 
 install:
-    - sudo apt-get install cmake
     - sudo pip install conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - sudo conan install . --build=missing

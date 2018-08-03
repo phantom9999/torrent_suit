@@ -2,9 +2,9 @@
 #include "tcp_connection.h"
 #include "uri_piece_request.h"
 
-#include "bbts/consistent_hash_ring.hpp"
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
+#include "bbts-agent/consistent_hash_ring.hpp"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
 #include "io.hpp"
 
 using boost::shared_ptr;

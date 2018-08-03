@@ -5,10 +5,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "bbts/lazy_singleton.hpp"
-#include "bbts/log.h"
-#include "bbts/path.h"
-#include "bbts/torrent_file_util.h"
+#include "bbts-agent/lazy_singleton.hpp"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/torrent_file_util.h"
 #include "io.hpp"
 #include "tcp_connection.h"
 
