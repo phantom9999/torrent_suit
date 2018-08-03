@@ -10,7 +10,8 @@ before_install:
 
 install:
     - sudo pip install conan
-    - sudo conan install .
+    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+    - sudo conan install . --build=missing
 
 script:
 
