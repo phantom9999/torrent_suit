@@ -1,6 +1,9 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/config_tracker.cmake)
-SET(MOCK_LINK_LIBS gko3-protocol ${THRIFTNB_LIB} ${THRIFT_LIB} ${BOOST_THREAD_LIB} ${BOOST_SYSTEM_LIB} pthread rt)
-
+if (APPLE)
+SET(MOCK_LINK_LIBS gko3-protocol ${THRIFTNB_LIB} ${THRIFT_LIB} ${BOOST_THREAD_LIB} ${BOOST_SYSTEM_LIB} pthread)
+    else(APPLE)
+    SET(MOCK_LINK_LIBS gko3-protocol ${THRIFTNB_LIB} ${THRIFT_LIB} ${BOOST_THREAD_LIB} ${BOOST_SYSTEM_LIB} pthread rt)
+endif(APPLE)
 ADD_EXECUTABLE(client_mock_infohash client_mock_infohash.cpp)
 TARGET_LINK_LIBRARIES(client_mock_infohash ${MOCK_LINK_LIBS})
 

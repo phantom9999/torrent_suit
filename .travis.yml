@@ -14,9 +14,9 @@ before_install:
     - sudo apt-get update -y
 
 install:
-    - sudo apt-get install cmake3; alias cmake='cmake3'
-    - sudo pip install conan
-    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+    - sudo apt-get install cmake3; alias cmake='cmake3' || true
+    - sudo pip install conan || true
+    - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
     - sudo conan install . --build=missing
 
 script:

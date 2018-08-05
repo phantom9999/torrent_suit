@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # cmake -D CMAKE_CXX_COMPILER="ccache" -D CMAKE_CXX_COMPILER_ARG1="g++" -D CMAKE_C_COMPILER="ccache" -D CMAKE_C_COMPILER_ARG1="gcc"
+
+export CMAKE_CXX_COMPILER="ccache"
+export CMAKE_CXX_COMPILER_ARG1="g++"
+export CMAKE_C_COMPILER="ccache"
+export CMAKE_C_COMPILER_ARG1="gcc"
+
 workspace=$(cd $(dirname $0) && pwd)
 third_party=( \
     boost \
@@ -12,6 +18,7 @@ third_party=( \
     glog \
     gflags \
     hiredis \
+    gtest \
 )
 dep_dir=${workspace}/third-party
 

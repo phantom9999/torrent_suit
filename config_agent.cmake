@@ -61,7 +61,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/proto
                     ${PROTOBUF_H}
                     ${LIBEVENT_H}
                     ${THRIFT_H}
-                    ${LIBTORRENT_H}
+                    #${LIBTORRENT_H}
                     ${LOG4CPP_H})
 
 if("$ENV{SCMPF_MODULE_VERSION}" STREQUAL "")

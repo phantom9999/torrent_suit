@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 project(gko_suit)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
+
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 #set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_SUPPRESS_REGENERATION 1)
+#set(CMAKE_SUPPRESS_REGENERATION 1)
 set(CMAKE_USE_RELATIVE_PATHS ON)
 set(CMAKE_BUILD_TYPE "Debug")
 set(default_file_permissions OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ)
 set(default_excute_permissions OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+if (APPLE)
+    set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl/1.0.2o_2)
+endif()
 
 
 #set(
@@ -71,13 +76,15 @@ add_subdirectory(bbts-agent)
 add_subdirectory(bbts-tracker)
 add_subdirectory(clientmock)
 add_subdirectory(file_utils)
-add_subdirectory(libtorrent_0_16_5)
+#add_subdirectory(libtorrent_0_16_5)
 add_subdirectory(minihttpd)
 
 add_subdirectory(sqlite)
 add_subdirectory(tracker-protocol)
-add_subdirectory(plugin)
+#add_subdirectory(plugin)
 add_subdirectory(uri)
+
+add_subdirectory(test)
 
 
 

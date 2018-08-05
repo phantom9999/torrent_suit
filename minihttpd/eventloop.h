@@ -4,6 +4,7 @@
 #include "common.h"
 #include "spinlock.h"
 #include "closure.h"
+#include "current_thread.h"
 #include <map>
 #include <queue>
 

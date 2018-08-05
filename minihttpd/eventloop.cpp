@@ -1,5 +1,6 @@
 #include "minihttpd/eventloop.h"
 #include "minihttpd/timestamp.h"
+#include "current_thread.h"
 #include <sys/time.h>
 #include <event2/event.h>
 

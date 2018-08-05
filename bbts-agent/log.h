@@ -3,7 +3,7 @@
 
 #define LOGLINE(x) LOGLINE_(x)
 #define LOGLINE_(x) #x
-#define LOGINFO() "["__FILE__":"LOGLINE(__LINE__)"]"
+#define LOGINFO() "[" __FILE__ ":" LOGLINE(__LINE__) "]"
 
 #include <log4cpp/Category.hh>
 

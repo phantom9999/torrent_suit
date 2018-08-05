@@ -2,12 +2,16 @@ include(${PROJECT_SOURCE_DIR}/config_agent.cmake)
 
 find_path(HDFS_H NAMES hdfs.h)
 if(NOT HDFS_H)
+    # todo:
+    set(HDFS_H hdfs.h)
     message(FATAL_ERROR "hdfs.h not found.")
 endif()
 include_directories(${HDFS_H})
 
 find_library(HDFS_LIB NAMES hdfs)
 if(NOT HDFS_LIB)
+    # todo:
+        set(HDFS_LIB hdfs)
     message(FATAL_ERROR "hdfs not found.")
 endif()
 
