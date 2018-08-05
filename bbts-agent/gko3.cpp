@@ -12,7 +12,7 @@
 #include "bbts-agent/tool/bbts_client.h"
 #include "bbts-agent/torrent_file_util.h"
 #include "bbts-agent/tool/downloader.h"
-#include "configure.pb.h"
+#include "proto/configure.pb.h"
 
 using std::make_pair;
 using std::map;

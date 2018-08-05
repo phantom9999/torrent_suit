@@ -3,7 +3,7 @@
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TBinaryProtocol.h>
-#include "Announce.h"
+#include "tracker-protocol/Announce.h"
 
 using std::string;
 using boost::shared_ptr;

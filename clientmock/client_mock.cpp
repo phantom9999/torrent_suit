@@ -5,7 +5,7 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include "Announce.h"
+#include "tracker-protocol/Announce.h"
 
 using std::string;
 using boost::shared_ptr;

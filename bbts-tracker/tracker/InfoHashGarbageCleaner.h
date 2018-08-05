@@ -4,8 +4,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "bbts/LazySingleton.hpp"
-#include "bbts/tracker/PeerHandler.h"
+#include "bbts-tracker/LazySingleton.hpp"
+#include "bbts-tracker/tracker/PeerHandler.h"
 
 namespace bbts {
 namespace tracker {

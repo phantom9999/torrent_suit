@@ -8,7 +8,7 @@
 #include <boost/unordered_map.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "bbts/tracker/PeerInfo.h"
+#include "bbts-tracker/tracker/PeerInfo.h"
 
 namespace bbts {
 namespace tracker {

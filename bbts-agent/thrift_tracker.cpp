@@ -15,7 +15,7 @@
 
 #include "bbts-agent/log.h"
 #include "bbts-agent/process_info.h"
-#include "Announce.h"
+#include "proto/Announce.h"
 
 using std::string;
 using std::vector;

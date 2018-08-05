@@ -39,8 +39,8 @@ if(NOT THRIFT_H OR NOT THRIFT_LIB OR NOT THRIFT_NB_LIB)
 endif()
 
 
-set(LIBTORRENT_H libtorrent/torrent.hpp)
-set(LIBTORRENT_LIB libtorrent-rasterbar.a)
+#set(LIBTORRENT_H libtorrent/torrent.hpp)
+#set(LIBTORRENT_LIB libtorrent-rasterbar.a)
 #find_path(LIBTORRENT_H NAMES libtorrent/torrent.hpp)
 #find_library(LIBTORRENT_LIB NAMES libtorrent-rasterbar.a)
 #if(NOT LIBTORRENT_H OR NOT LIBTORRENT_LIB)
@@ -75,8 +75,11 @@ add_definitions(-D_XOPEN_SOURE=500
                 -DHAVE_NETINET_IN_H
                 -DHAVE_NETDB_H=1
                 -DGINGKO_VERSION=${GINGKO_VERSION}
+# todo: 禁用
+                -DTORRENT_USE_OPENSSL
+        #-DTORRENT_DISABLE_ENCRYPTION=1
                 -DTORRENT_NO_DEPRECATE=1
-                -DTORRENT_DISABLE_ENCRYPTION=1
+
                 -DTORRENT_DISABLE_GEO_IP=1
                 -DTORRENT_DISABLE_DHT=1
                 -DBOOST_ASIO_HASH_MAP_BUCKETS=1021

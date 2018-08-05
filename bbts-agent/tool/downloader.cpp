@@ -37,7 +37,7 @@
 #include "bbts-agent/tool/cluster_downloader.h"
 #include "bbts-agent/torrent_file_util.h"
 #include "bbts-agent/transfer_server.h"
-#include "transfer_server_types.h"
+#include "bbts-agent/proto/transfer_server_types.h"
 
 using std::back_inserter;
 using std::copy;

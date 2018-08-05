@@ -7,7 +7,7 @@
 #include <libtorrent/torrent_handle.hpp>
 
 #include "bbts-agent/unix_socket_server.h"
-#include "configure.pb.h"
+#include "bbts-agent/proto/configure.pb.h"
 
 namespace bbts {
 namespace tool {

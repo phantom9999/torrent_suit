@@ -1,10 +1,10 @@
-#include "bbts/HttpServer.h"
+#include "bbts-tracker/HttpServer.h"
 
 #include <boost/bind.hpp>
 #include "minihttpd/eventloop.h"
 #include "minihttpd/minihttpd.h"
 
-#include "bbts/StatusManager.h"
+#include "bbts-tracker/StatusManager.h"
 
 namespace bbts {
 

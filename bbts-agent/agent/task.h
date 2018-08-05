@@ -8,7 +8,7 @@
 
 //#include "bbts/bbts_stat.hpp"
 #include "bbts-agent/statistics.hpp"
-#include "message.pb.h"
+#include "bbts-agent/proto/message.pb.h"
 
 namespace bbts {
 namespace agent {

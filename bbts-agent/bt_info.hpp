@@ -1,7 +1,7 @@
 #ifndef BBTS_AGENT_BT_INFO_H
 #define BBTS_AGENT_BT_INFO_H
 
-#include "bbts/plugin.h"
+#include "bbts-agent/plugin.h"
 
 #include <libtorrent/torrent_info.hpp>
 

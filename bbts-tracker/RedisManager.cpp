@@ -1,10 +1,10 @@
-#include "bbts/RedisManager.h"
+#include "bbts-tracker/RedisManager.h"
 
 #include <glog/logging.h>
 
-#include "bbts/hash_crc32.h"
-#include "redis_conf.pb.h"
-#include "bbts/StatusManager.h"
+#include "bbts-tracker/hash_crc32.h"
+#include "proto/redis_conf.pb.h"
+#include "bbts-tracker/StatusManager.h"
 
 using std::string;
 using boost::bind;

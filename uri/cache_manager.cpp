@@ -10,8 +10,8 @@
 
 #include <libtorrent/hasher.hpp>
 
-#include "bbts/log.h"
-#include "bbts/timer_util.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/timer_util.h"
 #include "io.hpp"
 
 using std::string;

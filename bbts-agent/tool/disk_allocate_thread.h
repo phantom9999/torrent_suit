@@ -7,7 +7,7 @@
 #include <libtorrent/torrent_handle.hpp>
 
 #include "cluster_downloader.h"
-#include "configure.pb.h"
+#include "bbts-agent/proto/configure.pb.h"
 
 namespace bbts {
 namespace tool {

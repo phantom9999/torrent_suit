@@ -5,7 +5,7 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "bbts/LazySingleton.hpp"
+#include "bbts-tracker/LazySingleton.hpp"
 
 namespace argus {
 namespace common {

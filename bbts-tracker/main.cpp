@@ -17,18 +17,18 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/transport/TSocket.h>
 
-#include "bbts/HttpServer.h"
-#include "bbts/KeyTypeRWLock.hpp"
-#include "bbts/RedisManager.h"
-#include "bbts/StatusManager.h"
-#include "Announce.h"
-#include "bbts/tracker/AnnounceHandler.h"
-#include "bbts/tracker/CommonConf.h"
-#include "bbts/tracker/InfoHashGarbageCleaner.h"
-#include "bbts/tracker/PeerHandler.h"
-#include "bbts/tracker/RemotePeersSyncronizer.h"
-#include "redis_conf.pb.h"
-#include "tracker_conf.pb.h"
+#include "bbts-tracker/HttpServer.h"
+#include "bbts-tracker/KeyTypeRWLock.hpp"
+#include "bbts-tracker/RedisManager.h"
+#include "bbts-tracker/StatusManager.h"
+#include "tracker-protocol/Announce.h"
+#include "bbts-tracker/tracker/AnnounceHandler.h"
+#include "bbts-tracker/tracker/CommonConf.h"
+#include "bbts-tracker/tracker/InfoHashGarbageCleaner.h"
+#include "bbts-tracker/tracker/PeerHandler.h"
+#include "bbts-tracker/tracker/RemotePeersSyncronizer.h"
+#include "proto/redis_conf.pb.h"
+#include "proto/tracker_conf.pb.h"
 
 using std::string;
 using boost::bind;

@@ -1,7 +1,7 @@
-#include "bbts/tracker/PeerInfo.h"
+#include "bbts-tracker/tracker/PeerInfo.h"
 
-#include "bbts/thrift_serializer.h"
-#include "tracker_types.h"
+#include "bbts-tracker/thrift_serializer.h"
+#include "tracker-protocol/tracker_types.h"
 
 using std::string;
 

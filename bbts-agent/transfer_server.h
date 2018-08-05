@@ -6,8 +6,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "transfer_server_types.h"
-#include "TransferServer.h"
+#include "proto/transfer_server_types.h"
+#include "proto/TransferServer.h"
 #include "bbts-agent/routing.h"
 
 namespace bbts {

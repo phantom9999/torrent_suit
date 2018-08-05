@@ -18,7 +18,7 @@
 #include "bbts-agent/process_info.h"
 #include "bbts-agent/string_util.h"
 #include "bbts-agent/timer_util.h"
-#include "configure.pb.h"
+#include "bbts-agent/proto/configure.pb.h"
 
 using std::pair;
 using std::string;

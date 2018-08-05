@@ -32,17 +32,20 @@ add_executable(gko-agent ${AGENT_SRC})
 
 target_link_libraries(
         gko-agent
+        -Xlinker "-("
         sqlite3
         uri_agent
+        torrent-rasterbar
         ${LOG4CPP_LIB}
-        ${LIBTORRENT_LIB}
+#        ${LIBTORRENT_LIB}
         ${BOOST_SYSTEM_LIB}
         ${BOOST_THREAD_LIB}
         ${BOOST_REGEX_LIB}
         ${THRIFT_LIB}
         ${PROTOBUF_LIB}
         ${SNAPPY_LIB}
-        pthread dl rt
+        pthread dl rt ssl crypto
+        -Xlinker "-)"
 )
 
 

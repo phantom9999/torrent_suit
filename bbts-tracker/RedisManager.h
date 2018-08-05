@@ -7,8 +7,8 @@
 #include <boost/thread.hpp>
 #include <hiredis/hiredis.h>
 
-#include "bbts/LazySingleton.hpp"
-#include "bbts/ThreadSingleton.hpp"
+#include "bbts-tracker/LazySingleton.hpp"
+#include "bbts-tracker/ThreadSingleton.hpp"
 
 namespace bbts {
 

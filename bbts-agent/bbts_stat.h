@@ -6,7 +6,7 @@
 
 #include "routing.h"
 #include "torrent_plugin.h"
-#include "StatAnnounce.h"
+#include "proto/StatAnnounce.h"
 
 namespace bbts {
 

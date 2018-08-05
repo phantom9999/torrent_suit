@@ -1,18 +1,18 @@
-#include "bbts/tracker/PeerHandler.h"
+#include "bbts-tracker/tracker/PeerHandler.h"
 
 #include <climits>
 
 #include <boost/format.hpp>
 #include <glog/logging.h>
 
-#include "bbts/encode.h"
-#include "bbts/KeyTypeRWLock.hpp"
-#include "bbts/Random.h"
-#include "bbts/RedisCommandCreator.h"
-#include "bbts/RedisManager.h"
-#include "bbts/StatusManager.h"
-#include "tracker_types.h"
-#include "bbts/tracker/TrackerErrorCategory.h"
+#include "bbts-tracker/encode.h"
+#include "bbts-tracker/KeyTypeRWLock.hpp"
+#include "bbts-tracker/Random.h"
+#include "bbts-tracker/RedisCommandCreator.h"
+#include "bbts-tracker/RedisManager.h"
+#include "bbts-tracker/StatusManager.h"
+#include "tracker-protocol/tracker_types.h"
+#include "bbts-tracker/tracker/TrackerErrorCategory.h"
 
 using std::string;
 using std::numeric_limits;

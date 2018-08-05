@@ -27,3 +27,11 @@ cmake-build-debug/
 third-party/
 output/
 target/
+
+bbts-agent/proto/*.cpp
+bbts-agent/proto/*.h
+bbts-agent/proto/*.cc
+
+bbts-tracker/proto/*.h
+bbts-tracker/proto/*.cpp
+bbts-tracker/proto/*.cc

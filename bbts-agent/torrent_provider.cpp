@@ -12,8 +12,8 @@
 #include "bbts-agent/log.h"
 #include "bbts-agent/options_parse.h"
 #include "bbts-agent/process_info.h"
-#include "configure.pb.h"
-#include "TorrentProvider_types.h"
+#include "proto/configure.pb.h"
+#include "proto/TorrentProvider_types.h"
 
 using std::string;
 using std::vector;

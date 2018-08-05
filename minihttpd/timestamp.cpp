@@ -3,7 +3,7 @@
 #include <ctime>
 #include <cstdio>
 #define __STDC_FORMAT_MACROS
-#include <cinttypes>
+#include <inttypes.h>
 #undef __STDC_FORMAT_MACROS
 
 namespace argus {

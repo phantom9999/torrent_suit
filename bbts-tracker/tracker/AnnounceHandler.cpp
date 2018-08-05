@@ -1,9 +1,9 @@
-#include "bbts/tracker/AnnounceHandler.h"
+#include "bbts-tracker/tracker/AnnounceHandler.h"
 
 #include <glog/logging.h>
 
-#include "bbts/StatusManager.h"
-#include "bbts/tracker/TrackerErrorCategory.h"
+#include "bbts-tracker/StatusManager.h"
+#include "bbts-tracker/tracker/TrackerErrorCategory.h"
 
 using std::endl;
 using std::string;

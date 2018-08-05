@@ -8,7 +8,7 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "bbts/LazySingleton.hpp"
+#include "bbts-tracker/LazySingleton.hpp"
 
 namespace bbts {
 

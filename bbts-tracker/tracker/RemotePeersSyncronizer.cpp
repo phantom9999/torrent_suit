@@ -1,13 +1,13 @@
-#include "bbts/tracker/RemotePeersSyncronizer.h"
+#include "bbts-tracker/tracker/RemotePeersSyncronizer.h"
 
 #include <boost/unordered_set.hpp>
 #include <boost/weak_ptr.hpp>
 #include <glog/logging.h>
 
-#include "bbts/KeyTypeRWLock.hpp"
-#include "bbts/RedisCommandCreator.h"
-#include "bbts/RedisManager.h"
-#include "bbts/tracker/PeerHandler.h"
+#include "bbts-tracker/KeyTypeRWLock.hpp"
+#include "bbts-tracker/RedisCommandCreator.h"
+#include "bbts-tracker/RedisManager.h"
+#include "bbts-tracker/tracker/PeerHandler.h"
 
 using std::string;
 using boost::shared_ptr;

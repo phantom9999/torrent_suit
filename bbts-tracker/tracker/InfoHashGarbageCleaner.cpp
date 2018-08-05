@@ -1,10 +1,10 @@
-#include "bbts/tracker/InfoHashGarbageCleaner.h"
+#include "bbts-tracker/tracker/InfoHashGarbageCleaner.h"
 
 #include <vector>
 
 #include <glog/logging.h>
 
-#include "bbts/KeyTypeRWLock.hpp"
+#include "bbts-tracker/KeyTypeRWLock.hpp"
 
 namespace bbts {
 namespace tracker {

@@ -10,7 +10,7 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "configure.pb.h"
+#include "proto/configure.pb.h"
 
 namespace bbts {
 

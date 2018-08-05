@@ -6,7 +6,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 
-#include "bbts/type_lock.hpp"
+#include "bbts-agent/type_lock.hpp"
 
 namespace bbts {
 

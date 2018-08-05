@@ -7,7 +7,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "bbts-agent/routing.h"
-#include "TorrentProviderService.h"
+#include "proto/TorrentProviderService.h"
 
 namespace bbts {
 

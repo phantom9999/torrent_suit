@@ -2,7 +2,7 @@
 
 #include "bbts-agent/config.h"
 #include "bbts-agent/lazy_singleton.hpp"
-#include "configure.pb.h"
+#include "proto/configure.pb.h"
 
 namespace bbts {
 

@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "bbts/torrent_plugin.h"
+#include "bbts-agent/torrent_plugin.h"
 
 namespace bbts {
 

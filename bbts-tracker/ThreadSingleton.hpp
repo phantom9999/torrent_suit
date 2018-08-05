@@ -4,7 +4,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/thread/tss.hpp>
 
-#include "bbts/LazySingleton.hpp"
+#include "bbts-tracker/LazySingleton.hpp"
 
 namespace bbts {
 

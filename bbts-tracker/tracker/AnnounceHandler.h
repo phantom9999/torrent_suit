@@ -1,8 +1,8 @@
 #ifndef BBTS_TRACKER_ANNOUNCE_HANDLER_
 #define BBTS_TRACKER_ANNOUNCE_HANDLER_
 
-#include "Announce.h"
-#include "bbts/tracker/PeerHandler.h"
+#include "tracker-protocol/Announce.h"
+#include "bbts-tracker/tracker/PeerHandler.h"
 
 namespace bbts {
 namespace tracker {

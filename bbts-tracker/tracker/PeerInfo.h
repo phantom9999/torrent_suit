@@ -3,8 +3,8 @@
 
 #include <glog/logging.h>
 
-#include "bbts/encode.h"
-#include "inner_types.h"
+#include "bbts-tracker/encode.h"
+#include "tracker-protocol/inner_types.h"
 
 namespace bbts {
 namespace tracker {

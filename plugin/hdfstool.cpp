@@ -1,4 +1,4 @@
-#include "bbts/plugin.h"
+#include "bbts-agent/plugin.h"
 
 #include <errno.h>
 #include <stdio.h>
