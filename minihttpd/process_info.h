@@ -2,6 +2,7 @@
 #define ARGUS_COMMON_PROCESSINFO_H_
 
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <dirent.h>
 #include <pwd.h>
@@ -10,7 +11,6 @@
 #include <unistd.h>
 #include <string>
 #include <sys/syscall.h>
-#include "types.h"
 
 namespace argus {
 namespace common {
@@ -19,20 +19,20 @@ namespace ProcessInfo {
 pid_t gettid(void);
 
 pid_t pid();
-string pidString();
+std::string pidString();
 
 uid_t uid();
-string uidString();
-string username();
+std::string uidString();
+std::string username();
 
 uid_t euid();
-string euidString();
+std::string euidString();
 
-string startTime();
-string hostname();
+std::string startTime();
+std::string hostname();
 
 /// read /proc/self/status
-string procStatus();
+std::string procStatus();
 
 int openedFiles();
 int maxOpenFiles();
@@ -40,9 +40,9 @@ int maxOpenFiles();
 int numThreads();
 std::vector<pid_t> threads();
 
-string binaryPath();
-string binaryDirectory();
-string binaryName();
+std::string binaryPath();
+std::string binaryDirectory();
+std::string binaryName();
 
 } // namespace ProcessInfo
 } // namespace common

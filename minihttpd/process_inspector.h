@@ -1,7 +1,7 @@
 #ifndef ARGUS_COMMON_PROCESSINSPECTOR_H_
 #define ARGUS_COMMON_PROCESSINSPECTOR_H_
 
-#include "common.h"
+#include <string>
 
 namespace argus {
 namespace common {
@@ -13,14 +13,14 @@ public:
   void registerCallBacks(MiniHttpd* httpd);
 
 private:
-  static string baseInfo(const string&);
-  static string pid(const string&);
-  static string procStatus(const string&);
-  static string openedFiles(const string&);
-  static string threads(const string&);
-  static string startTime(const string&);
-  static string account(const string&);
-  static string binaryPath(const string&);
+  static std::string baseInfo(const std::string&);
+  static std::string pid(const std::string&);
+  static std::string procStatus(const std::string&);
+  static std::string openedFiles(const std::string&);
+  static std::string threads(const std::string&);
+  static std::string startTime(const std::string&);
+  static std::string account(const std::string&);
+  static std::string binaryPath(const std::string&);
 };
 
 } // namespace common

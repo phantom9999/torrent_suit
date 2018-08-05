@@ -6,9 +6,7 @@ SET(MINIHTTPD_HEADER
     current_thread.h
     eventloop.h
     minihttpd.h
-    monitor_helper.h
-    mutex.h
-    path.h
+        path.h
     process_info.h
     process_inspector.h
     scoped_ptr.h

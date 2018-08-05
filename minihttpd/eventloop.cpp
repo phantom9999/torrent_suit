@@ -3,6 +3,7 @@
 #include "current_thread.h"
 #include <sys/time.h>
 #include <event2/event.h>
+#include <glog/logging.h>
 
 namespace argus {
 namespace common {

@@ -18,8 +18,9 @@ install:
     - sudo pip install conan || true
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
     - sudo conan install . --build=missing
-
 script:
+    - cmake .
+    - make -j
 
 
 after_success:

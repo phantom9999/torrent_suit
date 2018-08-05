@@ -6,6 +6,7 @@
 #include <pwd.h>
 #include <stdio.h> // snprintf
 #include <stdlib.h>
+#include <string>
 #include <unistd.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -56,10 +57,10 @@ int scanDir(const char *dirpath, int (*filter)(const struct dirent *)) {
 }
 
 /**
- *
+ * 获得格式化好的时间
  * @return
  */
-string getTimeStr() {
+std::string getTimeStr() {
     //30 bytes is enough to hold "[year-month-day : hour-minute-second]"
     char time[30] = {0};
     const char *format = "[%Y-%m-%d %H:%M:%S]";
@@ -74,7 +75,7 @@ string getTimeStr() {
     return time;
 }
 
-static string s_startTime = getTimeStr();
+static std::string s_startTime = getTimeStr();
 
 } // namespace internal
 } // namespace common
@@ -92,7 +93,7 @@ pid_t ProcessInfo::pid() {
     return ::getpid();
 }
 
-string ProcessInfo::pidString() {
+std::string ProcessInfo::pidString() {
     char buf[32];
     snprintf(buf, sizeof buf, "%d", pid());
     return buf;
@@ -102,13 +103,13 @@ uid_t ProcessInfo::uid() {
     return ::getuid();
 }
 
-string ProcessInfo::uidString() {
+std::string ProcessInfo::uidString() {
     char buf[32];
     snprintf(buf, sizeof buf, "%d", uid());
     return buf;
 }
 
-string ProcessInfo::username() {
+std::string ProcessInfo::username() {
     struct passwd pwd;
     struct passwd *result = NULL;
     char buf[8192];
@@ -125,25 +126,25 @@ uid_t ProcessInfo::euid() {
     return ::geteuid();
 }
 
-string ProcessInfo::euidString() {
+std::string ProcessInfo::euidString() {
     char buf[32];
     snprintf(buf, sizeof buf, "%d", euid());
     return buf;
 }
 
-string ProcessInfo::startTime() {
+std::string ProcessInfo::startTime() {
     return s_startTime;
 }
 
-string ProcessInfo::hostname() {
+std::string ProcessInfo::hostname() {
     char buf[64] = "unknownhost";
     buf[sizeof(buf) - 1] = '\0';
     ::gethostname(buf, sizeof buf);
     return buf;
 }
 
-string ProcessInfo::procStatus() {
-    string result;
+std::string ProcessInfo::procStatus() {
+    std::string result;
     FILE *fp = fopen("/proc/self/status", "r");
     if (fp) {
         while (!feof(fp)) {
@@ -156,6 +157,10 @@ string ProcessInfo::procStatus() {
     return result;
 }
 
+/**
+ *
+ * @return
+ */
 int ProcessInfo::openedFiles() {
     t_numOpenedFiles = 0;
     scanDir("/proc/self/fd", fdDirFilter);
@@ -173,9 +178,9 @@ int ProcessInfo::maxOpenFiles() {
 
 int ProcessInfo::numThreads() {
     int result = 0;
-    string status = procStatus();
+    std::string status = procStatus();
     size_t pos = status.find("Threads:");
-    if (pos != string::npos) {
+    if (pos != std::string::npos) {
         result = ::atoi(status.c_str() + pos + 8);
     }
     return result;
@@ -190,17 +195,17 @@ std::vector<pid_t> ProcessInfo::threads() {
     return result;
 }
 
-string ProcessInfo::binaryPath() {
+std::string ProcessInfo::binaryPath() {
     char path[PATH_MAX] = {0};
     ssize_t length = readlink("/proc/self/exe", path, sizeof(path));
     if (length > 0)
-        return string(path, length);
+        return std::string(path, length);
 
     return "<unknown binary path>";
 }
 
-string ProcessInfo::binaryName() {
-    string binary_name;
+std::string ProcessInfo::binaryName() {
+    std::string binary_name;
 
     char path[PATH_MAX] = {0};
     FILE *fp = fopen("/proc/self/cmdline", "r");
@@ -217,8 +222,8 @@ string ProcessInfo::binaryName() {
     return binary_name;
 }
 
-string ProcessInfo::binaryDirectory() {
-    string path = binaryPath();
+std::string ProcessInfo::binaryDirectory() {
+    std::string path = binaryPath();
     return ::argus::common::Path::getDirectory(path);
 }
 
