@@ -67,7 +67,7 @@ install(DIRECTORY bin DESTINATION bin
 include_directories(.)
 include_directories(libtorrent_0_16_5/include)
 
-add_subdirectory(bbts-agent)
+#add_subdirectory(bbts-agent)
 #add_subdirectory(bbts-tracker)
 #add_subdirectory(clientmock)
 #add_subdirectory(file_utils)

@@ -6,14 +6,16 @@ compiler:
     - gcc
 
 cache:
+    pip: true
+    ccache: true
     directories:
      - /home/travis/.conan/
-
 before_install:
     - sudo apt-get update -y
 
 install:
-    - sudo pip install conan
+    - apt-get install cmake; alias cmake='cmake3'
+    - pip install conan
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     - sudo conan install . --build=missing
 
