@@ -19,8 +19,7 @@ install:
     - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
     - sudo conan install . --build=missing
 script:
-    - cmake .
-    - make -j
+    - sh build_by_conan.sh
 
 
 after_success:
