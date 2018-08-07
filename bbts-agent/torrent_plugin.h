@@ -1,7 +1,7 @@
 #ifndef BBTS_AGENT_TORRENT_PLUGIN_H
 #define BBTS_AGENT_TORRENT_PLUGIN_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/shared_ptr.hpp>
 #include <libtorrent/alert_types.hpp>

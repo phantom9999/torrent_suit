@@ -836,7 +836,7 @@ namespace libtorrent
 			, std::string const& private_key
 			, std::string const& dh_params
 			, std::string const& passphrase);
-		bool is_ssl_torrent() const { return m_ssl_ctx; } 
+		bool is_ssl_torrent() const { return m_ssl_ctx ? true : false; }
 		boost::asio::ssl::context* ssl_ctx() const { return m_ssl_ctx.get(); } 
 #endif
 

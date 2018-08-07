@@ -1,5 +1,4 @@
 #include "minihttpd/process_info.h"
-#include "minihttpd/path.h"
 #include <algorithm>
 #include <assert.h>
 #include <dirent.h>
@@ -85,19 +84,10 @@ using namespace argus;
 using namespace argus::common;
 using namespace argus::common::internal;
 
-pid_t ProcessInfo::gettid(void) {
-    return syscall(__NR_gettid);
-}
-
 pid_t ProcessInfo::pid() {
     return ::getpid();
 }
 
-std::string ProcessInfo::pidString() {
-    char buf[32];
-    snprintf(buf, sizeof buf, "%d", pid());
-    return buf;
-}
 
 uid_t ProcessInfo::uid() {
     return ::getuid();
@@ -167,25 +157,6 @@ int ProcessInfo::openedFiles() {
     return t_numOpenedFiles;
 }
 
-int ProcessInfo::maxOpenFiles() {
-    struct rlimit rl;
-    if (::getrlimit(RLIMIT_NOFILE, &rl)) {
-        return openedFiles();
-    } else {
-        return static_cast<int>(rl.rlim_cur);
-    }
-}
-
-int ProcessInfo::numThreads() {
-    int result = 0;
-    std::string status = procStatus();
-    size_t pos = status.find("Threads:");
-    if (pos != std::string::npos) {
-        result = ::atoi(status.c_str() + pos + 8);
-    }
-    return result;
-}
-
 std::vector<pid_t> ProcessInfo::threads() {
     std::vector<pid_t> result;
     t_pids = &result;
@@ -202,28 +173,5 @@ std::string ProcessInfo::binaryPath() {
         return std::string(path, length);
 
     return "<unknown binary path>";
-}
-
-std::string ProcessInfo::binaryName() {
-    std::string binary_name;
-
-    char path[PATH_MAX] = {0};
-    FILE *fp = fopen("/proc/self/cmdline", "r");
-    if (fp != NULL) {
-        fgets(path, sizeof(path) - 1, fp);
-        fclose(fp);
-        binary_name = ::argus::common::Path::getBaseName(path);
-    }
-    // If fopen failed or the process is defunct,
-    // read binary name from exe softlink.
-    if (binary_name.empty()) {
-        binary_name = ::argus::common::Path::getBaseName(binaryPath());
-    }
-    return binary_name;
-}
-
-std::string ProcessInfo::binaryDirectory() {
-    std::string path = binaryPath();
-    return ::argus::common::Path::getDirectory(path);
 }
 

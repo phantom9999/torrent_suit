@@ -35,3 +35,6 @@ bbts-agent/proto/*.cc
 bbts-tracker/proto/*.h
 bbts-tracker/proto/*.cpp
 bbts-tracker/proto/*.cc
+
+tracker-protocol/*.h
+tracker-protocol/*.cpp

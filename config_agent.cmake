@@ -53,6 +53,12 @@ if(NOT LOG4CPP_H OR NOT LOG4CPP_LIB)
     message(FATAL_ERROR "log4cpp not found")
 endif()
 
+find_path(GLOG_H NAMES glog/logging.h)
+find_library(GLOG_LIB NAMES libglog.a)
+if(NOT GLOG_H OR NOT GLOG_LIB)
+    message(FATAL_ERROR "glog not found.")
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/src/proto
                     ${PROJECT_SOURCE_DIR}/include
                     ${BBTS_PROTOCOL_H}
@@ -61,6 +67,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/proto
                     ${PROTOBUF_H}
                     ${LIBEVENT_H}
                     ${THRIFT_H}
+                    ${GLOG_H}
                     #${LIBTORRENT_H}
                     ${LOG4CPP_H})
 

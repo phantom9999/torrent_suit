@@ -3,7 +3,7 @@ project(gko_suit)
 
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
-#set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_SUPPRESS_REGENERATION 1)
 set(CMAKE_USE_RELATIVE_PATHS ON)
 set(CMAKE_BUILD_TYPE "Debug")
@@ -81,7 +81,7 @@ add_subdirectory(minihttpd)
 
 add_subdirectory(sqlite)
 add_subdirectory(tracker-protocol)
-add_subdirectory(plugin)
+#add_subdirectory(plugin)
 add_subdirectory(uri)
 
 add_subdirectory(test)

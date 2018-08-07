@@ -26,7 +26,7 @@ class TrackerErrorCategory : public boost::system::error_category {
  public:
   TrackerErrorCategory() {}
   virtual ~TrackerErrorCategory(){}
-  virtual const char* name() const {
+  virtual const char* name() const BOOST_SYSTEM_NOEXCEPT{
     return name_;
   }
 

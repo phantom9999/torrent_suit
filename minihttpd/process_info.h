@@ -16,10 +16,9 @@ namespace argus {
 namespace common {
 namespace ProcessInfo {
 
-pid_t gettid(void);
 
 pid_t pid();
-std::string pidString();
+
 
 uid_t uid();
 std::string uidString();
@@ -35,14 +34,11 @@ std::string hostname();
 std::string procStatus();
 
 int openedFiles();
-int maxOpenFiles();
 
-int numThreads();
 std::vector<pid_t> threads();
 
 std::string binaryPath();
-std::string binaryDirectory();
-std::string binaryName();
+
 
 } // namespace ProcessInfo
 } // namespace common

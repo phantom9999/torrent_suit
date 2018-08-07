@@ -1,12 +1,15 @@
 #ifndef ARGUS_COMMON_MINIHTTPD_H_
 #define ARGUS_COMMON_MINIHTTPD_H_
 
-#include "spinlock.h"
-#include "scoped_ptr.h"
+
 #include <map>
 #include <vector>
 #include <string>
 #include <boost/noncopyable.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/smart_ptr/detail/spinlock.hpp>
+#include <inttypes.h>
+#include <boost/thread/lock_guard.hpp>
 
 struct evhttp;
 struct evhttp_request;
@@ -84,7 +87,7 @@ private:
     bool enableIpFilter_;
     std::vector<uint32_t> ipRange_;
 
-    scoped_ptr<ProcessInspector> processInspector_;
+    boost::scoped_ptr<ProcessInspector> processInspector_;
     EventLoop *loop_;
     struct evhttp *const evhttp_;
     struct evhttp_bound_socket *boundSocket_;
@@ -93,7 +96,10 @@ private:
 
     std::map<std::string, http_callback_fn> uriHandlerMap_;
     std::map<std::string, std::string> responseMap_;
-    SpinLock lock_;
+
+    typedef boost::detail::spinlock SpinLock;
+    typedef boost::lock_guard<SpinLock> SpinLockGuard;
+    boost::detail::spinlock lock_;
 
 };
 

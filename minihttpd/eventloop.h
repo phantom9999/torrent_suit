@@ -1,12 +1,13 @@
 #ifndef ARGUS_COMMON_EVENTLOOP_H_
 #define ARGUS_COMMON_EVENTLOOP_H_
 
-#include "spinlock.h"
+#include <inttypes.h>
 #include "closure.h"
 #include "current_thread.h"
 #include <map>
 #include <queue>
 #include <boost/noncopyable.hpp>
+#include <boost/smart_ptr/detail/spinlock.hpp>
 
 struct event_base;
 struct event;
@@ -37,24 +38,9 @@ public:
     //
     typedef void (*event_callback_fn)(int, short, void *);
 
-    // Runs callback every @c interval seconds.
-    // Safe to call from other threads.
-    // return a timerId
-    uint64_t runEvery(double interval, event_callback_fn, void *arg = NULL);
-
-    // Runs callback after @c delay seconds.
-    // Safe to call from other threads.
-    // return a timerId
-    uint64_t runAfter(double delay, event_callback_fn, void *arg = NULL);
-
     // Cancels a timer according to timerId
     // Safe to call from other threads.
     void cancel(uint64_t timerId);
-
-    uint64_t timerNumsCreated() {
-        SpinLockGuard lock(lock_);
-        return timerNumsCreated_;
-    }
 
     struct event_base *eventBase();
 
@@ -99,7 +85,7 @@ private:
     volatile uint64_t timerNumsCreated_;
     uint64_t newTimerId();
 
-    SpinLock lock_;
+    boost::detail::spinlock lock_;
 
     void abortNotInLoopThread();
     void wakeupHandler(int, short);

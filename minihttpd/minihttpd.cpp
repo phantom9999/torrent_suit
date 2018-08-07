@@ -1,7 +1,6 @@
 #include "minihttpd/minihttpd.h"
 #include "minihttpd/eventloop.h"
 #include "minihttpd/process_inspector.h"
-#include "minihttpd/strutil.h"
 
 #include <stdio.h>
 #include <string>
@@ -9,6 +8,7 @@
 #include <event2/buffer.h>
 #include <event2/http.h>
 #include <event2/http_struct.h>
+#include <boost/thread/lock_guard.hpp>
 
 namespace argus {
 namespace common {

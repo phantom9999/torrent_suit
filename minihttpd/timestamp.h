@@ -17,8 +17,7 @@ namespace common {
 class Timestamp {
 public:
     /// Constucts an invalid Timestamp.
-    Timestamp()
-        : microSecondsSinceEpoch_(0) {
+    Timestamp() : microSecondsSinceEpoch_(0) {
     }
 
     ///

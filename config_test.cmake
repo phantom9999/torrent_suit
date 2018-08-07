@@ -25,9 +25,17 @@ if(NOT BOOST_H OR NOT_TR1_H OR NOT BOOST_SYSTEM_LIB OR NOT BOOST_THREAD_LIB OR N
 endif()
 
 
+find_path(GLOG_H NAMES glog/logging.h)
+find_library(GLOG_LIB NAMES libglog.a)
+if(NOT GLOG_H OR NOT GLOG_LIB)
+    message(FATAL_ERROR "glog not found.")
+endif()
+
+
 include_directories(
         ${GTEST_H}
         ${BOOST_H}
+        ${GLOG_H}
 )
 
 

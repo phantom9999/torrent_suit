@@ -6,12 +6,9 @@ SET(MINIHTTPD_HEADER
     current_thread.h
     eventloop.h
     minihttpd.h
-        path.h
-    process_info.h
+        process_info.h
     process_inspector.h
-    scoped_ptr.h
-    spinlock.h
-    strutil.h
+        strutil.h
     timestamp.h
     types.h)
 

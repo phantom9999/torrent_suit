@@ -10,6 +10,7 @@ target_link_libraries(
         test_src
         ${GTEST_MAIN_LIB}
         ${GTEST_LIB}
+        ${GLOG_LIB}
         -pthread
 
 )

@@ -329,9 +329,9 @@ namespace libtorrent
 
 	struct TORRENT_EXPORT libtorrent_error_category : boost::system::error_category
 	{
-		virtual const char* name() const;
+		virtual const char* name() const BOOST_SYSTEM_NOEXCEPT;
 		virtual std::string message(int ev) const;
-		virtual boost::system::error_condition default_error_condition(int ev) const
+		virtual boost::system::error_condition default_error_condition(int ev) const BOOST_SYSTEM_NOEXCEPT
 		{ return boost::system::error_condition(ev, *this); }
 	};
 
@@ -343,9 +343,9 @@ namespace libtorrent
 
 	struct TORRENT_EXPORT http_error_category : boost::system::error_category
 	{
-		virtual const char* name() const;
+		virtual const char* name() const BOOST_SYSTEM_NOEXCEPT;
 		virtual std::string message(int ev) const;
-		virtual boost::system::error_condition default_error_condition(int ev) const
+		virtual boost::system::error_condition default_error_condition(int ev) const BOOST_SYSTEM_NOEXCEPT
 		{ return boost::system::error_condition(ev, *this); }
 	};
 

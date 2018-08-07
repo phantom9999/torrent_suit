@@ -10,19 +10,6 @@
 namespace argus {
 namespace common {
 
-namespace internal {
-
-class TimestampStaticChecker {
-public:
-    TimestampStaticChecker() {
-        BOOST_STATIC_ASSERT(sizeof(Timestamp) == sizeof(int64_t));
-    }
-};
-
-static TimestampStaticChecker s_timestampStaticChecker;
-
-} // namespace internal
-
 Timestamp::Timestamp(int64_t microseconds)
     : microSecondsSinceEpoch_(microseconds) {
 }
