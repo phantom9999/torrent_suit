@@ -3,6 +3,7 @@
 home=$(cd ~ && pwd)
 
 conan_dir_list=`find $home/.conan -name include | grep package`
+echo ${conan_dir_list}
 
 for conan_dir in ${conan_dir_list[*]}
 do
@@ -14,6 +15,8 @@ done
 export CMAKE_INCLUDE_PATH
 export CMAKE_LIBRARY_PATH
 
+echo ${CMAKE_INCLUDE_PATH}
+echo ${CMAKE_LIBRARY_PATH}
 
 mkdir build
 cd build
