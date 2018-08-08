@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 home=$(cd ~ && pwd)
 
 conan_dir_list=`find $home/.conan -name include | grep package`
