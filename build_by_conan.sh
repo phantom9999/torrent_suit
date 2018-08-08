@@ -20,6 +20,7 @@ export CMAKE_LIBRARY_PATH
 echo ${CMAKE_INCLUDE_PATH}
 echo ${CMAKE_LIBRARY_PATH}
 
+[ ! -d build ] || rm -rf build 
 mkdir build
 cd build
 cmake -D CMAKE_CXX_COMPILER="ccache" -D CMAKE_CXX_COMPILER_ARG1="g++" -D CMAKE_C_COMPILER="ccache" -D CMAKE_C_COMPILER_ARG1="gcc" ..
