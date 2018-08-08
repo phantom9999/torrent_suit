@@ -17,11 +17,8 @@ done
 export CMAKE_INCLUDE_PATH
 export CMAKE_LIBRARY_PATH
 
-echo ${CMAKE_INCLUDE_PATH}
-echo ${CMAKE_LIBRARY_PATH}
+export CMAKE_CXX_COMPILER="ccache"
+export CMAKE_CXX_COMPILER_ARG1="g++"
+export CMAKE_C_COMPILER="ccache"
+export CMAKE_C_COMPILER_ARG1="gcc"
 
-[ ! -d build ] || rm -rf build 
-mkdir build
-cd build
-cmake -D CMAKE_CXX_COMPILER="ccache" -D CMAKE_CXX_COMPILER_ARG1="g++" -D CMAKE_C_COMPILER="ccache" -D CMAKE_C_COMPILER_ARG1="gcc" ..
-make -j4
