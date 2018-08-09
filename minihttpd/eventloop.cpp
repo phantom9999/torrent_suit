@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <event2/event.h>
 #include <glog/logging.h>
+#include <cassert>
 #include <boost/thread/lock_guard.hpp>
 
 namespace argus {

@@ -30,6 +30,11 @@
 #include "proto/redis_conf.pb.h"
 #include "proto/tracker_conf.pb.h"
 
+
+#ifndef GFLAGS_NAMESPACE
+#define gflags
+#endif
+
 using std::string;
 using boost::bind;
 using boost::scoped_ptr;

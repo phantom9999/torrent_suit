@@ -50,6 +50,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "libtorrent/string_util.hpp" // for allocate_string_copy
 #include <stdlib.h> // free
 
+#ifndef BOOST_SYSTEM_NOEXCEPT
+    #define BOOST_SYSTEM_NOEXCEPT BOOST_NOEXCEPT
+#endif
+
 namespace libtorrent
 {
 

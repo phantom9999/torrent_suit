@@ -47,6 +47,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "libtorrent/proxy_base.hpp"
 #include "libtorrent/session_settings.hpp"
 
+#ifndef BOOST_SYSTEM_NOEXCEPT
+    #define BOOST_SYSTEM_NOEXCEPT BOOST_NOEXCEPT
+#endif
+
 namespace libtorrent {
 
 	namespace i2p_error {
