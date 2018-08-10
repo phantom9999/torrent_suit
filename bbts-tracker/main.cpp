@@ -151,8 +151,8 @@ inline static void SetSingalProcess() {
 }
 
 int main(int argc, char ** argv) {
-  google::SetVersionString(VERSIONID);
-  google::ParseCommandLineFlags(&argc, &argv, true);
+  GFLAGS_NAMESPACE::SetVersionString(VERSIONID);
+  GFLAGS_NAMESPACE::ParseCommandLineFlags(&argc, &argv, true);
 
   TrackerConf tracker_conf;
   if (!LoadConf(FLAGS_dir + "/" + FLAGS_file, &tracker_conf)) {
