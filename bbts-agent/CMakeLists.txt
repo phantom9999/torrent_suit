@@ -33,9 +33,9 @@ add_executable(gko-agent ${AGENT_SRC})
 target_link_libraries(
         gko-agent
         -Xlinker "-("
-        sqlite3
         uri_agent
         torrent-rasterbar
+        ${SQLITE_LIB}
         ${LOG4CPP_LIB}
 #        ${LIBTORRENT_LIB}
         ${BOOST_SYSTEM_LIB}

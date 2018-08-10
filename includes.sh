@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# cmake -D CMAKE_CXX_COMPILER="ccache" -D CMAKE_CXX_COMPILER_ARG1="g++" -D CMAKE_C_COMPILER="ccache" -D CMAKE_C_COMPILER_ARG1="gcc"
+# cmake -D CMAKE_CXX_COMPILER="ccache" -D CMAKE_CXX_COMPILER_ARG1="g++" -D CMAKE_C_COMPILER="ccache" -D CMAKE_C_COMPILER_ARG1="gcc" -DGFLAGS_NAMESPACE='google'
 
 export CMAKE_CXX_COMPILER="ccache"
 export CMAKE_CXX_COMPILER_ARG1="g++"
 export CMAKE_C_COMPILER="ccache"
 export CMAKE_C_COMPILER_ARG1="gcc"
+
+# -D GFLAGS_NAMESPACE
 
 workspace=$(cd $(dirname $0) && pwd)
 third_party=( \
@@ -19,6 +21,7 @@ third_party=( \
     gflags \
     hiredis \
     gtest \
+    sqlite \
 )
 dep_dir=${workspace}/third-party
 
