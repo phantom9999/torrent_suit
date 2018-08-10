@@ -32,7 +32,7 @@
 
 
 #ifndef GFLAGS_NAMESPACE
-#define gflags
+#define GFLAGS_NAMESPACE gflags
 #endif
 
 using std::string;
