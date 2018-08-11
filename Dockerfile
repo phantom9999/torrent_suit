@@ -4,7 +4,7 @@ MAINTAINER phantom9999
 
 RUN yum -y install epel-release.noarch
 
-RUN yum -i install cmake3 gcc-c++ make
+RUN yum -y install cmake3 gcc-c++ make
 RUN yum -y install sqlite3-devel boost-devel.x86_64 boost-test.x86_64 \
     libevent-devel.x86_64 gflags-devel.x86_64 glog-devel.x86_64 \
     thrift-devel.x86_64 hiredis-devel.x86_64 protobuf-devel.x86_64 \
