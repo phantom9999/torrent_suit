@@ -15,7 +15,7 @@ add_definitions(-DHAVE_NETINET_IN_H
 if(BUILD_BAIDU)
     add_definitions(-DBUILD_BAIDU)
 endif()
-set(CMAKE_CXX_FLAGS "-g -fPIC -Wall -pipe -W -fpermissive -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof -Winline -Wpointer-arith -Wwrite-strings -Woverloaded-virtual -ftemplate-depth-128 -Wreorder -Wswitch -Wformat")
+#set(CMAKE_CXX_FLAGS "-g -fPIC -Wall -pipe -W -fpermissive -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof -Winline -Wpointer-arith -Wwrite-strings -Woverloaded-virtual -ftemplate-depth-128 -Wreorder -Wswitch -Wformat")
 
 SET(default_file_permissions OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ)
 SET(default_excute_permissions OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)

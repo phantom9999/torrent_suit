@@ -128,5 +128,14 @@ include_directories(
 )
 
 
+add_compile_options(
+        -g -fPIC -ggdb -Wall -pipe -fpermissive -ftemplate-depth-128
+        -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof
+        -Wno-deprecated-declarations
+        -Winline -Wpointer-arith -Wwrite-strings -Woverloaded-virtual
+        -Wreorder -Wswitch -Wformat
+)
+
+
 
 
