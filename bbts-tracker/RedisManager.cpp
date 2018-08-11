@@ -1,8 +1,8 @@
 #include "bbts-tracker/RedisManager.h"
 
 #include <glog/logging.h>
+#include <boost/crc.hpp>
 
-#include "bbts-tracker/hash_crc32.h"
 #include "proto/redis_conf.pb.h"
 #include "bbts-tracker/StatusManager.h"
 
@@ -109,7 +109,9 @@ void RedisManager::Stop() {
 }
 
 uint32_t RedisManager::GetRedisIndex(const string &key) {
-  uint32_t index = hash_crc32(key.c_str(), key.length(), NULL);
+  boost::crc_32_type crc32Type;
+  crc32Type.process_bytes(key.c_str(), key.length());
+  uint32_t index = crc32Type();
   return index % redis_num_;
 }
 

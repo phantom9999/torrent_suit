@@ -1,4 +1,7 @@
 #include "disk_manager.h"
+
+#include <boost/crc.hpp>
+
 #include "tcp_connection.h"
 #include "uri_piece_request.h"
 
@@ -111,10 +114,9 @@ void DiskManager::piece_hash_request(shared_ptr<TcpConnection> connection,
 }
 
 int DiskManager::get_request_thread_hash(const URIPieceRequest &request) {
-    uint32_t infohash_hash_index = hash_crc32(
-            request.infohash.c_str(),
-            request.infohash.length(),
-            NULL);
+    boost::crc_32_type crc32Type;
+    crc32Type.process_bytes(request.infohash.c_str(), request.infohash.length());
+    uint32_t infohash_hash_index = crc32Type();
     return (request.piece_index + infohash_hash_index) % _disk_thread_number;
 }
 
