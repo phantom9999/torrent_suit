@@ -64,15 +64,7 @@ static const char VERSIONID[] = "unknown";
 
 TNonblockingServer *g_my_server;
 
-PeerHandler *peer_handler = NULL;
-
-/**
- *
- * @param sigNum
- */
-static void ProcessTerminateSig(int sigNum) {
-    g_my_server->stop();
-}
+PeerHandler *peer_handler = nullptr;
 
 /**
  *
@@ -184,10 +176,13 @@ inline static void InitLogging(string log_path, string logPath) {
  * 设置信号调用
  */
 inline static void SetSingalProcess() {
-    signal(SIGINT, ProcessTerminateSig);
-    signal(SIGTERM, ProcessTerminateSig);
-    signal(SIGQUIT, ProcessTerminateSig);
-    signal(SIGHUP, ProcessTerminateSig);
+    auto processTerminate = [](int sigNum)->void {
+        g_my_server->stop();
+    };
+    signal(SIGINT, processTerminate);
+    signal(SIGTERM, processTerminate);
+    signal(SIGQUIT, processTerminate);
+    signal(SIGHUP, processTerminate);
     signal(SIGPIPE, SIG_IGN);
 }
 
@@ -221,7 +216,6 @@ int main(int argc, char **argv) {
         std::cout << e.what() << std::endl;
         return 1;
     }
-
     if (variablesMap.count("help") != 0) {
         std::cout << optionsDescription << std::endl;
         return 0;
@@ -249,8 +243,9 @@ int main(int argc, char **argv) {
     HttpServer http_server;
     StartHttpServer(&http_server, tracker_conf.httpd_port());
     StartRedisManager(dirname, redisfile);
-    thread garbage_cleaner_thread
-        (bind(&InfoHashGarbageCleaner::ThreadFunc, &garbage_cleaner));
+    thread garbage_cleaner_thread(bind(
+        &InfoHashGarbageCleaner::ThreadFunc, &garbage_cleaner
+    ));
     thread_group remote_peers_syncronizers;
     for (int i = 0; i < tracker_conf.remote_peers_syncronizer_num(); ++i) {
         remote_peers_syncronizers.create_thread(

@@ -5,7 +5,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio/placeholders.hpp>
 #include <boost/thread.hpp>
-#include <sqlite/sqlite3.h>
+#include <sqlite3.h>
 
 #include <bbts-agent/log.h>
 #include <bbts-agent/timer_util.h>
