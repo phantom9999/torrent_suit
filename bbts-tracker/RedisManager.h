@@ -59,7 +59,7 @@ class RedisConf;
 class RedisManager : private boost::noncopyable {
  public:
   RedisManager();
-  ~RedisManager();
+  ~RedisManager() = default;
   // @brief start redis manager. Tasks including:
   //   1. mark all redis-cluster flags to 'disabled'
   //   2. initialize SyncedQueue of redis records

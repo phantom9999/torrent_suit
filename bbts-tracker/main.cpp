@@ -29,6 +29,7 @@
 #include "bbts-tracker/tracker/RemotePeersSyncronizer.h"
 #include "proto/redis_conf.pb.h"
 #include "proto/tracker_conf.pb.h"
+#include "proto/tracker_log.pb.h"
 
 
 using std::string;
@@ -133,22 +134,6 @@ static void StartStatusItems(int32_t update_cycle_second) {
 
 /**
  *
- * @return
- */
-static bool StartRedisManager(string dirname, string redis) {
-    RedisConf redis_conf;
-    if (!LoadConf(dirname + "/" + redis, &redis_conf)) {
-        exit(1);
-    }
-    if (!g_pRedisManager->Start(redis_conf)) {
-        LOG(ERROR) << "can't initialize redis";
-        exit(2);
-    }
-    return true;
-}
-
-/**
- *
  * @param http_server
  * @param httpd_port
  */
@@ -160,16 +145,17 @@ static void StartHttpServer(HttpServer *http_server, int httpd_port) {
 }
 
 /**
- *
+ * 初始化日志配置
  * @param log_path
  */
-inline static void InitLogging(string log_path, string logPath) {
-    google::InitGoogleLogging(logPath.c_str());
+inline static void InitLogging(bbts::tracker::TrackerLog &trackerLog) {
+    google::InitGoogleLogging("tracker");
     //FLAGS_logtostderr = 1;
-    google::SetLogDestination(google::INFO, (log_path + "info_").c_str());
-    google::SetLogDestination(google::WARNING, (log_path + "warning_").c_str());
-    google::SetLogDestination(google::ERROR, (log_path + "error_").c_str());
-    google::SetLogDestination(google::FATAL, (log_path + "fatal_").c_str());
+    google::SetLogDestination(google::INFO, (trackerLog.log_dir() + "/info_").c_str());
+    google::SetLogDestination(google::WARNING, (trackerLog.log_dir() + "/warning_").c_str());
+    google::SetLogDestination(google::ERROR, (trackerLog.log_dir() + "/error_").c_str());
+    google::SetLogDestination(google::FATAL, (trackerLog.log_dir() + "/fatal_").c_str());
+    google::SetStderrLogging(google::GLOG_INFO);
 }
 
 /**
@@ -195,18 +181,15 @@ int main(int argc, char **argv) {
     using boost::program_options::notify;
     using boost::program_options::value;
 
+    // 命令行解析
     string dirname;
     string filename;
-    string logfile;
-    string redisfile;
 
-    OptionsDescription optionsDescription("demo");
+    OptionsDescription optionsDescription("tracker");
     optionsDescription.add_options()
         ("help", "print help")
-        ("dir", value<string>(&dirname)->default_value("../conf"), "the path of config")
-        ("file", value<string>(&filename)->default_value("tracker.conf"), "the file of config")
-        ("log", value<string>(&logfile)->default_value("../log/tracker.log"), "the path of log")
-        ("redis_file", value<string>(&redisfile)->default_value("redis.conf"), "the path of redis config")
+        ("dir", value<string>(&dirname)->default_value("conf"), "the path of config")
+        ("config", value<string>(&filename)->default_value("tracker.conf"), "the file of config")
         ;
     VariablesMap variablesMap;
     try {
@@ -221,13 +204,29 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-
+    // 配置文件解析
     TrackerConf tracker_conf;
     if (!LoadConf(dirname + "/" + filename, &tracker_conf)) {
+        LOG(ERROR) << "parse tracker config error";
         return 1;
     }
 
-    InitLogging(tracker_conf.log_path(), logfile);
+    TrackerLog trackerLog;
+    if (!LoadConf(dirname + "/" + tracker_conf.log_conf(), &trackerLog)) {
+        LOG(ERROR) << "parse log config error";
+        return 1;
+    }
+
+    RedisConf redisConf;
+    if (!LoadConf(dirname + "/" + tracker_conf.redis_conf(), &redisConf)) {
+        LOG(ERROR) << "parse redis config error";
+        return 1;
+    }
+
+
+    // 日志初始化
+    InitLogging(trackerLog);
+
     PeerInfo::set_tracker_id(GenerateTrackerId(tracker_conf.port()));
 
     shared_ptr<InfoHashMap> local_map(new InfoHashMap());
@@ -242,7 +241,12 @@ int main(int argc, char **argv) {
     StartStatusItems(tracker_conf.monitor_cycle_second());
     HttpServer http_server;
     StartHttpServer(&http_server, tracker_conf.httpd_port());
-    StartRedisManager(dirname, redisfile);
+
+    if (!g_pRedisManager->Start(redisConf)) {
+        LOG(ERROR) << "can't initialize redis";
+        return 1;
+    }
+
     thread garbage_cleaner_thread(bind(
         &InfoHashGarbageCleaner::ThreadFunc, &garbage_cleaner
     ));

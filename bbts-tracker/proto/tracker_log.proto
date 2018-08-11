@@ -1,0 +1,5 @@
+package bbts.tracker;
+
+message TrackerLog {
+    required string log_dir = 1;
+}
