@@ -18,20 +18,38 @@ if (APPLE)
 endif()
 
 find_path(BOOST_H NAMES boost/version.hpp)
+if (NOT BOOST_H)
+    message(FATAL_ERROR "header not found")
+endif()
+
 find_library(BOOST_SYSTEM_LIB NAMES boost_system)
+if (NOT BOOST_SYSTEM_LIB)
+    message(FATAL_ERROR "BOOST_SYSTEM_LIB not found")
+endif()
+
 find_library(BOOST_THREAD_LIB NAMES boost_thread)
+if (NOT BOOST_THREAD_LIB)
+    message(FATAL_ERROR "BOOST_THREAD_LIB not found")
+endif()
+
 find_library(BOOST_REGEX_LIB NAMES boost_regex)
+if (NOT BOOST_REGEX_LIB)
+    message(FATAL_ERROR "BOOST_REGEX_LIB not found")
+endif()
+
 find_library(BOOST_TEST_LIB NAMES boost_unit_test_framework)
+if (NOT BOOST_TEST_LIB)
+    message(FATAL_ERROR "BOOST_TEST_LIB not found")
+endif()
+
 find_library(BOOST_OPTIONS_LIB NAMES boost_program_options)
+if (NOT BOOST_OPTIONS_LIB)
+    message(FATAL_ERROR "BOOST_OPTIONS_LIB not found")
+endif()
+
 find_library(BOOST_LOG_LIB NAMES boost_log)
-if(NOT BOOST_H
-        OR NOT BOOST_SYSTEM_LIB
-        OR NOT BOOST_THREAD_LIB
-        OR NOT BOOST_REGEX_LIB
-        OR NOT BOOST_TEST_LIB
-        OR NOT BOOST_OPTIONS_LIB
-        OR NOT BOOST_LOG_LIB)
-    message(FATAL_ERROR "boost library(boost_system/boost_thread/boost_regex/boost_test) not found.")
+if (NOT BOOST_LOG_LIB)
+    message(FATAL_ERROR "BOOST_LOG_LIB not found")
 endif()
 
 find_path(LIBEVENT_H NAMES event.h)
