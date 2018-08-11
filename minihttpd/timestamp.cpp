@@ -1,12 +1,5 @@
-#include "minihttpd/timestamp.h"
 #include <sys/time.h>
-#include <ctime>
-#include <cstdio>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
-#undef __STDC_FORMAT_MACROS
-#include <boost/static_assert.hpp>
-
+#include "minihttpd/timestamp.h"
 namespace argus {
 namespace common {
 
@@ -16,7 +9,7 @@ Timestamp::Timestamp(int64_t microseconds)
 
 Timestamp Timestamp::now() {
     struct timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, nullptr);
     int64_t seconds = tv.tv_sec;
     return Timestamp(seconds * kMicroSecondsPerSecond + tv.tv_usec);
 }

@@ -5,7 +5,7 @@
 #include "bbts-agent/config.h"
 #include "bbts-agent/error_category.h"
 #include "bbts-agent/log.h"
-#include "bbts-agent/proto/message.pb.h"
+#include "pb_config/message.pb.h"
 
 using std::vector;
 

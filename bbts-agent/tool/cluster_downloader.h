@@ -10,7 +10,7 @@
 #include <libtorrent/torrent_handle.hpp>
 
 #include "bbts-agent/speed_limit.h"
-#include "bbts-agent/proto/configure.pb.h"
+#include "pb_config/configure.pb.h"
 
 namespace bbts {
 

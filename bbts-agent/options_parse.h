@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "proto/configure.pb.h"
-#include "proto/message.pb.h"
+#include "pb_config/configure.pb.h"
+#include "pb_config/message.pb.h"
 
 namespace libtorrent {
 struct ip_filter;

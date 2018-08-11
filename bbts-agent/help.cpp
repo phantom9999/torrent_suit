@@ -1,8 +1,8 @@
 #include <cstdio>
 
 #include "bbts-agent/config.h"
-#include "bbts-agent/lazy_singleton.hpp"
-#include "proto/configure.pb.h"
+#include "common/LazySingleton.hpp"
+#include "pb_config/configure.pb.h"
 
 namespace bbts {
 

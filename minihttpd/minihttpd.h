@@ -1,14 +1,13 @@
 #ifndef ARGUS_COMMON_MINIHTTPD_H_
 #define ARGUS_COMMON_MINIHTTPD_H_
 
-
+#include <cinttypes>
 #include <map>
 #include <vector>
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/smart_ptr/detail/spinlock.hpp>
-#include <inttypes.h>
 #include <boost/thread/lock_guard.hpp>
 
 struct evhttp;
@@ -39,14 +38,14 @@ public:
     // return false if failed, and @retmsg contains failed reason
     bool setResponse(const std::string &path,
                      const std::string &response,
-                     std::string *retmsg = NULL);
+                     std::string *retmsg = nullptr);
 
     // Set callBack for request @path
     // Safe to call from other threads.
     // return false if failed, and @retmsg contains failed reason
     typedef std::string (*http_callback_fn)(const std::string &);
     bool
-    setCallBack(const std::string &path, http_callback_fn cb, std::string *retmsg = NULL);
+    setCallBack(const std::string &path, http_callback_fn cb, std::string *retmsg = nullptr);
 
     // whether logging http response content
     void enableLogging(bool on = true);

@@ -12,13 +12,13 @@
 #include "task_manager.h"
 #include "bbts-agent/encode.h"
 #include "bbts-agent/error_category.h"
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"
 #include "bbts-agent/string_util.h"
 #include "bbts-agent/timer_util.h"
-#include "bbts-agent/proto/configure.pb.h"
+#include "pb_config/configure.pb.h"
 
 using std::pair;
 using std::string;

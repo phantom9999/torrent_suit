@@ -38,3 +38,5 @@ bbts-tracker/proto/*.cc
 
 tracker-protocol/*.h
 tracker-protocol/*.cpp
+pb_config/*.h
+pb_config/*.cc

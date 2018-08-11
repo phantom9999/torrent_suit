@@ -13,7 +13,7 @@
 #include <boost/thread/mutex.hpp>
 
 #include "bbts-agent/encode.h"
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "uri_piece_request.h"
 
 namespace bbts {

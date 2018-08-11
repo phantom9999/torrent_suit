@@ -34,6 +34,8 @@ target_link_libraries(
         gko-agent
         -Xlinker "-("
         uri_agent
+        pb_conf
+        common_lib
         torrent-rasterbar
         ${SQLITE_LIB}
         ${LOG4CPP_LIB}

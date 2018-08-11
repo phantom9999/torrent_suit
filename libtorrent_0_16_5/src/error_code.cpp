@@ -40,7 +40,7 @@ namespace libtorrent
 {
 #if BOOST_VERSION >= 103500
 
-	const char* libtorrent_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+	const char* libtorrent_error_category::name() const BOOST_NOEXCEPT
 	{
 		return "libtorrent error";
 	}
@@ -263,7 +263,7 @@ namespace libtorrent
 		return msgs[ev];
 	}
 
-	const char* http_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+	const char* http_error_category::name() const BOOST_NOEXCEPT
 	{
 		return "http error";
 	}

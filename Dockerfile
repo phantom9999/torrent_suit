@@ -3,7 +3,7 @@ FROM centos
 
 MAINTAINER phantom9999
 
-RUN yum -y install epel-release.noarch
+RUN yum -y install epel-release.noarch yum-plugin-fastestmirror.noarch
 
 RUN yum -y install cmake3 gcc-c++ make
 RUN yum -y install sqlite-devel boost-devel.x86_64 boost-test.x86_64 \

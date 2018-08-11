@@ -16,8 +16,8 @@
 #include "bbts-agent/thrift_tracker.h"
 #include "bbts-agent/unix_socket_server.h"
 #include "bbts-agent/worker_pool.h"
-#include "bbts-agent/proto/message.pb.h"
-#include "bbts-agent/proto/configure.pb.h"
+#include "pb_config/message.pb.h"
+#include "pb_config/configure.pb.h"
 
 #include "uri/uri_agent.hpp"
 

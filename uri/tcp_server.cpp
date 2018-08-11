@@ -2,7 +2,7 @@
 
 #include <boost/bind.hpp>
 
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
 #include "bbts-agent/string_util.h"
 #include "bbts-agent/timer_util.h"

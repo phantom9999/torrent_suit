@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
 #include "bbts-agent/path.h"
 

@@ -3,7 +3,7 @@
 #include <glog/logging.h>
 #include <boost/crc.hpp>
 
-#include "proto/redis_conf.pb.h"
+#include "pb_config/redis_conf.pb.h"
 #include "bbts-tracker/StatusManager.h"
 
 using std::string;

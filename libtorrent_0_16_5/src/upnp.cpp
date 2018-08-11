@@ -1095,7 +1095,7 @@ namespace
 #if BOOST_VERSION >= 103500
 
 
-const char* upnp_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+const char* upnp_error_category::name() const BOOST_NOEXCEPT
 {
 	return "UPnP error";
 }

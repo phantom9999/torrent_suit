@@ -14,8 +14,8 @@
 #include "bbts-agent/tool/disk_allocate_thread.h"
 #include "bbts-agent/tool/resume.h"
 #include "bbts-agent/torrent_provider.h"
-#include "bbts-agent/proto/configure.pb.h"
-#include "bbts-agent/proto/message.pb.h"
+#include "pb_config/configure.pb.h"
+#include "pb_config/message.pb.h"
 
 namespace libtorrent {
 class ip_filter;

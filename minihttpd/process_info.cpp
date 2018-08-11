@@ -1,20 +1,23 @@
 #include "minihttpd/process_info.h"
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <dirent.h>
 #include <pwd.h>
-#include <stdio.h> // snprintf
-#include <stdlib.h>
+#include <cstdio> // snprintf
+#include <cstdlib>
 #include <string>
 #include <unistd.h>
 #include <sys/resource.h>
 #include <sys/time.h>
 
+#include <sstream>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 namespace argus {
 namespace common {
 namespace internal {
 
-__thread int t_numOpenedFiles = 0;
+thread_local int t_numOpenedFiles = 0;
 
 /**
  *
@@ -28,7 +31,7 @@ int fdDirFilter(const struct dirent *d) {
     return 0;
 }
 
-__thread std::vector<pid_t> *t_pids = NULL;
+thread_local std::vector<pid_t> *t_pids = NULL;
 
 /**
  *
@@ -49,9 +52,9 @@ int taskDirFilter(const struct dirent *d) {
  * @return
  */
 int scanDir(const char *dirpath, int (*filter)(const struct dirent *)) {
-    struct dirent **namelist = NULL;
+    struct dirent **namelist = nullptr;
     int result = ::scandir(dirpath, &namelist, filter, alphasort);
-    assert(namelist == NULL);
+    assert(namelist == nullptr);
     return result;
 }
 
@@ -61,17 +64,18 @@ int scanDir(const char *dirpath, int (*filter)(const struct dirent *)) {
  */
 std::string getTimeStr() {
     //30 bytes is enough to hold "[year-month-day : hour-minute-second]"
-    char time[30] = {0};
-    const char *format = "[%Y-%m-%d %H:%M:%S]";
+    typedef std::stringstream StringBuffer;
+    typedef boost::posix_time::ptime BTime;
+    typedef boost::posix_time::second_clock BClock;
+    typedef boost::posix_time::time_facet BTimeFormat;
 
-    struct timeval tv;
-    struct tm ltime;
-    time_t curtime;
-    gettimeofday(&tv, NULL);
-    curtime = tv.tv_sec;
-    ///Format time
-    strftime(time, 30, format, localtime_r(&curtime, &ltime));
-    return time;
+    BTime now = BClock::local_time();
+    StringBuffer stringBuffer;
+    static std::locale loc(stringBuffer.getloc(), new BTimeFormat("[%Y-%m-%d %H:%M:%S]"));
+    stringBuffer.imbue(loc);
+    stringBuffer << now;
+
+    return stringBuffer.str();
 }
 
 static std::string s_startTime = getTimeStr();
@@ -94,9 +98,7 @@ uid_t ProcessInfo::uid() {
 }
 
 std::string ProcessInfo::uidString() {
-    char buf[32];
-    snprintf(buf, sizeof buf, "%d", uid());
-    return buf;
+    return std::to_string(uid());
 }
 
 std::string ProcessInfo::username() {
@@ -117,9 +119,7 @@ uid_t ProcessInfo::euid() {
 }
 
 std::string ProcessInfo::euidString() {
-    char buf[32];
-    snprintf(buf, sizeof buf, "%d", euid());
-    return buf;
+    return std::to_string(euid());
 }
 
 std::string ProcessInfo::startTime() {

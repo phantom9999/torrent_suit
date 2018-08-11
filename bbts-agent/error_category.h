@@ -3,10 +3,6 @@
 
 #include <boost/system/error_code.hpp>
 
-#ifndef BOOST_SYSTEM_NOEXCEPT
-    #define BOOST_SYSTEM_NOEXCEPT BOOST_NOEXCEPT
-#endif
-
 
 namespace bbts {
 
@@ -50,7 +46,7 @@ class ErrorCategory : public boost::system::error_category {
 public:
     ErrorCategory() {}
     virtual ~ErrorCategory() {}
-    virtual const char* name() const BOOST_SYSTEM_NOEXCEPT {
+    virtual const char* name() const BOOST_NOEXCEPT {
         return _s_name;
     }
 

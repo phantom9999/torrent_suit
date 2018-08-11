@@ -7,7 +7,7 @@
 #include <boost/scoped_ptr.hpp>
 
 #include "bbts-agent/unix_socket_connection.h"
-#include "bbts-agent/proto/message.pb.h"
+#include "pb_config/message.pb.h"
 
 namespace bbts {
 namespace tool {

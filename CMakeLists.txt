@@ -35,6 +35,8 @@ add_subdirectory(minihttpd)
 add_subdirectory(tracker-protocol)
 #add_subdirectory(plugin)
 add_subdirectory(uri)
+add_subdirectory(pb_config)
+add_subdirectory(common)
 
 add_subdirectory(test)
 

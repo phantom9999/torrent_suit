@@ -2,8 +2,9 @@
 #define ARGUS_COMMON_TIMESTAMP_H_
 
 
-#include <string>
-#include <inttypes.h>
+#include <cinttypes>
+#include <map>
+
 
 namespace argus {
 namespace common {

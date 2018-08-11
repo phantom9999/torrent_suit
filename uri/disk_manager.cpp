@@ -6,7 +6,7 @@
 #include "uri_piece_request.h"
 
 #include "bbts-agent/consistent_hash_ring.hpp"
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
 #include "io.hpp"
 

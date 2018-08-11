@@ -27,9 +27,9 @@
 #include "bbts-tracker/tracker/InfoHashGarbageCleaner.h"
 #include "bbts-tracker/tracker/PeerHandler.h"
 #include "bbts-tracker/tracker/RemotePeersSyncronizer.h"
-#include "proto/redis_conf.pb.h"
-#include "proto/tracker_conf.pb.h"
-#include "proto/tracker_log.pb.h"
+#include "pb_config/redis_conf.pb.h"
+#include "pb_config/tracker_conf.pb.h"
+#include "pb_config/tracker_log.pb.h"
 
 
 using std::string;

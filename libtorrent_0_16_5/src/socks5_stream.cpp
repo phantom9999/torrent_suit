@@ -42,7 +42,7 @@ namespace libtorrent
 	socks_error_category socks_category;
 
 #if BOOST_VERSION >= 103500
-	const char* socks_error_category::name() const BOOST_SYSTEM_NOEXCEPT
+	const char* socks_error_category::name() const BOOST_NOEXCEPT
 	{
 		return "socks error";
 	}

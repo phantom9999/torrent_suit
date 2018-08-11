@@ -5,7 +5,7 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "bbts-tracker/LazySingleton.hpp"
+#include "common/LazySingleton.hpp"
 
 namespace argus {
 namespace common {
@@ -22,8 +22,7 @@ public:
     typedef std::string (*callback_fn)(const std::string &);
 
     // default make object unuseful in constructor
-    HttpServer()
-        : httpd_(NULL), loop_(NULL) {}
+    HttpServer() : httpd_(nullptr), loop_(nullptr) {}
 
     bool start(uint16_t port);
 

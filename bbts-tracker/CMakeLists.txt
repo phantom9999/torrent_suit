@@ -8,6 +8,8 @@ ADD_EXECUTABLE(gko3-tracker ${GKO3_TRACKER_SRC})
 
 TARGET_LINK_LIBRARIES(gko3-tracker
         gko3-protocol
+        pb_conf
+        common_lib
         ${THRIFT_NB_LIB}
         ${THRIFT_LIB}
         minihttpd

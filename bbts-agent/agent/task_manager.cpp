@@ -14,7 +14,7 @@
 #include "bbts-agent/config.h"
 #include "bbts-agent/error_category.h"
 #include "bbts-agent/file.h"
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"

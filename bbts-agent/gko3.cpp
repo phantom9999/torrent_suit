@@ -3,7 +3,7 @@
 #include <boost/assign.hpp>
 
 #include "bbts-agent/file.h"
-#include "bbts-agent/lazy_singleton.hpp"
+#include "common/LazySingleton.hpp"
 #include "bbts-agent/options_parse.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/pbconf.hpp"
@@ -12,7 +12,7 @@
 #include "bbts-agent/tool/bbts_client.h"
 #include "bbts-agent/torrent_file_util.h"
 #include "bbts-agent/tool/downloader.h"
-#include "proto/configure.pb.h"
+#include "pb_config/configure.pb.h"
 
 using std::make_pair;
 using std::map;
