@@ -1,20 +1,16 @@
 include(../config_test.cmake)
 
 
-aux_source_directory(. TEST_SRC)
 
+aux_source_directory(tracker TEST_TRACKER)
+add_executable(test_tracker ${TEST_TRACKER})
 
-add_executable(test_src ${TEST_SRC})
 
 target_link_libraries(
-        test_src
-        ${GTEST_MAIN_LIB}
-        ${GTEST_LIB}
-        ${GLOG_LIB}
-        -pthread
-
+        test_tracker
+        ${BOOST_TEST_LIB}
+        ${BOOST_OPTIONS_LIB}
 )
-
 
 
 

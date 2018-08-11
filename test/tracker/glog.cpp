@@ -1,3 +1,4 @@
+/*
 #include <glog/logging.h>
 #include <iostream>
 #include <gtest/gtest.h>
@@ -40,3 +41,4 @@ TEST(glog, log) {
 
 
 
+*/

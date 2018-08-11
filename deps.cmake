@@ -22,8 +22,17 @@ find_path(BOOST_H NAMES boost/version.hpp)
 find_library(BOOST_SYSTEM_LIB NAMES boost_system)
 find_library(BOOST_THREAD_LIB NAMES boost_thread)
 find_library(BOOST_REGEX_LIB NAMES boost_regex)
-if(NOT BOOST_H OR NOT BOOST_SYSTEM_LIB OR NOT BOOST_THREAD_LIB OR NOT BOOST_REGEX_LIB)
-    message(FATAL_ERROR "boost library(boost_system/boost_thread/boost_regex) not found.")
+find_library(BOOST_TEST_LIB NAMES boost_unit_test_framework)
+find_library(BOOST_OPTIONS_LIB NAMES boost_program_options)
+find_library(BOOST_LOG_LIB NAMES boost_log)
+if(NOT BOOST_H
+        OR NOT BOOST_SYSTEM_LIB
+        OR NOT BOOST_THREAD_LIB
+        OR NOT BOOST_REGEX_LIB
+        OR NOT BOOST_TEST_LIB
+        OR NOT BOOST_OPTIONS_LIB
+        OR NOT BOOST_LOG_LIB)
+    message(FATAL_ERROR "boost library(boost_system/boost_thread/boost_regex/boost_test) not found.")
 endif()
 
 find_path(LIBEVENT_H NAMES event.h)

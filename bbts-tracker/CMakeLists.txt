@@ -18,6 +18,7 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         ${LIBEVENT_LIB}
         ${BOOST_SYSTEM_LIB}
         ${BOOST_THREAD_LIB}
+        ${BOOST_OPTIONS_LIB}
         pthread
         rt)
 
