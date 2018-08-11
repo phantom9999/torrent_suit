@@ -6,7 +6,6 @@
 # - snappy
 # - log4cpp
 # - glog
-# - gflags
 # - sqlite
 # - hiredis
 # - jdk
@@ -75,11 +74,11 @@ if(NOT GLOG_H OR NOT GLOG_LIB)
     message(FATAL_ERROR "glog not found.")
 endif()
 
-find_path(GFLAGS_H NAMES gflags/gflags.h)
-find_library(GFLAGS_LIB NAMES gflags)
-if(NOT GFLAGS_H OR NOT GFLAGS_LIB)
-    message(FATAL_ERROR "gflags not found.")
-endif()
+#find_path(GFLAGS_H NAMES gflags/gflags.h)
+#find_library(GFLAGS_LIB NAMES gflags)
+#if(NOT GFLAGS_H OR NOT GFLAGS_LIB)
+#    message(FATAL_ERROR "gflags not found.")
+#endif()
 
 find_path(SQLITE_H NAMES sqlite3.h)
 find_library(SQLITE_LIB NAMES sqlite3)

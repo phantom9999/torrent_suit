@@ -13,7 +13,6 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         minihttpd
         ${HIREDIS_LIB}
         ${GLOG_LIB}
-        ${GFLAGS_LIB}
         ${PROTOBUF_LIB}
         ${LIBEVENT_LIB}
         ${BOOST_SYSTEM_LIB}
