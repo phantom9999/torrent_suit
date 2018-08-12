@@ -14,12 +14,13 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         ${THRIFT_LIB}
         minihttpd
         ${HIREDIS_LIB}
-        ${GLOG_LIB}
+#        ${GLOG_LIB}
         ${PROTOBUF_LIB}
         ${LIBEVENT_LIB}
         ${BOOST_SYSTEM_LIB}
         ${BOOST_THREAD_LIB}
         ${BOOST_OPTIONS_LIB}
+        ${LOG4CPP_LIB}
         pthread
         rt)
 

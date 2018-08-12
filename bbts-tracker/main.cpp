@@ -8,7 +8,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/program_options.hpp>
-#include <glog/logging.h>
 #include <thrift/concurrency/ThreadManager.h>
 #include <thrift/concurrency/PosixThreadFactory.h>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -29,7 +28,9 @@
 #include "bbts-tracker/tracker/RemotePeersSyncronizer.h"
 #include "pb_config/redis_conf.pb.h"
 #include "pb_config/tracker_conf.pb.h"
-#include "pb_config/tracker_log.pb.h"
+
+#include "common/com_log.h"
+
 
 
 using std::string;
@@ -105,13 +106,13 @@ static string GenerateTrackerId(int port) {
     error_code ec;
     hostname = boost::asio::ip::host_name(ec);
     if (ec) {
-        LOG(WARNING) << "get host name failed";
+        LOG_WARN() << "get host name failed";
         hostname = "unknow";
     } else {
         string::size_type pos = hostname.rfind(".baidu.com");
         hostname = hostname.substr(0, pos);
     }
-    DLOG(INFO) << "hostname is:" << hostname;
+    DLOG_INFO() << "hostname is:" << hostname;
     return (boost::format("%s:%d") % hostname % port).str();
 }
 
@@ -148,6 +149,7 @@ static void StartHttpServer(HttpServer *http_server, int httpd_port) {
  * 初始化日志配置
  * @param log_path
  */
+ /*
 inline static void InitLogging(bbts::tracker::TrackerLog &trackerLog) {
     google::InitGoogleLogging("tracker");
     //FLAGS_logtostderr = 1;
@@ -156,7 +158,7 @@ inline static void InitLogging(bbts::tracker::TrackerLog &trackerLog) {
     google::SetLogDestination(google::ERROR, (trackerLog.log_dir() + "/error_").c_str());
     google::SetLogDestination(google::FATAL, (trackerLog.log_dir() + "/fatal_").c_str());
     google::SetStderrLogging(google::GLOG_INFO);
-}
+}*/
 
 /**
  * 设置信号调用
@@ -207,25 +209,17 @@ int main(int argc, char **argv) {
     // 配置文件解析
     TrackerConf tracker_conf;
     if (!LoadConf(dirname + "/" + filename, &tracker_conf)) {
-        LOG(ERROR) << "parse tracker config error";
+        std::cout << "parse tracker config error" << std::endl;
         return 1;
     }
 
-    TrackerLog trackerLog;
-    if (!LoadConf(dirname + "/" + tracker_conf.log_conf(), &trackerLog)) {
-        LOG(ERROR) << "parse log config error";
-        return 1;
-    }
+    bbts::LogInstance logInstance(dirname + "/" + tracker_conf.log_conf());
 
     RedisConf redisConf;
     if (!LoadConf(dirname + "/" + tracker_conf.redis_conf(), &redisConf)) {
-        LOG(ERROR) << "parse redis config error";
+        LOG_ERROR() << "parse redis config error";
         return 1;
     }
-
-
-    // 日志初始化
-    InitLogging(trackerLog);
 
     PeerInfo::set_tracker_id(GenerateTrackerId(tracker_conf.port()));
 
@@ -243,7 +237,7 @@ int main(int argc, char **argv) {
     StartHttpServer(&http_server, tracker_conf.httpd_port());
 
     if (!g_pRedisManager->Start(redisConf)) {
-        LOG(ERROR) << "can't initialize redis";
+        LOG_ERROR() << "can't initialize redis";
         return 1;
     }
 
@@ -257,7 +251,7 @@ int main(int argc, char **argv) {
                  queue_to_syncronize,
                  remote_map));
     }
-    LOG(INFO) << "remote_peers_syncronizers started";
+    LOG_INFO() << "remote_peers_syncronizers started";
 
     shared_ptr<AnnounceHandler> handler(new AnnounceHandler());
     peer_handler = &handler->get_peer_handler();
@@ -282,7 +276,7 @@ int main(int argc, char **argv) {
         g_my_server->serve();
     }
     catch (std::exception &e) {
-        LOG(ERROR) << "catch exception: " << e.what();
+        LOG_ERROR() << "catch exception: " << e.what();
         return 9;
     }
     return 0;

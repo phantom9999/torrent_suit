@@ -3,7 +3,7 @@
 #include <climits>
 
 #include <boost/format.hpp>
-#include <glog/logging.h>
+#include "common/com_log.h"
 
 #include "bbts-tracker/encode.h"
 #include "bbts-tracker/KeyTypeRWLock.hpp"
@@ -108,7 +108,7 @@ void PeerHandler::PreHandlePeerInfo(const PeerInfo &input_peer,
       if (single_peer_map_iterator->second->GetIsSetRemote()) {// delete the peers in redis
         if (0 == DeletePeerRemote(input_peer)) {
           --single_info_pointer->remote_peer_count;
-          LOG(INFO) << "start to delete seed remote:" << input_peer.GetBase64InfoHash().c_str()
+          LOG_INFO() << "start to delete seed remote:" << input_peer.GetBase64InfoHash().c_str()
                     << ", now: " << single_info_pointer->remote_peer_count;
         }
       }
@@ -181,7 +181,7 @@ int PeerHandler::UpdatePeer(const PeerInfo &input_peer) {
       if (peer_is_new) {
           ++single_info_pointer->remote_peer_count;
       }
-      LOG(INFO) << "start to set seed remote:" << input_peer.GetBase64InfoHash().c_str()
+      LOG_INFO() << "start to set seed remote:" << input_peer.GetBase64InfoHash().c_str()
                 << ", now:" << single_info_pointer->remote_peer_count;
     }
   }
@@ -205,7 +205,7 @@ int PeerHandler::SetPeerRemote(const PeerInfo &input_peer) {
   input_peer.ConstructStringByPeerInfo(&serilized_peer_info);
   string encode_string;
   if (!Base64Encode(serilized_peer_info, &encode_string)) {
-    LOG(INFO)<<"base64 encode serialized peer info failed";
+    LOG_INFO()<<"base64 encode serialized peer info failed";
     return -1;
   }
 try {
@@ -223,7 +223,7 @@ try {
                                              &command);
   g_pRedisManager->PipelineCommand(input_peer.GetBase64InfoHash(), command);
 } catch (std::exception &e) {
-  LOG(WARNING) << "catch exception " << e.what();
+  LOG_WARN() << "catch exception " << e.what();
 }
   return ret;
 }
@@ -354,7 +354,7 @@ int PeerHandler::ChoosePeersByMap(const PeerInfo &input_peer,
     if (peer_info) {
       ++i;
       if (peer_info->Initialized() == false) {
-        LOG(WARNING)<<"peer_info is not initialized!!!";
+        LOG_WARN()<<"peer_info is not initialized!!!";
         continue;
       }
       if (input_peer.GetBase64PeerId() == peer_info->GetBase64PeerId()) {

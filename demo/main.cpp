@@ -1,7 +1,7 @@
 #include "tcp_server.h"
 #include "disk_manager.h"
 // #include "bbts-agent/log.h"
-#include <glog/logging.h>
+#include "common/com_log.h"
 
 using boost::system::error_code;
 using boost::asio::ip::tcp;
@@ -14,12 +14,13 @@ int main(int argc, char* argv[]) {
         printf("usage: %s port\n", argv[0]);
         return 1;
     }
+    bbts::LogInstance logInstance("conf/log.conf");
 
     bbts::g_disk_manager->start();
     tcp::endpoint listen_endpoint(tcp::v4(), atoi(argv[1]));
     if (!bbts::g_tcp_server->init(listen_endpoint)) {
         // FATAL_LOG("init server failed");
-        LOG(FATAL) << "init server failed";
+        LOG_FATAL() << "init server failed";
         return 1;
     }
     bbts::g_tcp_server->set_upload_limit(1000*1024);
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]) {
     bbts::g_tcp_server->serve(ec);
     if (ec) {
         // FATAL_LOG("io service: %s\n", ec.message().c_str());
-        LOG(FATAL) << "io service: " << ec.message().c_str();
+        LOG_FATAL() << "io service: " << ec.message().c_str();
         return 2;
     }
     bbts::g_disk_manager->stop();

@@ -1,6 +1,6 @@
 #include "bbts-tracker/HttpServer.h"
-#include <glog/logging.h>
 #include <boost/bind.hpp>
+#include "common/com_log.h"
 #include "minihttpd/eventloop.h"
 #include "minihttpd/minihttpd.h"
 
@@ -27,17 +27,17 @@ bool HttpServer::SetCallback(const string &path, callback_fn cb) {
     }
 
     if (!httpd_) {
-        LOG(WARNING) << "must set httpd callback after it started";
+        LOG_WARN() << "must set httpd callback after it started";
         return false;
     }
 
     string retmsg;
     bool succ = httpd_->setCallBack(path, cb, &retmsg);
     if (!succ) {
-        LOG(WARNING) << "set minihttpd callback " << path << " fail: "
+        LOG_WARN() << "set minihttpd callback " << path << " fail: "
                      << retmsg;
     } else {
-        LOG(INFO) << "set minihttpd callback " << path << " success!";
+        LOG_INFO() << "set minihttpd callback " << path << " success!";
     }
     return succ;
 }
@@ -45,20 +45,20 @@ bool HttpServer::SetCallback(const string &path, callback_fn cb) {
 void HttpServer::Run(uint16_t port) {
     loop_ = new EventLoop();
     httpd_ = new MiniHttpd(loop_, port);
-    LOG(INFO) << "Httpd init, port:" << port;
+    LOG_INFO() << "Httpd init, port:" << port;
     bool succ =
         httpd_->setCallBack("monitor_status", QueryMonitorStatusCallBack);
     assert(succ);
-    LOG(INFO)
+    LOG_INFO()
         << "Set CallBack(QueryMonitorStatusCallBack) for request monitor_status";
     loop_->loop();
-    LOG(INFO) << "Httpd thread exit";
+    LOG_INFO() << "Httpd thread exit";
 
 }
 
 string HttpServer::QueryMonitorStatusCallBack(const string &query) {
     string result;
-    LOG(INFO) << "get query monitor status request";
+    LOG_INFO() << "get query monitor status request";
     g_pStatusManager->ShowAllStatistics(&result);
     g_pStatusManager->IncreaseItemCounting("monitor_status_queries");
     return result;

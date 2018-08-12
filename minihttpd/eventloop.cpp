@@ -3,9 +3,10 @@
 #include "current_thread.h"
 #include <sys/time.h>
 #include <event2/event.h>
-#include <glog/logging.h>
 #include <cassert>
 #include <boost/thread/lock_guard.hpp>
+
+#include "common/com_log.h"
 
 namespace argus {
 namespace common {
@@ -19,15 +20,15 @@ EventLoop *EventLoop::getEventLoopOfCurrentThread() {
 }
 
 EventLoop::EventLoop()
-    : base_(CHECK_NOTNULL(::event_base_new())),
+    : base_(::event_base_new()),
       looping_(false),
       threadId_(CurrentThread::tid()),
       wakeupEvent_(NULL),
       timerNumsCreated_(0) {
-    LOG(INFO) << "Using Libevent with backend method "
+    LOG_INFO() << "Using Libevent with backend method "
               << ::event_base_get_method(base_);
     if (t_loopInThisThread) {
-        LOG(FATAL) << "Another EventLoop "
+        LOG_FATAL() << "Another EventLoop "
                    << (unsigned long) (t_loopInThisThread)
                    << " exists in this thread " << threadId_;
     } else {
@@ -35,13 +36,13 @@ EventLoop::EventLoop()
     }
 
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, wakeupFd_) < 0) {
-        LOG(FATAL) << "EventLoop " << (unsigned long) (this)
+        LOG_FATAL() << "EventLoop " << (unsigned long) (this)
                    << " socketpair init failed";
     }
 
     if (!(0 == ::evutil_make_socket_nonblocking(wakeupFd_[0]) &&
         0 == ::evutil_make_socket_nonblocking(wakeupFd_[1]))) {
-        LOG(ERROR) << "EventLoop " << (unsigned long) (this)
+        LOG_ERROR() << "EventLoop " << (unsigned long) (this)
                    << " make_socket_nonblocking failed";
     }
 
@@ -53,7 +54,7 @@ EventLoop::EventLoop()
     assert(wakeupEvent_);
 
     if (0 != ::event_add(wakeupEvent_, NULL)) {
-        LOG(FATAL) << "EventLoop " << (unsigned long) (this)
+        LOG_FATAL() << "EventLoop " << (unsigned long) (this)
                    << " wakeupEvent_ add failed";
     }
 }
@@ -72,7 +73,7 @@ int EventLoop::loop() {
     assert(!looping_);
     assertInLoopThread();
     looping_ = true;
-    LOG(INFO) << "EventLoop " << (unsigned long) (this) << "start looping";
+    LOG_INFO() << "EventLoop " << (unsigned long) (this) << "start looping";
 
     uint64_t timerId = newTimerId();
     installTimerEvent(timerId, 1800.0, heartbeat, 0, this);
@@ -116,7 +117,7 @@ void EventLoop::installTimerEvent(uint64_t timerId,
     tv.tv_sec = static_cast<time_t>(interval);
     tv.tv_usec = static_cast<suseconds_t>(microSeconds % Timestamp::kMicroSecondsPerSecond);
     if (0 != ::event_add(timer, &tv)) {
-        LOG(FATAL) << "EventLoop::installTimerEvent failed";
+        LOG_FATAL() << "EventLoop::installTimerEvent failed";
     }
 
     std::map<uint64_t, struct event *>::iterator
@@ -144,11 +145,11 @@ void EventLoop::cancel(uint64_t timerId) {
 }
 
 void EventLoop::innerCancel(uint64_t timerId) {
-    LOG(INFO) << "going to cancel timer " << timerId;
+    LOG_INFO() << "going to cancel timer " << timerId;
     std::map<uint64_t, struct event *>::iterator it;
     it = timer_.find(timerId);
     if (it == timer_.end()) {
-        LOG(ERROR) << "timer " << timerId << "not found";
+        LOG_ERROR() << "timer " << timerId << "not found";
         return;
     }
     ::event_del(it->second);
@@ -180,7 +181,7 @@ void EventLoop::doPendingFunctors() {
         functors[i]->Run();
     }
     if (functors.size()) {
-        LOG(INFO) << "EventLoop::doPendingFunctors() runned " << functors.size()
+        LOG_INFO() << "EventLoop::doPendingFunctors() runned " << functors.size()
                   << " functors";
     }
 }
@@ -189,7 +190,7 @@ void EventLoop::heartbeat() {
     // doPendingFunctors();
 
     run_times++;
-    LOG(INFO) << "EventLoop::heartbeat() start...(" << run_times << "th times)";
+    LOG_INFO() << "EventLoop::heartbeat() start...(" << run_times << "th times)";
     Timestamp current(Timestamp::now());
 
     std::map<uint64_t, int64_t>::iterator it;
@@ -201,7 +202,7 @@ void EventLoop::heartbeat() {
             std::map<uint64_t, struct event *>::iterator
                 timer_it = timer_.find(it->first);
             assert(timer_it != timer_.end());
-            LOG(INFO) << "EventLoop::heartbeat() clean oneshottimer "
+            LOG_INFO() << "EventLoop::heartbeat() clean oneshottimer "
                       << it->first;
 
             ::event_del(timer_it->second);
@@ -212,7 +213,7 @@ void EventLoop::heartbeat() {
             it++;
         }
     }
-    LOG(INFO) << "EventLoop::heartbeat() end...(" << run_times << "th times)";
+    LOG_INFO() << "EventLoop::heartbeat() end...(" << run_times << "th times)";
 }
 
 void EventLoop::heartbeat(int fd, short event, void *arg) {
@@ -233,28 +234,28 @@ struct event_base *EventLoop::eventBase() {
 }
 
 void EventLoop::abortNotInLoopThread() {
-    LOG(FATAL) << "EventLoop::abortNotInLoopThread - EventLoop "
+    LOG_FATAL() << "EventLoop::abortNotInLoopThread - EventLoop "
                << (unsigned long) (this)
                << " was created in threadId_=" << threadId_
                << " current thread id=" << CurrentThread::tid();
 }
 
 void EventLoop::wakeup() {
-    LOG(INFO) << "EventLoop::wakeup()  wakeup!!";
+    LOG_INFO() << "EventLoop::wakeup()  wakeup!!";
     uint64_t one = 1;
     ssize_t n = ::write(wakeupFd_[1], &one, sizeof one);
     if (n != sizeof one) {
-        LOG(ERROR) << "EventLoop::wakeup() writes " << n << " bytes instead of "
+        LOG_ERROR() << "EventLoop::wakeup() writes " << n << " bytes instead of "
                    << sizeof(one);
     }
 }
 
 void EventLoop::wakeupHandler(int fd, short events) {
-    LOG(INFO) << "EventLoop::wakeupHandler() ok, I heard!!";
+    LOG_INFO() << "EventLoop::wakeupHandler() ok, I heard!!";
     uint64_t one = 1;
     ssize_t n = ::read(fd, &one, sizeof one);
     if (n != sizeof one) {
-        LOG(ERROR) << "EventLoop::wakeupHandler() reads " << n
+        LOG_ERROR() << "EventLoop::wakeupHandler() reads " << n
                    << " bytes instead of " << sizeof(one);
     }
 

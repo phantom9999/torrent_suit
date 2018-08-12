@@ -2,13 +2,15 @@
 #include "minihttpd/eventloop.h"
 #include "minihttpd/process_inspector.h"
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 #include <string>
-#include <glog/logging.h>
 #include <event2/buffer.h>
 #include <event2/http.h>
 #include <event2/http_struct.h>
 #include <boost/thread/lock_guard.hpp>
+
+#include "common/com_log.h"
 
 namespace argus {
 namespace common {
@@ -25,16 +27,16 @@ const std::string MiniHttpd::baseInfoPath = "baseinfo";
 MiniHttpd::MiniHttpd(EventLoop *loop, uint16_t port)
     : enableLogging_(true),
       enableIpFilter_(false),
-      processInspector_(CHECK_NOTNULL(new(std::nothrow) ProcessInspector)),
+      processInspector_(new(std::nothrow) ProcessInspector),
       loop_(loop),
-      evhttp_(CHECK_NOTNULL(::evhttp_new(loop->eventBase()))),
-      boundSocket_(NULL),
+      evhttp_(::evhttp_new(loop->eventBase())),
+      boundSocket_(nullptr),
       reqTimeout_(30) {
     // CHECK_EQ(::evhttp_set_cb(http_, "/hello", requestCallback, this), 0);
     // libevent lookup uri by linear searching,
     // so we provide general callback only.
     boundSocket_ = ::evhttp_bind_socket_with_handle(evhttp_, "0.0.0.0", port);
-    CHECK_NOTNULL(boundSocket_);
+    assert(boundSocket_);
     ::evhttp_set_max_headers_size(evhttp_, MiniHttpd::kMaxHeaderLen);
     ::evhttp_set_allowed_methods(evhttp_, EVHTTP_REQ_GET);
     ::evhttp_set_timeout(evhttp_, reqTimeout_);
@@ -47,10 +49,10 @@ MiniHttpd::MiniHttpd(EventLoop *loop, uint16_t port)
 MiniHttpd::MiniHttpd(EventLoop *loop)
     : enableLogging_(true),
       enableIpFilter_(false),
-      processInspector_(CHECK_NOTNULL(new(std::nothrow) ProcessInspector)),
+      processInspector_(new(std::nothrow) ProcessInspector),
       loop_(loop),
-      evhttp_(CHECK_NOTNULL(::evhttp_new(loop->eventBase()))),
-      boundSocket_(NULL),
+      evhttp_(::evhttp_new(loop->eventBase())),
+      boundSocket_(nullptr),
       reqTimeout_(30) {
     ::evhttp_set_max_headers_size(evhttp_, MiniHttpd::kMaxHeaderLen);
     ::evhttp_set_allowed_methods(evhttp_, EVHTTP_REQ_GET);
@@ -62,7 +64,7 @@ MiniHttpd::MiniHttpd(EventLoop *loop)
 }
 
 bool MiniHttpd::bind(uint16_t port) {
-    if (NULL == boundSocket_) {
+    if (nullptr == boundSocket_) {
         boundSocket_ =
             ::evhttp_bind_socket_with_handle(evhttp_, "0.0.0.0", port);
     }
@@ -74,7 +76,7 @@ void MiniHttpd::bindOrDie(uint16_t port) {
         boundSocket_ =
             ::evhttp_bind_socket_with_handle(evhttp_, "0.0.0.0", port);
     }
-    CHECK_NOTNULL(boundSocket_);
+    assert(boundSocket_);
 }
 
 void MiniHttpd::enableLogging(bool flag) {
@@ -138,7 +140,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
     // and relative-refs like
     // [path][?query][#fragment]
 
-    LOG(INFO) << "request from " << req->remote_host << ":"
+    LOG_INFO() << "request from " << req->remote_host << ":"
               << req->remote_port << ", uri " << req->uri;
 
     if (enableIpFilter_ && !inAllowIps(req->remote_host)) {
@@ -148,7 +150,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
         evbuffer_add(evb, res, strlen(res));
         ::evhttp_send_reply(req, HTTP_SERVUNAVAIL, "forbidden", evb);
         evbuffer_free(evb);
-        LOG(WARNING) << req->remote_host << " forbidden!!!";
+        LOG_WARN() << req->remote_host << " forbidden!!!";
         return;
     }
 
@@ -158,7 +160,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
         evbuffer_add(evb, res, strlen(res));
         ::evhttp_send_reply(req, HTTP_OK, "OK", evb);
         evbuffer_free(evb);
-        LOG(WARNING) << "response to " << req->remote_host << ":"
+        LOG_WARN() << "response to " << req->remote_host << ":"
                      << req->remote_port << ", content:\n" << res;
         return;
     }
@@ -197,9 +199,9 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
                       "text/plain; charset=UTF-8");
     evhttp_add_header(req->output_headers, "Connection", "close");
 
-    LOG(INFO) << "response to " << req->remote_host << ":" << req->remote_port
+    LOG_INFO() << "response to " << req->remote_host << ":" << req->remote_port
               << ". path='" << path << "', query='" << query << "'";
-    LOG_IF(INFO, enableLogging_) << "response content:\n" << response;
+    DLOG_INFO() << "response content:\n" << response;
     struct evbuffer *evb = evbuffer_new();
     evbuffer_add(evb, response.data(), response.size());
     ::evhttp_send_reply(req, HTTP_OK, "OK", evb);

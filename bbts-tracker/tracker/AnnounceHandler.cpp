@@ -1,6 +1,6 @@
 #include "bbts-tracker/tracker/AnnounceHandler.h"
 
-#include <glog/logging.h>
+#include "common/com_log.h"
 
 #include "bbts-tracker/StatusManager.h"
 #include "bbts-tracker/tracker/TrackerErrorCategory.h"
@@ -30,7 +30,7 @@ void AnnounceHandler::announce(AnnounceResponse &_return, const AnnounceRequest 
   }
   request_tag << "infohash:" << base64_infohash.c_str() << ", ip:" << _request.peer.ip.c_str();
   PeerInfo peer_info;
-  LOG(INFO) << "new AnnounceRequest received, infohash:" << request_tag.str();
+  LOG_INFO() << "new AnnounceRequest received, infohash:" << request_tag.str();
   if (true != PreHandleRequest(_request, &peer_info)) {
     AnnounceError(_return, request_tag.str(), "parse request error");
     return;
@@ -65,7 +65,7 @@ void AnnounceHandler::AnnounceInfo(AnnounceResponse &_return,
   _return.__set_failure_reason(message.c_str());
   _return.__set_min_interval(MIN_INTERVAL);
   string final_result = error_code == 0 ? "" : "failed";
-  LOG(INFO) << "announce " << request_tag.c_str() << ", final:" << ":" << message.c_str();
+  LOG_INFO() << "announce " << request_tag.c_str() << ", final:" << ":" << message.c_str();
 }
 
 /*
@@ -82,7 +82,7 @@ bool AnnounceHandler::PreHandleRequest(const AnnounceRequest &request, PeerInfo 
     }
     peer_info_stream << "infohash: " << peer_info->GetBase64InfoHash() << endl;
   } else {
-    LOG(WARNING)<<"input: no infohash";
+    LOG_WARN()<<"input: no infohash";
     return false;
   }
   if (request.__isset.peer == true) {
@@ -103,7 +103,7 @@ bool AnnounceHandler::PreHandleRequest(const AnnounceRequest &request, PeerInfo 
     peer_info->SetPort(request.peer.port);
     peer_info_stream << "port: " << peer_info->GetPort() << endl;
   } else {
-    LOG(WARNING)<<"input: no peer";
+    LOG_WARN()<<"input: no peer";
     return false;
   }
   if (request.__isset.stat == true) {
@@ -116,25 +116,25 @@ bool AnnounceHandler::PreHandleRequest(const AnnounceRequest &request, PeerInfo 
     peer_info->SetStatus(request.stat.status);
     peer_info_stream << "status: " << (int)(peer_info->GetStatus()) << endl;
   } else {
-    LOG(WARNING) << "input: no stat";
+    LOG_WARN() << "input: no stat";
     return false;
   }
   if (request.__isset.is_seed == true) {
     peer_info->SetIsSeed(request.is_seed);
     peer_info_stream << "is seed: "<< peer_info->GetIsSeed() << endl;
   } else {
-    LOG(WARNING)<<"input: no is_seed";
+    LOG_WARN()<<"input: no is_seed";
     return false;
   }
   if (request.__isset.num_want == true) {
     peer_info->SetWantNumber(request.num_want);
     peer_info_stream << "want num: " << peer_info->GetWantNumber() << endl;
   } else {
-    LOG(WARNING)<<"input: no numwant";
+    LOG_WARN()<<"input: no numwant";
     return false;
   }
   peer_info_stream << "==========one peer message info end=============" << endl;
-  LOG(INFO) << peer_info_stream.str();
+  LOG_INFO() << peer_info_stream.str();
   return true;
 }
 
@@ -157,12 +157,12 @@ bool AnnounceHandler::ComposeResponse(const PeerList &peer_list, bool have_seed,
     response->peers.push_back(response_peer);
   }
   response->__set_have_seed(have_seed);
-  LOG(INFO)<<"[FINAL]peers num:"<<response->peers.size()<<" with "<< (have_seed ? "seed" : "no seed");
+  LOG_INFO()<<"[FINAL]peers num:"<<response->peers.size()<<" with "<< (have_seed ? "seed" : "no seed");
   return ret;
 }
 
 static void FillBaseResponse(BaseResponse *_return, const error_code &ec, const string &tag) {
-  LOG(INFO) << "StopByInfohash retval " << ec.value() << ": " << ec.message() << ", " << tag;
+  LOG_INFO() << "StopByInfohash retval " << ec.value() << ": " << ec.message() << ", " << tag;
   _return->__set_retval(ec.value());
   _return->__set_message(ec.message());
 }
@@ -187,7 +187,7 @@ void AnnounceHandler::ControlByInfohash(BaseResponse& _return,
     base64_infohash = request.infohash;
   }
   string tag = "infohash: " + base64_infohash + ", ip: " + request.ip;
-  LOG(INFO) << "new ControlByInfohash(" << type << ") received, " << tag;
+  LOG_INFO() << "new ControlByInfohash(" << type << ") received, " << tag;
   peer_handler_.ControlByInfohash(base64_infohash, type, ec);
   FillBaseResponse(&_return, ec, "");
 }

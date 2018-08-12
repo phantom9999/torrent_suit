@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <glog/logging.h>
+#include "common/com_log.h"
 
 #include "bbts-tracker/KeyTypeRWLock.hpp"
 
@@ -56,7 +56,7 @@ void InfoHashGarbageCleaner::PeriodSchedule() {
 }
 
 void InfoHashGarbageCleaner::ThreadFunc() {
-  LOG(INFO) << "garbage clean run.";
+  LOG_INFO() << "garbage clean run.";
   while (true) {
     sleep(CYCLE);
     PeriodSchedule();

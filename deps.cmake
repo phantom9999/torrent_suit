@@ -86,11 +86,11 @@ if(NOT LOG4CPP_H OR NOT LOG4CPP_LIB)
     message(FATAL_ERROR "log4cpp not found")
 endif()
 
-find_path(GLOG_H NAMES glog/logging.h)
-find_library(GLOG_LIB NAMES glog)
-if(NOT GLOG_H OR NOT GLOG_LIB)
-    message(FATAL_ERROR "glog not found.")
-endif()
+#find_path(GLOG_H NAMES glog/logging.h)
+#find_library(GLOG_LIB NAMES glog)
+#if(NOT GLOG_H OR NOT GLOG_LIB)
+#    message(FATAL_ERROR "glog not found.")
+#endif()
 
 #find_path(GFLAGS_H NAMES gflags/gflags.h)
 #find_library(GFLAGS_LIB NAMES gflags)
@@ -120,8 +120,8 @@ include_directories(
         ${PROTOBUF_H}
         ${SNAPPY_H}
         ${LOG4CPP_H}
-        ${GLOG_H}
-        ${GFLAGS_H}
+#        ${GLOG_H}
+#        ${GFLAGS_H}
         ${GLOG_H}
         ${SQLITE_H}
         ${HIREDIS_H}

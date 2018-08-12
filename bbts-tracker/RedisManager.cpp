@@ -1,8 +1,7 @@
 #include "bbts-tracker/RedisManager.h"
 
-#include <glog/logging.h>
 #include <boost/crc.hpp>
-
+#include "common/com_log.h"
 #include "pb_config/redis_conf.pb.h"
 #include "bbts-tracker/StatusManager.h"
 
@@ -23,7 +22,7 @@ bool RedisManager::Start(const RedisConf &redis_conf) {
 
     redis_num_ = redis_conf.host_pair_size();
     if (redis_num_ <= 0) {
-        LOG(WARNING) << "No redis server found";
+        LOG_WARN() << "No redis server found";
         return false;
     }
 
@@ -46,7 +45,7 @@ bool RedisManager::Start(const RedisConf &redis_conf) {
         }
     }
 
-    LOG(INFO) << "RedisManager initialized";
+    LOG_INFO() << "RedisManager initialized";
     return true;
 }
 
@@ -61,7 +60,7 @@ RedisManager::ConnectRedis(const RedisServer &server, redisContext **context) {
     redisContext *c =
         redisConnectWithTimeout(server.hostname.c_str(), server.port, timeout);
     if (c->err) {
-        LOG(WARNING) << "Connection error with " << server.hostname << ": "
+        LOG_WARN() << "Connection error with " << server.hostname << ": "
                      << c->errstr;
         redisFree(c);
         return false;
@@ -80,16 +79,16 @@ RedisManager::ConnectRedis(const RedisServer &server, redisContext **context) {
         freeReplyObject(reply);
     }
     if (!ret) {
-        LOG(WARNING) << "Auth host:" << server.hostname << ", "
+        LOG_WARN() << "Auth host:" << server.hostname << ", "
                      << passwd_.c_str() << " failed";
         redisFree(c);
         return false;
     }
-    LOG(INFO) << "Auth host:" << server.hostname << ", " << passwd_.c_str()
+    LOG_INFO() << "Auth host:" << server.hostname << ", " << passwd_.c_str()
               << " pass";
 
     if (0 == database_.length()) {
-        LOG(INFO) << "No database specified, use default 0";
+        LOG_INFO() << "No database specified, use default 0";
         *context = c;
         return true;
     }
@@ -107,11 +106,11 @@ RedisManager::ConnectRedis(const RedisServer &server, redisContext **context) {
     }
 
     if (!ret) {
-        LOG(WARNING) << "select database " << database_ << " failed";
+        LOG_WARN() << "select database " << database_ << " failed";
         redisFree(c);
         return false;
     }
-    LOG(INFO) << "Select DB " << server.hostname << ":" << database_
+    LOG_INFO() << "Select DB " << server.hostname << ":" << database_
               << " success";
     *context = c;
     return true;
@@ -141,7 +140,7 @@ RedisManager::AppendCommand(ContextManager *context, const string &command) {
 
 bool
 RedisManager::PipelineCommand(const string &redis_key, const string &command) {
-    LOG(INFO) << "Pipeline command: " << command;
+    LOG_INFO() << "Pipeline command: " << command;
 
     bool ret = false;
     uint32_t redis_index = GetRedisIndex(redis_key);
@@ -151,7 +150,7 @@ RedisManager::PipelineCommand(const string &redis_key, const string &command) {
         g_pStatusManager->SetItemStatus("redis_to_write_num_master",
                                         context->charged_commands);
     } else {
-        LOG(INFO) << "master redis fail, ignore command: " << command;
+        LOG_INFO() << "master redis fail, ignore command: " << command;
     }
 
     context = &context_managers_[1][redis_index];
@@ -160,7 +159,7 @@ RedisManager::PipelineCommand(const string &redis_key, const string &command) {
         g_pStatusManager->SetItemStatus("redis_to_write_num_slave",
                                         context->charged_commands);
     } else {
-        LOG(INFO) << "slave redis fail, ignore command: " << command;
+        LOG_INFO() << "slave redis fail, ignore command: " << command;
     }
     return ret;
 }
@@ -188,23 +187,23 @@ void RedisManager::DoConnection() {
             if (ConnectRedis(server, &context.release_context)
                 && ConnectRedis(server, &context.charge_context)) {
                 context.flag = true;
-                LOG(INFO) << "connect " << server.hostname << " succes";
+                LOG_INFO() << "connect " << server.hostname << " succes";
             } else {
-                LOG(WARNING) << "Can not connect " << server.hostname;
+                LOG_WARN() << "Can not connect " << server.hostname;
             }
         }
     }
 }
 
 void RedisManager::CheckAndConnectRedis() {
-    LOG(INFO) << "Redis connection thread created";
+    LOG_INFO() << "Redis connection thread created";
 
     const timespec sleep_time = {10, 0};
     while (!terminated_) {
         DoConnection();
         nanosleep(&sleep_time, NULL);
     }
-    LOG(INFO) << "Redis connection thread exit";
+    LOG_INFO() << "Redis connection thread exit";
 }
 
 bool RedisManager::FlushPipeline(ContextManager *context) {
@@ -214,12 +213,12 @@ bool RedisManager::FlushPipeline(ContextManager *context) {
         redisGetReply(context->release_context,
                       reinterpret_cast<void **>(&reply));
         if (!reply) {
-            LOG(WARNING) << "Got NULL reply:"
+            LOG_WARN() << "Got NULL reply:"
                          << context->release_context->errstr;
             return false;
         }
         if (REDIS_REPLY_ERROR == reply->type) {
-            LOG(WARNING) << "Got reply error: " << reply->str;
+            LOG_WARN() << "Got reply error: " << reply->str;
             freeReplyObject(reply);
             return false;
         }
@@ -229,7 +228,7 @@ bool RedisManager::FlushPipeline(ContextManager *context) {
 }
 
 void RedisManager::SendToRedis(ContextManager *context) {
-    LOG(INFO) << "Redis pipeline thread created";
+    LOG_INFO() << "Redis pipeline thread created";
     const timespec sleep_time = {0, 250000000};
     while (!terminated_) {
         int release_commands = 0;
@@ -249,7 +248,7 @@ void RedisManager::SendToRedis(ContextManager *context) {
             nanosleep(&sleep_time, NULL);
         }
     }
-    LOG(INFO) << "Redis pipeline thread exited";
+    LOG_INFO() << "Redis pipeline thread exited";
 }
 
 struct SyncContextManagers {
@@ -283,13 +282,13 @@ bool RedisManager::ExcuteCommandInternal(const RedisServer &server,
         reinterpret_cast<redisReply *>(redisCommand(context->execute_context,
                                                     command.c_str()));
     if (*reply == NULL) {
-        LOG(WARNING) << "Got NULL reply for " << command << ": "
+        LOG_WARN() << "Got NULL reply for " << command << ": "
                      << context->execute_context->errstr;
         context->flag = false;
         return false;
     }
     if (REDIS_REPLY_ERROR == (*reply)->type) {
-        LOG(WARNING) << "Got reply error: " << (*reply)->str << "for "
+        LOG_WARN() << "Got reply error: " << (*reply)->str << "for "
                      << command;
         freeReplyObject(*reply);
         *reply = NULL;
@@ -302,7 +301,7 @@ bool RedisManager::ExcuteCommandInternal(const RedisServer &server,
 bool RedisManager::ExecuteCommand(const string &redis_key,
                                   const string &command,
                                   redisReply **reply) {
-    LOG(INFO) << "execute command: " << command;
+    LOG_INFO() << "execute command: " << command;
 
     int index = GetRedisIndex(redis_key);
     SyncContextManagers
@@ -326,7 +325,7 @@ bool RedisManager::ExecuteCommand(const string &redis_key,
 
 void RedisManager::FreeReplyObject(redisReply **reply) {
     freeReplyObject(*reply);
-    *reply = NULL;
+    *reply = nullptr;
 }
 
 }  // namespace bbts
