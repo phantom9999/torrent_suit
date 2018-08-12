@@ -5,7 +5,7 @@
 #include <boost/format.hpp>
 #include "common/com_log.h"
 
-#include "bbts-tracker/encode.h"
+#include "common/encode.h"
 #include "bbts-tracker/KeyTypeRWLock.hpp"
 #include "bbts-tracker/Random.h"
 #include "bbts-tracker/RedisCommandCreator.h"
@@ -204,7 +204,7 @@ int PeerHandler::SetPeerRemote(const PeerInfo &input_peer) {
   string serilized_peer_info;
   input_peer.ConstructStringByPeerInfo(&serilized_peer_info);
   string encode_string;
-  if (!Base64Encode(serilized_peer_info, &encode_string)) {
+  if (!base64_encode(serilized_peer_info, &encode_string)) {
     LOG_INFO()<<"base64 encode serialized peer info failed";
     return -1;
   }
@@ -417,7 +417,7 @@ string PeerHandler::ShowInfohashs(const string &query) {
         max_infohash_num > 0 && local_it != local_info_hash_map_->end(); ++local_it, --max_infohash_num) {
       InfoHashMap::iterator remote_it = remote_info_hash_map_->find(local_it->first);
       remote_peers_num = remote_it != remote_info_hash_map_->end() ? remote_it->second->peer_map.size() : 0;
-      Base64ToHex(local_it->first, &hex_infohash);
+      base64_to_hex(local_it->first, &hex_infohash);
       boost::shared_ptr<SingleInfoHashInfo> &infohash_ptr = local_it->second;
       infohash_format % hex_infohash
                       % infohash_ptr->peer_map.size()
@@ -444,7 +444,7 @@ inline static void TravelsPeerMap(const shared_ptr<SingleInfoHashInfo> &peers,
         ; it != peers->peer_map.end() && max_peers_num > 0; ++it, --max_peers_num) {
       const shared_ptr<PeerInfo> &peer = it->second;
       string hex_peerid;
-      BytesToHex(peer->GetPeerId(), &hex_peerid);
+      hex_encode (peer->GetPeerId(), &hex_peerid);
       peer_format % hex_peerid
                   % peer->GetIp()
                   % peer->GetPort()
@@ -475,7 +475,7 @@ string PeerHandler::ShowPeers(const string &query) {
     } else {
       hex_infohash = query;
     }
-    if (hex_infohash.empty() || !HexToBase64(hex_infohash, &base64_infohash)) {
+    if (hex_infohash.empty() || !hex_to_base64(hex_infohash, &base64_infohash)) {
       return "infohash is empty or invalid!";
     }
   }

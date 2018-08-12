@@ -93,7 +93,7 @@ void RemotePeersSyncronizer::UpdateInfoHashMapByReply(const string &key, redisRe
   for (size_t i = 0; i < reply->elements; ++i) {
     string value_string = reply->element[i]->str;
     string decode_string;
-    if (!Base64Decode(value_string, &decode_string)) {
+    if (!base64_decode(value_string, &decode_string)) {
       continue;
     }
     shared_ptr<PeerInfo> peer_info_pointer(new PeerInfo());

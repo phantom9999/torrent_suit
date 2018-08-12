@@ -2,7 +2,7 @@
 #define BBTS_TRACKER_PEER_INFO_H_
 
 
-#include "bbts-tracker/encode.h"
+#include "common/encode.h"
 #include "tracker-protocol/inner_types.h"
 
 namespace bbts {
@@ -73,13 +73,13 @@ public:
     void SetIdc(const std::string &idc) { thrift_peer.__set_idc(idc); };
     void SetInfoHash(const std::string &info_hash) {
         thrift_peer.__set_info_hash(info_hash);
-        if (!Base64Encode(info_hash, &base64_info_hash)) {
+        if (!base64_encode(info_hash, &base64_info_hash)) {
             base64_info_hash = info_hash;
         }
     };
     void SetPeerId(const std::string &peer_id) {
         thrift_peer.__set_peer_id(peer_id);
-        if (!Base64Encode(peer_id, &base64_peer_id)) {
+        if (!base64_encode(peer_id, &base64_peer_id)) {
             base64_peer_id = peer_id;
         }
     };

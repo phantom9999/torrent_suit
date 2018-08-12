@@ -1,6 +1,6 @@
-#include "bbts-agent/encode.h"
+#include "encode.h"
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <string>
 #include <iostream>

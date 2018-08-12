@@ -31,8 +31,6 @@ CacheManager::CacheManager(boost::asio::io_service &ios) :
             boost::bind(&CacheManager::clean_timer_callback, this));
 }
 
-CacheManager::~CacheManager() {}
-
 shared_ptr<Buffer> CacheManager::fetch(
         const URIPieceRequest &piece_request,
         std::string &error_msg) {

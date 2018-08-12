@@ -10,7 +10,7 @@
 
 #include "task_db.h"
 #include "task_manager.h"
-#include "bbts-agent/encode.h"
+#include "common/encode.h"
 #include "bbts-agent/error_category.h"
 #include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"

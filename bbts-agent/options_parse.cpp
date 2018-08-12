@@ -2,15 +2,17 @@
 
 #include <grp.h>
 #include <pwd.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <map>
 #include <vector>
 
 #include <boost/assign.hpp>
 #include <boost/system/error_code.hpp>
+#include <boost/algorithm/string.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/torrent_info.hpp>
+
 
 #include "bbts-agent/log.h"
 #include "bbts-agent/string_util.h"
@@ -119,7 +121,7 @@ bool parse_uri_entry(const string &uri, message::SourceURI *source_uri) {
 
 static bool add_ip_filter_rule(const string &ip_range, int flags, ip_filter *filter) {
     vector<string> v;
-    StringUtil::slipt(ip_range, "-", &v);
+    boost::split(v, ip_range, boost::is_any_of("-"));
     size_t size = v.size();
     if (size == 0 || size > 2) {
         return false;
@@ -147,8 +149,8 @@ static bool add_ip_filter_rule(const string &ip_range, int flags, ip_filter *fil
 
 bool parse_ip_filter(const string &filter_string, int flags, ip_filter *filter) {
     vector<string> ip_range_vector;
-    StringUtil::slipt(filter_string, ",", &ip_range_vector);
-    for (vector<string>::iterator it = ip_range_vector.begin(); it != ip_range_vector.end(); ++it) {
+    boost::split(ip_range_vector, filter_string, boost::is_any_of(","));
+    for (auto it = ip_range_vector.begin(); it != ip_range_vector.end(); ++it) {
         if (!add_ip_filter_rule(*it, flags, filter)) {
             return false;
         }
@@ -211,7 +213,7 @@ pair<int, int> parse_port_range(const string &port_range) {
 
 void parse_tracker(const string &str, message::Server *tracker) {
     vector<string> v;
-    StringUtil::slipt(str, ":", &v);
+    boost::split(v, str, boost::is_any_of(":"));
     if (v.size() != 2) {
         tracker->set_host(str);
         return;

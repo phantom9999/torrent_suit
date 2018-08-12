@@ -2,6 +2,7 @@
 
 #include "bbts-tracker/thrift_serializer.h"
 #include "tracker-protocol/tracker_types.h"
+#include "common/encode.h"
 
 using std::string;
 
@@ -59,10 +60,10 @@ void PeerInfo::UpdateInfo(const PeerInfo& input_peer) {
 
 void PeerInfo::ConstructPeerInfoByString(const string &string_input) {
   ThriftParseFromString(string_input, &(this->GetInnerPeerReference()));
-  if (!Base64Encode(this->GetInfoHash(), &base64_info_hash)) {
+  if (!base64_encode(this->GetInfoHash(), &base64_info_hash)) {
     base64_info_hash = this->GetInfoHash();
   }
-  if (Base64Encode(this->GetPeerId(), &base64_peer_id)) {
+  if (base64_encode(this->GetPeerId(), &base64_peer_id)) {
     base64_peer_id = this->GetPeerId();
   }
 }

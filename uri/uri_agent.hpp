@@ -12,8 +12,8 @@ namespace bbts {
  */
 class UriAgent {
 public:
-    UriAgent() {}
-    ~UriAgent() {}
+    UriAgent() = default;
+    ~UriAgent() = default;
 
 
     // option setters

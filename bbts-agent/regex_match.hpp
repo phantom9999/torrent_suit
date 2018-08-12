@@ -14,9 +14,7 @@ class RegexMatch {
 public:
     explicit RegexMatch(const std::string &str) : _str(str) {}
 
-    explicit RegexMatch(const char *str) : _str(str) {}
-
-    ~RegexMatch() {}
+    ~RegexMatch() = default;
 
     bool operator ()(const std::string &regex_str) {
         try {

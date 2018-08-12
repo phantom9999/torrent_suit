@@ -6,7 +6,7 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include "tracker-protocol/Announce.h"
-#include "bbts-tracker/encode.h"
+#include "common/encode.h"
 
 using std::string;
 using std::vector;

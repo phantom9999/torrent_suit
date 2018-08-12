@@ -1,7 +1,7 @@
 #ifndef BBTS_AGENT_PLUGIN_H
 #define BBTS_AGENT_PLUGIN_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <sys/types.h>
 
 #include <string>
@@ -21,8 +21,8 @@ struct FileSlice {
 
 class BTInfoInterface {
 public:
-    BTInfoInterface() {}
-    virtual ~BTInfoInterface() {};
+    BTInfoInterface() = default;
+    virtual ~BTInfoInterface() = default;
 
     virtual std::vector<FileSlice> map_block(int piece, int64_t offset, int size) const = 0;
     virtual int piece_size(unsigned int index) const = 0;

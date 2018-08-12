@@ -4,7 +4,7 @@
 
 #include <boost/array.hpp>
 
-#include "bbts-agent/encode.h"
+#include "common/encode.h"
 #include "bbts-agent/config.h"
 #include "bbts-agent/log.h"
 #include "bbts-agent/path.h"

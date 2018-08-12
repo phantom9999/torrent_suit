@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "bbts-agent/encode.h"
+#include "common/encode.h"
 #include "common/LazySingleton.hpp"
 #include "uri_piece_request.h"
 
@@ -69,7 +69,7 @@ public:
 
     CacheManager(boost::asio::io_service &ios);
 
-    ~CacheManager();
+    ~CacheManager() = default;
 
     boost::shared_ptr<Buffer> fetch(const URIPieceRequest &piece_request,
             std::string &error_msg);

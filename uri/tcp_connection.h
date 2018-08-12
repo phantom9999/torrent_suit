@@ -24,6 +24,51 @@ typedef boost::asio::ip::tcp Tcp;
 class TcpConnection :
         public boost::enable_shared_from_this<TcpConnection>,
         public boost::noncopyable {
+
+private:
+    enum ReadStateEnum {
+        READ_BEGIN,
+        READ_HANDSHAKE,
+        READ_MSG_LENGTH,
+        READ_MSG,
+    };
+
+    enum {
+        MSG_KEEP_ALIVE = -1,
+        MSG_CHOKE = 0,
+        MSG_UNCHOKE = 1,
+        MSG_INTERESTED = 2,
+        MSG_NOT_INTERESTED = 3,
+        MSG_HAVE = 4,
+        MSG_BITFIELD = 5,
+        MSG_REQUEST = 6,
+        MSG_PIECE = 7,
+        MSG_CANCEL = 8, // TODO
+        MSG_PORT = 9,
+        MSG_EXTENDED = 20,
+    };
+
+    enum {
+        EXTEND_HANDSHAKE_TYPE = 0,
+        URI_PLUGIN_TYPE = 20,
+        URI_GENERATE_TYPE = 30,
+        URI_CHECK_TIMESTAMP_TYPE = 31,
+        URI_CHECK_PATH = 32,
+    };
+
+    enum {
+        MESSAGE_URI_PIECE_REQUEST = 1,
+        MESSAGE_URI_PIECE_FAILED = 2,
+        MESSAGE_URI_PIECE_HASH_REQUEST  = 3,
+        MESSAGE_URI_PIECE_HASH_RESPONSE  = 4,
+    };
+
+    struct WriteBuffer {
+        int64_t current_offset{0};
+        boost::shared_ptr<Buffer> buffer;
+    };
+
+
 public:
     friend class TcpServer;
 
@@ -100,49 +145,18 @@ public:
 
     std::string to_string();
 
+
+
+
 private:
     TcpConnection(boost::asio::io_service &io_service, int64_t id);
 
-    enum ReadStateEnum {
-        READ_BEGIN,
-        READ_HANDSHAKE,
-        READ_MSG_LENGTH,
-        READ_MSG,
-    };
-
     void read_cb(const boost::system::error_code &ec, size_t readed);
 
-    enum {
-        MSG_KEEP_ALIVE = -1,
-        MSG_CHOKE = 0,
-        MSG_UNCHOKE = 1,
-        MSG_INTERESTED = 2,
-        MSG_NOT_INTERESTED = 3,
-        MSG_HAVE = 4,
-        MSG_BITFIELD = 5,
-        MSG_REQUEST = 6,
-        MSG_PIECE = 7,
-        MSG_CANCEL = 8, // TODO
-        MSG_PORT = 9,
-        MSG_EXTENDED = 20,
-    };
     void on_bt_message(uint8_t type, Buffer::iterator i, Buffer::iterator end);
 
-    enum {
-        EXTEND_HANDSHAKE_TYPE = 0,
-        URI_PLUGIN_TYPE = 20,
-        URI_GENERATE_TYPE = 30,
-        URI_CHECK_TIMESTAMP_TYPE = 31,
-        URI_CHECK_PATH = 32,
-    };
     void on_bt_plugin_message(uint8_t type, Buffer::iterator i, Buffer::iterator end);
 
-    enum {
-        MESSAGE_URI_PIECE_REQUEST = 1,
-        MESSAGE_URI_PIECE_FAILED = 2,
-        MESSAGE_URI_PIECE_HASH_REQUEST  = 3,
-        MESSAGE_URI_PIECE_HASH_RESPONSE  = 4,
-    };
     void on_uri_message(uint8_t type, Buffer::iterator i, Buffer::iterator end);
 
     void on_uri_piece_request(Buffer::iterator i, Buffer::iterator end);
@@ -178,12 +192,9 @@ private:
         return _remote;
     }
 
-    struct WriteBuffer {
-        WriteBuffer() : current_offset(0) {}
 
-        int64_t current_offset;
-        boost::shared_ptr<Buffer> buffer;
-    };
+
+private:
 
     static const int kMaxSendBytesPerPeriod = 256 * 1024;  // 256K bytes per period send
     static const int64_t kMinQuotaData  = 70;       // handshake need 68 bytes

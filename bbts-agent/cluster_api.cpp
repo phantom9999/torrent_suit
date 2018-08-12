@@ -7,6 +7,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "common/LazySingleton.hpp"
 #include "bbts-agent/log.h"
@@ -31,7 +32,7 @@ static int append_classpath(
     switch (type) {
     case FTW_F:
     case FTW_SL:
-        if (StringUtil::end_with(path, ".jar")) {
+        if (boost::ends_with(path, ".jar")) {
             classpath->append(":");
             classpath->append(path);
         }
@@ -72,7 +73,7 @@ bool ClusterAPI::set_classpath_env() {
     DownloadConfigure *configure = LazySingleton<DownloadConfigure>::instance();
     string classpath(".");
     vector<string> dirs;
-    StringUtil::slipt(configure->class_path(), ":", &dirs);
+    boost::split(dirs, configure->class_path(), boost::is_any_of(":"));
     for (vector<string>::iterator dir = dirs.begin(); dir != dirs.end(); ++dir) {
         Path::nftw(*dir, boost::bind(&detail::append_classpath, _1, _2, _3, _4, &classpath),
                 10, FTW_ACTIONRETVAL | FTW_PHYS);

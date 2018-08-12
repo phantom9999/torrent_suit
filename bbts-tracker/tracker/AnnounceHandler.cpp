@@ -25,7 +25,7 @@ void AnnounceHandler::announce(AnnounceResponse &_return, const AnnounceRequest 
 
   std::stringstream request_tag;
   string base64_infohash;
-  if (!Base64Encode(_request.infohash, &base64_infohash)) {
+  if (!base64_encode(_request.infohash, &base64_infohash)) {
     base64_infohash = _request.infohash;
   }
   request_tag << "infohash:" << base64_infohash.c_str() << ", ip:" << _request.peer.ip.c_str();
@@ -183,7 +183,7 @@ void AnnounceHandler::ControlByInfohash(BaseResponse& _return,
   }
 
   string base64_infohash;
-  if (!Base64Encode(request.infohash, &base64_infohash)) {
+  if (!base64_encode(request.infohash, &base64_infohash)) {
     base64_infohash = request.infohash;
   }
   string tag = "infohash: " + base64_infohash + ", ip: " + request.ip;

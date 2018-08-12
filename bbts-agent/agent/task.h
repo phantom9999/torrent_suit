@@ -6,7 +6,6 @@
 #include <boost/smart_ptr.hpp>
 #include <libtorrent/torrent_handle.hpp>
 
-//#include "bbts/bbts_stat.hpp"
 #include "bbts-agent/statistics.hpp"
 #include "pb_config/message.pb.h"
 

@@ -1,8 +1,7 @@
-/*
-#include <stdlib.h>
+#include <cstdlib>
 #include <boost/asio.hpp>
 #include <libtorrent/io.hpp>
-#include <bbts/encode.h>
+#include <common/encode.h>
 
 using std::string;
 using std::stringstream;
@@ -156,4 +155,3 @@ int main(int argc, char* argv[]) {
     }
     return 0;
 }
-*/

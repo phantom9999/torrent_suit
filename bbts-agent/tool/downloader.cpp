@@ -25,7 +25,7 @@
 #include "bbts-agent/bbts_stat.h"
 #include "bbts-agent/torrent_plugin.h"
 #include "bbts-agent/config.h"
-#include "bbts-agent/encode.h"
+#include "common/encode.h"
 #include "bbts-agent/file.h"
 #include "bbts-agent/options_parse.h"
 #include "bbts-agent/path.h"

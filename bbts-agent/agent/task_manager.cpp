@@ -19,7 +19,7 @@
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"
 #include "bbts-agent/string_util.h"
-#include "bbts-agent/encode.h"
+#include "common/encode.h"
 
 using std::deque;
 using std::make_pair;
