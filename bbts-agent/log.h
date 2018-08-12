@@ -1,42 +1,11 @@
 #ifndef BBTS_AGENT_LOG_H
 #define BBTS_AGENT_LOG_H
 
-#define LOGLINE(x) LOGLINE_(x)
-#define LOGLINE_(x) #x
-#define LOGINFO() "[" __FILE__ ":" LOGLINE(__LINE__) "]"
-
-#include <log4cpp/Category.hh>
+#include "common/com_log.h"
 
 #define OPEN_LOG_R()
 #define CLOSE_LOG_R()
-#define CLOSE_LOG() log4cpp::Category::getRoot().shutdown()
-
-#define FATAL_LOG(fmt, arg...) \
-do { \
-  log4cpp::Category::getRoot().fatal(LOGINFO() fmt, ##arg); \
-} while (0)
-
-#define WARNING_LOG(fmt, arg...) \
-do { \
-  log4cpp::Category::getRoot().warn(LOGINFO() fmt, ##arg); \
-} while (0)
-
-#define NOTICE_LOG(fmt, arg...) \
-do { \
-  log4cpp::Category::getRoot().notice(LOGINFO() fmt, ##arg); \
-} while (0)
-
-#define TRACE_LOG(fmt, arg...) \
-do { \
-  log4cpp::Category::getRoot().info(LOGINFO() fmt, ##arg); \
-} while (0)
-
-#define DEBUG_LOG(fmt, arg...) \
-do { \
-  log4cpp::Category::getRoot().debug(LOGINFO() fmt, ##arg); \
-} while (0)
-
-#include <string>
+#define CLOSE_LOG()
 
 namespace bbts {
 
@@ -48,14 +17,6 @@ enum LogLevel {
     LOG_LEVEL_TRACE   = 4,
     LOG_LEVEL_DEBUG   = 5
 };
-
-void init_log(
-        const std::string &dir,
-        const std::string &log,
-        LogLevel level,
-        LogLevel stderr_level);
-
-bool load_log_by_configure(const std::string &dir, const std::string &conf);
 }
 
 #endif // BBTS_AGENT_LOG_H

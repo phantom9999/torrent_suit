@@ -54,46 +54,48 @@
 
 
 
+
 #define LOGLINE(x) LOGLINE_(x)
 #define LOGLINE_(x) #x
-#define LOGINFO() "[" __FILE__ ":" LOGLINE(__LINE__) "]"
-#define CLOSE_LOG() log4cpp::Category::getRoot().shutdown()
+#define LOGFILEINFO() "[" __FILE__ ":" LOGLINE(__LINE__) "]"
 
 #define FATAL_LOG(fmt, arg...) \
 do { \
-  log4cpp::Category::getRoot().fatal(LOGINFO() fmt, ##arg); \
+  log4cpp::Category::getRoot().fatal(LOGFILEINFO() fmt, ##arg); \
 } while (0)
 
 #define WARNING_LOG(fmt, arg...) \
 do { \
-  log4cpp::Category::getRoot().warn(LOGINFO() fmt, ##arg); \
+  log4cpp::Category::getRoot().warn(LOGFILEINFO() fmt, ##arg); \
 } while (0)
 
 #define NOTICE_LOG(fmt, arg...) \
 do { \
-  log4cpp::Category::getRoot().notice(LOGINFO() fmt, ##arg); \
+  log4cpp::Category::getRoot().notice(LOGFILEINFO() fmt, ##arg); \
 } while (0)
 
 #define TRACE_LOG(fmt, arg...) \
 do { \
-  log4cpp::Category::getRoot().info(LOGINFO() fmt, ##arg); \
+  log4cpp::Category::getRoot().info(LOGFILEINFO() fmt, ##arg); \
 } while (0)
 
 #define DEBUG_LOG(fmt, arg...) \
 do { \
-  log4cpp::Category::getRoot().debug(LOGINFO() fmt, ##arg); \
+  log4cpp::Category::getRoot().debug(LOGFILEINFO() fmt, ##arg); \
 } while (0)
 
 
 namespace bbts {
 
 bool loadLoggingConfig(const std::string &conf);
-bool logShutDown();
+bool loggingShutDown();
 
 class LogInstance : boost::noncopyable {
 public:
-    LogInstance() = delete;
+    LogInstance();
     explicit LogInstance(const std::string &conf);
+    bool loadConfig(const std::string &conf);
+    bool loadDefaultConfig();
     ~LogInstance();
 };
 

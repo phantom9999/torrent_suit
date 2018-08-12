@@ -654,11 +654,11 @@ static int process_download(int argc, char* argv[]) {
             break;
 
         case 2:
-            configure->set_log_level(LOG_LEVEL_DEBUG);
+            // configure->set_log_level(LOG_LEVEL_DEBUG);
             break;
 
         case 3:
-            configure->set_log_level(static_cast<LogLevel>(atoi(optarg)));
+            // configure->set_log_level(static_cast<LogLevel>(atoi(optarg)));
             break;
 
         case 4:

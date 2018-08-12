@@ -1,9 +1,9 @@
 #include "bbts-agent/tool/downloader.h"
 
-#include <assert.h>
-#include <errno.h>
+#include <cassert>
+#include <cerrno>
 #include <fcntl.h>
-#include <signal.h>
+#include <csignal>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -134,7 +134,7 @@ Downloader::Downloader(message::DownloadConfigure *configure) :
     string log_dir;
     string log_name;
     Path::slipt(_configure->download_log_file(), &log_dir, &log_name);
-    init_log(log_dir, log_name, LOG_LEVEL_TRACE, (LogLevel)_configure->log_level());
+    static bbts::LogInstance logInstance;
 }
 
 Downloader::~Downloader() {

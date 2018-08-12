@@ -1,7 +1,3 @@
-if (GFLAGS_NAMESPACE)
-    message(${GFLAGS_NAMESPACE})
-    add_definitions(-DGFLAGS_NAMESPACE=${GFLAGS_NAMESPACE})
-endif()
 
 if("$ENV{SCMPF_MODULE_VERSION}" STREQUAL "")
     set(BBTS_TRACKER_VERSION "\"1.0.0\"")

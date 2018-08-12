@@ -142,6 +142,7 @@ static void check_stat_file() {
 }
 
 int bbts_agent(int argc, char* argv[]) {
+    bbts::LogInstance logInstance;
     string conf_file(g_process_info->root_dir() + "/conf/agent.conf");
     string user_conf;
     if (get_user_conf_file(argc, argv, &user_conf)) {
@@ -160,7 +161,7 @@ int bbts_agent(int argc, char* argv[]) {
             return 1;
         }
     }
-    if (!load_log_by_configure(log_conf_parent_dir, log_conf_name)) {
+    if (!logInstance.loadConfig(log_conf_parent_dir + "/" + log_conf_name)) {
         return 1;
     }
     

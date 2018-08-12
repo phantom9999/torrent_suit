@@ -11,7 +11,7 @@ add_definitions(-D_XOPEN_SOURE=500
                 -DGINGKO_VERSION=${GINGKO_VERSION}
 # todo: 禁用
                 -DTORRENT_USE_OPENSSL
-        #-DTORRENT_DISABLE_ENCRYPTION=1
+                #-DTORRENT_DISABLE_ENCRYPTION=1
                 -DTORRENT_NO_DEPRECATE=1
 
                 -DTORRENT_DISABLE_GEO_IP=1
