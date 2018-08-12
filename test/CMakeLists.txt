@@ -11,6 +11,8 @@ target_link_libraries(
         -Xlinker "-("
         ${BOOST_TEST_LIB}
         ${BOOST_OPTIONS_LIB}
+        ${BOOST_SYSTEM_LIB}
+        ${BOOST_FILESYSTEM_LIB}
         ${LOG4CPP_LIB}
         -pthread
         common_lib

@@ -12,16 +12,13 @@ set(default_excute_permissions OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ G
 
 include(deps.cmake)
 
-install(DIRECTORY conf DESTINATION conf
+install(DIRECTORY conf/ DESTINATION conf
         FILE_PERMISSIONS ${default_file_permissions}
         DIRECTORY_PERMISSIONS ${default_excute_permissions}
         PATTERN .svn EXCLUDE)
 
+install(DIRECTORY jars/ DESTINATION log)
 
-install(DIRECTORY bin DESTINATION bin
-        FILE_PERMISSIONS ${default_excute_permissions}
-        DIRECTORY_PERMISSIONS ${default_excute_permissions}
-        PATTERN .svn EXCLUDE)
 
 include_directories(.)
 include_directories(libtorrent_0_16_5/include)
@@ -42,7 +39,7 @@ add_subdirectory(test)
 
 
 
-
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/output)
 
 
 

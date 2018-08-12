@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 2.6)
-set(CMAKE_SUPPRESS_REGENERATION 1)
-set(CMAKE_USE_RELATIVE_PATHS ON)
 aux_source_directory(. URI_AGENT_SRC)
 
 
@@ -10,3 +7,6 @@ set(CMAKE_CXX_FLAGS "-g -fPIC -ggdb -Wall -pipe -fpermissive -Wno-unused-functio
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 
 add_library(uri_agent STATIC ${URI_AGENT_SRC})
+
+INSTALL(TARGETS uri_agent ARCHIVE DESTINATION lib)
+

@@ -10,7 +10,7 @@ add_library(
 )
 
 
-
+INSTALL(TARGETS pb_conf ARCHIVE DESTINATION lib)
 
 
 

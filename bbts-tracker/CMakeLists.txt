@@ -18,10 +18,14 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         ${PROTOBUF_LIB}
         ${LIBEVENT_LIB}
         ${BOOST_SYSTEM_LIB}
+        ${BOOST_FILESYSTEM_LIB}
         ${BOOST_THREAD_LIB}
         ${BOOST_OPTIONS_LIB}
         ${LOG4CPP_LIB}
         pthread
         rt)
 
-INSTALL(TARGETS gko3-tracker RUNTIME DESTINATION bin)
+INSTALL(
+        TARGETS gko3-tracker
+        RUNTIME
+        DESTINATION bin)

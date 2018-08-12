@@ -2,7 +2,7 @@
 #include <log4cpp/PatternLayout.hh>
 #include <log4cpp/RollingFileAppender.hh>
 #include <log4cpp/OstreamAppender.hh>
-
+#include <boost/filesystem.hpp>
 
 #include "common/com_log.h"
 
@@ -14,21 +14,21 @@ BOOST_AUTO_TEST_CASE(t_log) {
     LOG_WARN() << "yyyyy";
      */
     using std::string;
-
-    log4cpp::PatternLayout* stderr_layout = new log4cpp::PatternLayout();
-    stderr_layout->setConversionPattern("[%p][%d{%Y-%m-%d %H:%M:%S}][%t]%m%n");
-    log4cpp::OstreamAppender* stderr_appender = new log4cpp::OstreamAppender(
-        "stderr_appender",
-        &std::cerr);
-    stderr_appender->setLayout(stderr_layout);
-    log4cpp::Category& category = log4cpp::Category::getRoot();
-    category.setAdditivity(false);
-    category.setAppender(stderr_appender);
-    category.setPriority(log4cpp::Priority::DEBUG);
     LOG_WARN() << "test";
 
-    bbts::LogInstance logInstance("../conf/log.conf");
+    bbts::LogInstance logInstance;
     LOG_WARN() << "warn";
+
+    boost::system::error_code ec;
+    boost::filesystem::path path = boost::filesystem::canonical("/proc/self/exe", ec);
+    LOG_INFO() << path.string();
+
+
+    logInstance.loadConfig("../conf/log.conf");
+    LOG_INFO() << path.parent_path();
+
+
+
 }
 
 

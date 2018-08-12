@@ -9,5 +9,5 @@ add_library(
 
 
 
-
+INSTALL(TARGETS common_lib ARCHIVE DESTINATION lib)
 

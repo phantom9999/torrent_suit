@@ -13,6 +13,7 @@
 #include "bbts-agent/torrent_file_util.h"
 #include "bbts-agent/tool/downloader.h"
 #include "pb_config/configure.pb.h"
+#include "common/com_log.h"
 
 using std::make_pair;
 using std::map;

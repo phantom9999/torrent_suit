@@ -27,6 +27,11 @@ if (NOT BOOST_SYSTEM_LIB)
     message(FATAL_ERROR "BOOST_SYSTEM_LIB not found")
 endif()
 
+find_library(BOOST_FILESYSTEM_LIB NAMES boost_filesystem)
+if (NOT BOOST_FILESYSTEM_LIB)
+    message(FATAL_ERROR "BOOST_FILESYSTEM_LIB not found")
+endif()
+
 find_library(BOOST_THREAD_LIB NAMES boost_thread)
 if (NOT BOOST_THREAD_LIB)
     message(FATAL_ERROR "BOOST_THREAD_LIB not found")
