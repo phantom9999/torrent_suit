@@ -2,6 +2,10 @@
 
 
 
+# 构建状态
+| travis-ci |
+|----------|
+| [![Build Status](https://travis-ci.com/phantom9999/torrent_suit.svg?branch=master)](https://travis-ci.com/phantom9999/torrent_suit) |
 
 
 # bbts-agent
