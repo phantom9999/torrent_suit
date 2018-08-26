@@ -25,6 +25,7 @@ aux_source_directory(. AGENT_SRC)
 aux_source_directory(agent AGENT_SRC)
 aux_source_directory(proto AGENT_SRC)
 aux_source_directory(tool AGENT_SRC)
+aux_source_directory(torrent_plugins AGENT_SRC)
 
 
 include(${PROJECT_SOURCE_DIR}/config_agent.cmake)

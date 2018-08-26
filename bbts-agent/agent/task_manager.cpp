@@ -10,7 +10,7 @@
 
 #include "task.h"
 #include "task_db.h"
-#include "bbts-agent/torrent_plugin.h"
+#include "bbts-agent/torrent_plugins/torrent_plugin.h"
 #include "bbts-agent/config.h"
 #include "bbts-agent/error_category.h"
 #include "bbts-agent/file.h"

@@ -16,7 +16,7 @@ namespace bbts {
 class ProcessInfo {
 public:
     ProcessInfo();
-    ~ProcessInfo() {}
+    ~ProcessInfo() = default;
 
     const std::string& program() const {
         return _program;

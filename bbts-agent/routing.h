@@ -23,8 +23,8 @@ public:
     typedef std::pair<std::string, int> Node;
     typedef std::vector<Node> NodeVector;
 
-    Routing() : _service_index(0) {};
-    virtual ~Routing() {};
+    Routing() = default;
+    virtual ~Routing() = default;
 
     bool load_conf(const std::string &conf_path, const std::string &machine_room);
 
@@ -76,7 +76,7 @@ private:
 
     ConsistentHashRing<Node> _hashring;
     message::RoutingConf _routing_conf;
-    int _service_index;
+    int _service_index{0};
     std::string _conf_file;
 };
 

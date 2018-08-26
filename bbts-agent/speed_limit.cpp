@@ -12,8 +12,6 @@ SpeedLimit::SpeedLimit(int limit_rate) : _lamt(0), _limit_rate(limit_rate) {
     gettimeofday(&_bw_start, NULL);
 }
 
-SpeedLimit::~SpeedLimit() {}
-
 void SpeedLimit::bandwidth_limit(int amount, int limit_rate) {
     if (amount <= 0 || limit_rate <= 0) {
         return;

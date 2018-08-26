@@ -2,7 +2,7 @@
 
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <stdlib.h>
+#include <cstdlib>
 #if defined(__linux__)
 #include <sys/syscall.h>
 #endif

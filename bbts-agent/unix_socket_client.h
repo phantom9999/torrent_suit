@@ -1,3 +1,4 @@
+/*
 #ifndef BBTS_AGENT_UNIX_SOCKET_CLIENT_H
 #define BBTS_AGENT_UNIX_SOCKET_CLIENT_H
 
@@ -10,16 +11,13 @@
 
 namespace bbts {
 
-/**
- * @brief
- */
 class UnixSocketClient : public boost::noncopyable {
 public:
     typedef boost::function<
             void(const boost::shared_ptr<UnixSocketConnection> &)> ConnectedCallback;
 
     UnixSocketClient(boost::asio::io_service &ios);
-    ~UnixSocketClient();
+    ~UnixSocketClient() = default;
 
     bool start(UnixSocketConnection::EndPoint endpoint);
 
@@ -63,23 +61,9 @@ private:
     UnixSocketConnection::CloseCallback _close_callback;
 };
 
-class SyncUnixSocketClient : public boost::noncopyable {
-public:
-    SyncUnixSocketClient(boost::asio::io_service &ios);
-    ~SyncUnixSocketClient();
-    bool connect(const UnixSocketConnection::EndPoint &endpoint);
-    bool write_data(const boost::shared_ptr<const std::vector<char> > &data);
-    bool read_data(boost::shared_ptr<std::vector<char> > *data);
-    void close();
 
-    UnixSocketConnection::Socket& get_socket() {
-        return _socket;
-    }
-
-private:
-    boost::asio::io_service &_io_service;
-    UnixSocketConnection::Socket _socket;
-};
 
 }  // namespace bbts
 #endif // BBTS_AGENT_UNIX_SOCKET_CLIENT_H
+
+ */

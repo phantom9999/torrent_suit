@@ -5,6 +5,7 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/noncopyable.hpp>
 #include <libtorrent/alert_types.hpp>
+#include "bbts-agent/peer_source_request_failed_alert.h"
 
 #include "bbts-agent/bbts_stat.h"
 #include "bbts-agent/log.h"

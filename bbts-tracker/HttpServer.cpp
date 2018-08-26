@@ -12,6 +12,11 @@ using std::string;
 using ::argus::common::EventLoop;
 using ::argus::common::MiniHttpd;
 
+/**
+ * 启动线程,并注册函数
+ *
+ * todo: 去掉全局变量
+ */
 bool HttpServer::start(uint16_t port) {
     boost::thread t(boost::bind(&HttpServer::Run, this, port));
     thread_.swap(t);
@@ -19,6 +24,12 @@ bool HttpServer::start(uint16_t port) {
         ->RegisterItem("monitor_status_queries", StatusManager::COUNTING_ITEM);
 }
 
+
+/**
+ * 添加回调函数
+ *
+ *
+ */
 bool HttpServer::SetCallback(const string &path, callback_fn cb) {
     // detect status
     const timespec unit = {1, 0};
@@ -42,6 +53,11 @@ bool HttpServer::SetCallback(const string &path, callback_fn cb) {
     return succ;
 }
 
+/**
+ * 创建时间循环, 并添加回调函数
+ *
+ *
+ */
 void HttpServer::Run(uint16_t port) {
     loop_ = new EventLoop();
     httpd_ = new MiniHttpd(loop_, port);
@@ -56,6 +72,9 @@ void HttpServer::Run(uint16_t port) {
 
 }
 
+/**
+ * 获取状态信息, 并进行统计
+ */
 string HttpServer::QueryMonitorStatusCallBack(const string &query) {
     string result;
     LOG_INFO() << "get query monitor status request";

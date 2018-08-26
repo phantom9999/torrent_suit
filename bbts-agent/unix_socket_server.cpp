@@ -13,17 +13,11 @@ using boost::asio::io_service;
 using boost::system::error_code;
 using boost::shared_ptr;
 
-static void empty_callback() {}
+
 
 UnixSocketServer::UnixSocketServer(io_service &io_service) :
         _io_service(io_service),
-        _acceptor(_io_service),
-        _heartbeat_recv_cycle(0),
-        _heartbeat_send_cycle(0),
-        _accept_callback(boost::bind(&empty_callback)),
-        _read_callback(boost::bind(&empty_callback)),
-        _write_callback(boost::bind(&empty_callback)),
-        _close_callback(boost::bind(&empty_callback)) {}
+        _acceptor(_io_service) {}
 
 UnixSocketServer::~UnixSocketServer() {
     close();
@@ -119,26 +113,5 @@ bool UnixSocketServer::serve(mode_t mode) {
     return true;
 }
 
-bool UnixSocketServerWithThread::start(mode_t mode) {
-    if (!_server.serve(mode)) {
-        return false;
-    }
-    boost::thread tmp_thread(boost::bind(&UnixSocketServerWithThread::run, this));
-    _thread.swap(tmp_thread);
-    return true;
-}
-
-void UnixSocketServerWithThread::join() {
-    _thread.join();
-}
-
-void UnixSocketServerWithThread::run() {
-    OPEN_LOG_R();
-    DEBUG_LOG("Unix socket server start success.");
-    _io_service.reset();
-    _io_service.run();
-    DEBUG_LOG("Unix socket server stoped success.");
-    CLOSE_LOG_R();
-}
 
 }  // namespace bbts

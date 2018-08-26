@@ -5,8 +5,9 @@
 #include <string>
 
 #include "routing.h"
-#include "torrent_plugin.h"
+#include "torrent_plugins/torrent_plugin.h"
 #include "proto/StatAnnounce.h"
+#include "peer_stat_alert.h"
 
 namespace bbts {
 

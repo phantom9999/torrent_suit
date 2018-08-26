@@ -17,12 +17,20 @@ namespace bbts {
  */
 class TransferServer : public Routing {
 public:
+    /**
+     *
+     */
     TransferServer();
-    ~TransferServer();
+    /**
+     *
+     */
+    ~TransferServer() = default;
 
+    /**
+     *
+     * @param info
+     */
     void request_transfer(const RequestTransferInfo &info);
-
-private:
 };
 
 } // namespace bbts

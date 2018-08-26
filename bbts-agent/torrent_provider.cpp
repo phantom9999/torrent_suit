@@ -32,8 +32,6 @@ TorrentProvider::TorrentProvider() : _is_file_no_found(false) {
     set_service_name("provider");
 }
 
-TorrentProvider::~TorrentProvider() {}
-
 bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) {
     message::SourceURI source_uri;
     if (!parse_uri_entry(uri, &source_uri)) {

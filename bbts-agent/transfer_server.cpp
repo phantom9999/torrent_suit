@@ -26,8 +26,7 @@ TransferServer::TransferServer() {
     set_service_name("transfer");
 }
 
-TransferServer::~TransferServer() {
-}
+
 
 void TransferServer::request_transfer(const RequestTransferInfo &info) {
     string machine_room = g_process_info->machine_room();

@@ -9,6 +9,7 @@
 #include "bbts-agent/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/unix_socket_client.h"
+#include "bbts-agent/sync_unix_socket_client.h"
 
 using std::string;
 using std::vector;

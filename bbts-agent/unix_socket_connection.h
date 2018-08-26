@@ -2,7 +2,7 @@
 #define BBTS_AGENT_UNIX_SOCKET_CONNECTION_H
 
 #include <queue>
-#include <utility> // for std::pair
+#include <utility>
 #include <vector>
 
 #include <boost/any.hpp>
@@ -14,43 +14,11 @@
 #include <boost/smart_ptr.hpp>
 #include <google/protobuf/message.h>
 
-struct ucred;
+#include "header.h"
+
+// struct ucred;
 
 namespace bbts {
-
-class Header {
-public:
-    Header() : _length(0), _type(0), _magic(0), _checksum(0) {}
-
-    Header(uint32_t type, uint32_t length) {
-        assign(type, length);
-    }
-
-    bool is_valid() {
-        return (_length ^ _type ^ _magic) == _checksum;
-    }
-
-    void assign(uint32_t type, uint32_t length) {
-        _length = length;
-        _type = type;
-        _magic = 47417;
-        _checksum = length ^ type ^ _magic;
-    }
-
-    uint32_t type() {
-        return _type;
-    }
-
-    uint32_t length() {
-        return _length;
-    }
-
-private:
-    uint32_t _length;
-    uint32_t _type;
-    uint32_t _magic;
-    uint32_t _checksum;
-};
 
 /**
  * @brief
@@ -60,7 +28,13 @@ class UnixSocketConnection :
         public boost::noncopyable {
 public:
     enum MessageType {
+        /**
+         * heartbeat
+         */
         HEARTBEAT,
+        /**
+         * userdata
+         */
         USERDATA,
     };
 
@@ -71,8 +45,22 @@ public:
     typedef boost::function<void(const boost::shared_ptr<UnixSocketConnection> &,
             const boost::shared_ptr<const std::vector<char> > &)> RWCallback;
 
+public:
+    /**
+     *
+     */
     ~UnixSocketConnection();
 
+    /**
+     *
+     * @param io_service
+     * @param read_callback
+     * @param write_callback
+     * @param close_callback
+     * @param heartbeat_recv_cycle
+     * @param heartbeat_send_cycle
+     * @return
+     */
     static boost::shared_ptr<UnixSocketConnection> create(
             boost::asio::io_service &io_service,
             RWCallback read_callback,
@@ -90,18 +78,37 @@ public:
                         heartbeat_send_cycle));
     }
 
+public:
+    /**
+     *
+     * @return
+     */
     Socket& get_socket() {
         return _socket;
     }
 
+    /**
+     *
+     * @return
+     */
     EndPoint& get_remote_endpoint() {
         return _remote_endpoint;
     }
 
+    /**
+     *
+     */
     void start();
 
+    /**
+     *
+     * @param data
+     */
     void write(const boost::shared_ptr<const std::vector<char> > &data);
 
+    /**
+     *
+     */
     void close() {
         boost::system::error_code ec;
         _heartbeat_recv_timer.cancel(ec);
@@ -109,15 +116,32 @@ public:
         _socket.close(ec);
     }
 
+    /**
+     *
+     * @param user_argument
+     */
     void set_user_argument(const boost::any &user_argument) {
         _user_argument = user_argument;
     }
 
+    /**
+     *
+     * @return
+     */
     const boost::any& get_user_argument() const {
         return _user_argument;
     }
 
 private:
+    /**
+     *
+     * @param io_service
+     * @param read_callback
+     * @param write_callback
+     * @param close_callback_
+     * @param heartbeat_recv_cycle
+     * @param heartbeat_send_cycle
+     */
     UnixSocketConnection(
             boost::asio::io_service &io_service,
             RWCallback read_callback,
@@ -126,20 +150,60 @@ private:
             int heartbeat_recv_cycle,
             int heartbeat_send_cycle);
 
+    /**
+     *
+     * @param data
+     * @param ec
+     * @param bytes_readed
+     */
     void handle_read_data(
             boost::shared_ptr<std::vector<char> > data,
             const boost::system::error_code &ec,
             size_t bytes_readed);
 
+    /**
+     *
+     * @param message
+     */
     void write_message(const Message &message);
+    /**
+     *
+     * @param ec
+     * @param bytes_transferred
+     */
     void handle_read_head(const boost::system::error_code &ec, size_t bytes_transferred);
+    /**
+     *
+     * @param ec
+     * @param bytes_transferred
+     */
     void handle_write_message(const boost::system::error_code &ec, size_t bytes_transferred);
+    /**
+     *
+     * @param type
+     * @param data
+     */
     void async_write(MessageType type, boost::shared_ptr<const std::vector<char> > data);
+    /**
+     *
+     * @param ec
+     */
     void handle_heartbeat_recv(const boost::system::error_code &ec);
+    /**
+     *
+     * @param ec
+     */
     void handle_heartbeat_send(const boost::system::error_code &ec);
+    /**
+     *
+     */
     void update_heartbeat_recv_timer();
+    /**
+     *
+     */
     void update_heartbeat_send_timer();
 
+private:
     boost::asio::io_service &_io_service;
     Socket _socket;
     EndPoint _remote_endpoint;
@@ -157,6 +221,13 @@ private:
     boost::any _user_argument;
 };
 
+/**
+ *
+ * @param connection
+ * @param type
+ * @param response
+ * @return
+ */
 bool write_message(
         const boost::shared_ptr<UnixSocketConnection> &connection,
         uint32_t type,

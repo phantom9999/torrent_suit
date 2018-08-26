@@ -1,3 +1,4 @@
+/*
 #include "bbts-agent/unix_socket_client.h"
 
 #include <boost/asio.hpp>
@@ -24,7 +25,6 @@ UnixSocketClient::UnixSocketClient(boost::asio::io_service &io_service) :
         _write_callback(boost::bind(&empty_callback)),
         _close_callback(boost::bind(&empty_callback)) {}
 
-UnixSocketClient::~UnixSocketClient() {}
 
 bool UnixSocketClient::start(UnixSocketConnection::EndPoint remote_endpoint) {
     shared_ptr<UnixSocketConnection> connection = UnixSocketConnection::create(
@@ -70,62 +70,8 @@ void UnixSocketClient::handle_connected(
     connection->start();
 }
 
-SyncUnixSocketClient::SyncUnixSocketClient(boost::asio::io_service &io_service) :
-        _io_service(io_service),
-        _socket(io_service) {}
 
-SyncUnixSocketClient::~SyncUnixSocketClient() {
-    close();
-}
-
-bool SyncUnixSocketClient::connect(const UnixSocketConnection::EndPoint &endpoint) {
-    error_code ec;
-    _socket.connect(endpoint, ec);
-    if (ec) {
-        DEBUG_LOG("connect to server(%s) failed: %s",
-                endpoint.path().c_str(), ec.message().c_str());
-    }
-    return !ec;
-}
-
-bool SyncUnixSocketClient::write_data(const shared_ptr<const vector<char> > &data) {
-    if (!data) {
-        return true;
-    }
-    Header header(UnixSocketConnection::USERDATA, data->size());
-    array<boost::asio::const_buffer, 2> buffers = {
-            boost::asio::buffer(&header, sizeof(header)),
-            boost::asio::buffer(*data)
-    };
-    error_code ec;
-    boost::asio::write(_socket, buffers, ec);
-    if (ec) {
-        DEBUG_LOG("write data to server failed: %s", ec.message().c_str());
-    }
-    return !ec;
-}
-
-bool SyncUnixSocketClient::read_data(shared_ptr<vector<char> > *data) {
-    assert(data);
-    error_code ec;
-    Header header;
-    boost::asio::read(_socket, boost::asio::buffer(&header, sizeof(header)), ec);
-    if (ec) {
-        DEBUG_LOG("read data from server failed: %s", ec.message().c_str());
-        return false;
-    }
-    if (!header.is_valid()) {
-        DEBUG_LOG("valid header failed!");
-        return false;
-    }
-    data->reset(new vector<char>(header.length()));
-    boost::asio::read(_socket, boost::asio::buffer(*data->get()), ec);
-    return !ec;
-}
-
-void SyncUnixSocketClient::close() {
-    error_code ec;
-    _socket.close(ec);
-}
 
 }  // namespace bbts
+
+ */

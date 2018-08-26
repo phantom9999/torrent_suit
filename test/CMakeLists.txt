@@ -13,6 +13,9 @@ target_link_libraries(
         ${BOOST_OPTIONS_LIB}
         ${BOOST_SYSTEM_LIB}
         ${BOOST_FILESYSTEM_LIB}
+        ${BOOST_LOG_LIB}
+        ${BOOST_LOG_SETUP_LIB}
+        ${BOOST_THREAD_LIB}
         ${LOG4CPP_LIB}
         -pthread
         common_lib

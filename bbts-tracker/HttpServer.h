@@ -19,11 +19,21 @@ namespace bbts {
 // wrap mini-httpd and leverage module_status_manager
 class HttpServer {
 public:
+    /**
+     * 回调函数
+     */
     typedef std::string (*callback_fn)(const std::string &);
 
-    // default make object unuseful in constructor
+    /**
+     * 默认构造函数
+     *
+     */
     HttpServer() : httpd_(nullptr), loop_(nullptr) {}
 
+    /**
+     * 启动服务器
+     *
+     */
     bool start(uint16_t port);
 
     bool SetCallback(const std::string &path, callback_fn cb);

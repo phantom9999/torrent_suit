@@ -11,10 +11,8 @@ namespace bbts {
 
 WorkerPool::WorkerPool(const std::string &tag) : _thread_num(0), _tag(tag) {}
 
-WorkerPool::~WorkerPool() {}
 
 void WorkerPool::thread_main(int worker_id) {
-    OPEN_LOG_R();
     TRACE_LOG("[%s][%d] run begin.", _tag.c_str(), worker_id);
     boost::system::error_code ec;
     _io_service.run(ec);
@@ -22,7 +20,6 @@ void WorkerPool::thread_main(int worker_id) {
         WARNING_LOG("[%s]thread pool run fail: %s", _tag.c_str(), ec.message().c_str());
     }
     TRACE_LOG("[%s][%d] run end.", _tag.c_str(), worker_id);
-    CLOSE_LOG_R();
 }
 
 void WorkerPool::start(int thread_num) {

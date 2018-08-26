@@ -1,7 +1,7 @@
 #ifndef BBTS_AGENT_SPEED_LIMIT_H
 #define BBTS_AGENT_SPEED_LIMIT_H
 
-#include <time.h>
+#include <ctime>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
 
@@ -14,7 +14,7 @@ class SpeedLimit : public boost::noncopyable {
 public:
     SpeedLimit();
     SpeedLimit(int limit_rate);
-    ~SpeedLimit();
+    ~SpeedLimit() = default;
 
     void bandwidth_limit(int amount) {
         bandwidth_limit(amount, _limit_rate);

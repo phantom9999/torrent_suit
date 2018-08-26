@@ -10,8 +10,9 @@
 
 #include "unix_socket_connection.h"
 
-namespace bbts {
 
+namespace bbts {
+static void empty_callback() {}
 /**
  * @brief
  */
@@ -21,17 +22,40 @@ public:
     typedef boost::asio::local::stream_protocol::acceptor Acceptor;
     typedef boost::function<void(const boost::shared_ptr<UnixSocketConnection> &)> AcceptedCallback;
 
-    UnixSocketServer(boost::asio::io_service &io_service);
+public:
+    /**
+     *
+     * @param io_service
+     */
+    explicit UnixSocketServer(boost::asio::io_service &io_service);
 
+    /**
+     *
+     */
     ~UnixSocketServer();
 
+public:
+    /**
+     *
+     * @param mode
+     * @return
+     */
     bool serve(mode_t mode);
+
+    /**
+     * 关闭连接
+     */
     void close();
 
+    /**
+     *
+     * @return
+     */
     boost::asio::io_service& get_io_service() {
         return _io_service;
     }
 
+public:
     void set_endpoint(const UnixSocketConnection::EndPoint &endpoint) {
         _endpoint = endpoint;
     }
@@ -61,78 +85,38 @@ public:
     }
 
 private:
+    /**
+     * 异步接收请求
+     */
     void async_accept();
 
+    /**
+     * 建立连接
+     * @return
+     */
     bool can_connect();
 
+    /**
+     * 进行accept
+     * @param conn
+     * @param ec
+     */
     void handle_accepted(boost::shared_ptr<UnixSocketConnection> conn,
             const boost::system::error_code& ec);
 
+private:
     UnixSocketConnection::EndPoint _endpoint;
     boost::asio::io_service &_io_service;
     Acceptor _acceptor;
-    int _heartbeat_recv_cycle;
-    int _heartbeat_send_cycle;
-    AcceptedCallback _accept_callback;
-    UnixSocketConnection::RWCallback _read_callback;
-    UnixSocketConnection::RWCallback _write_callback;
-    UnixSocketConnection::CloseCallback _close_callback;
+    int _heartbeat_recv_cycle{0};
+    int _heartbeat_send_cycle{0};
+    AcceptedCallback _accept_callback{boost::bind(&empty_callback)};
+    UnixSocketConnection::RWCallback _read_callback{boost::bind(&empty_callback)};
+    UnixSocketConnection::RWCallback _write_callback{boost::bind(&empty_callback)};
+    UnixSocketConnection::CloseCallback _close_callback{boost::bind(&empty_callback)};
 };
 
-class UnixSocketServerWithThread : public boost::noncopyable {
-public:
-    UnixSocketServerWithThread() : _server(_io_service) {}
 
-    ~UnixSocketServerWithThread() {}
-
-    bool start(mode_t mode);
-
-    void join();
-
-    void stop() {
-        _server.close();
-        _io_service.stop();
-    }
-
-    boost::asio::io_service& get_io_service() {
-        return _io_service;
-    }
-
-    void set_endpoint(const UnixSocketConnection::EndPoint &endpoint) {
-        _server.set_endpoint(endpoint);
-    }
-
-    void set_accept_callback(UnixSocketServer::AcceptedCallback accept_callback) {
-        _server.set_accept_callback(accept_callback);
-    }
-
-    void set_read_callback(UnixSocketConnection::RWCallback read_callback) {
-        _server.set_read_callback(read_callback);
-    }
-
-    void set_write_callback(UnixSocketConnection::RWCallback write_callback) {
-        _server.set_write_callback(write_callback);
-    }
-
-    void set_close_callback(UnixSocketConnection::CloseCallback close_callback) {
-        _server.set_close_callback(close_callback);
-    }
-
-    void set_heartbeat_recv_cycle(int cycle) {
-        _server.set_heartbeat_recv_cycle(cycle);
-    }
-
-    void set_heartbeat_send_cycle(int cycle) {
-        _server.set_heartbeat_send_cycle(cycle);
-    }
-
-private:
-    void run();
-
-    boost::asio::io_service _io_service;
-    UnixSocketServer _server;
-    boost::thread _thread;
-};
 
 }  // namespace bbts
 #endif // BBTS_AGENT_UNIX_SOCKET_SERVER_H

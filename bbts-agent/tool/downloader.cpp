@@ -23,7 +23,7 @@
 #include <libtorrent/torrent_info.hpp>
 
 #include "bbts-agent/bbts_stat.h"
-#include "bbts-agent/torrent_plugin.h"
+#include "bbts-agent/torrent_plugins/torrent_plugin.h"
 #include "bbts-agent/config.h"
 #include "common/encode.h"
 #include "bbts-agent/file.h"

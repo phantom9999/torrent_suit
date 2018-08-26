@@ -1,6 +1,6 @@
-#include "bbts-agent/subnet_mask.h"
+/*#include "bbts-agent/subnet_mask.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <boost/asio/ip/address.hpp>
 #include <boost/system/error_code.hpp>
@@ -48,3 +48,4 @@ bool parse_subnet_mask(const string &ip, const string &mask, string *range) {
 }
 
 }  // namespace bbts
+*/

@@ -52,9 +52,14 @@ if (NOT BOOST_OPTIONS_LIB)
     message(FATAL_ERROR "BOOST_OPTIONS_LIB not found")
 endif()
 
-#find_library(BOOST_LOG_LIB NAMES boost_log)
+find_library(BOOST_LOG_LIB NAMES boost_log)
+if (NOT BOOST_LOG_LIB)
+    message(FATAL_ERROR "BOOST_LOG_LIB not found")
+endif()
+
+#find_library(BOOST_LOG_SETUP_LIB NAMES boost_log_setup)
 #if (NOT BOOST_LOG_LIB)
-#    message(FATAL_ERROR "BOOST_LOG_LIB not found")
+#    message(FATAL_ERROR "BOOST_LOG_SETUP_LIB not found")
 #endif()
 
 find_path(LIBEVENT_H NAMES event.h)
@@ -134,7 +139,7 @@ include_directories(
 
 
 add_compile_options(
-        -g -fPIC -ggdb -Wall -pipe -fpermissive -ftemplate-depth-128
+        -g -fPIC -ggdb -w -Wall -pipe -fpermissive -ftemplate-depth-128
         -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof
         -Wno-deprecated-declarations
         -Winline -Wpointer-arith -Wwrite-strings -Woverloaded-virtual
