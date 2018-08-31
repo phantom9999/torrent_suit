@@ -45,7 +45,7 @@ public:
         time_t add_time;
     };
 
-    typedef boost::asio::local::stream_protocol::socket LocalSocket;
+    // typedef boost::asio::local::stream_protocol::socket LocalSocket;
     typedef std::map<int64_t, boost::shared_ptr<Task> > TasksMap;
     typedef boost::unordered_map<libtorrent::torrent_handle, boost::weak_ptr<Task> > TorrentMap;
     typedef boost::unordered_map<std::string, boost::weak_ptr<Task> > InfohashMap;
@@ -253,7 +253,7 @@ private:
     void on_torrent_finished(const libtorrent::torrent_finished_alert *alert);
     void on_listen_failed(const libtorrent::listen_failed_alert *alert);
     void on_torrent_error(const libtorrent::torrent_error_alert *alert);
-    void on_peer_disconnect(const libtorrent::peer_disconnected_alert *alert);
+    // void on_peer_disconnect(const libtorrent::peer_disconnected_alert *alert);
 
     // libtorrent中的session对象，管理所有任务
     boost::scoped_ptr<libtorrent::session> _session;

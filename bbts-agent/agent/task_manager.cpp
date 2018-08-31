@@ -989,7 +989,7 @@ void TaskManager::on_listen_failed(const libtorrent::listen_failed_alert *alert)
         stop();
     }
 }
-
+/*
 void TaskManager::on_peer_disconnect(const libtorrent::peer_disconnected_alert *alert) {
     error_code ec = alert->error;
     if (ec.value() == boost::asio::error::eof ||  // End of file
@@ -997,7 +997,7 @@ void TaskManager::on_peer_disconnect(const libtorrent::peer_disconnected_alert *
             ec.value() == libtorrent::errors::torrent_aborted) {
         return;
     }
-}
+}*/
 
 void TaskManager::on_torrent_error(const libtorrent::torrent_error_alert *alert) {
     process_task_by_torrent(alert->handle,

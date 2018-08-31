@@ -4,14 +4,16 @@
 
 #include <string>
 
-#include "agent/task_manager.h"
-#include "config.h"
-#include "file.h"
-#include "log.h"
-#include "path.h"
-#include "pbconf.hpp"
-#include "process_info.h"
-#include "timer_util.h"
+#include "bbts-agent/agent/task_manager.h"
+#include "bbts-agent/config.h"
+#include "bbts-agent/file.h"
+#include "bbts-agent/log.h"
+#include "bbts-agent/path.h"
+#include "bbts-agent/pbconf.hpp"
+#include "bbts-agent/process_info.h"
+#include "bbts-agent/timer_util.h"
+#include "bbts-agent/config.h"
+
 
 using std::string;
 using bbts::message::AgentConfigure;
@@ -22,11 +24,12 @@ using boost::posix_time::hours;
 #define LOG_CONF_FILE "log.conf"
 
 namespace bbts {
-
-extern bool get_user_conf_file(int argc, char* argv[], std::string *conf_file);
-
 namespace agent {
 
+/**
+ * 初始化运行目录
+ * @return
+ */
 static bool init_agent_running_path() {
     if (!Path::mkdir(g_agent_configure->working_dir(), 0755)) {
         FATAL_LOG("mkdir %s failed.", g_agent_configure->working_dir().c_str());
@@ -72,57 +75,60 @@ static bool init_agent_running_path() {
     return true;
 }
 
-static void handle_segv(int sig) {
-    NOTICE_LOG("catch sigal %d!", sig);
-    g_task_manager->stop();
-}
-
-static void handle_sigpipe(int sig) {
-    NOTICE_LOG("catch sigal %d!", sig);
-}
-
-static void termsig_handler(int sig, siginfo_t * sig_info, void *) {
-    NOTICE_LOG("receive terminal signal, sig_num=%d, sending_process_pid=%d, uid=%d, status=%d",
-            sig, sig_info->si_pid, sig_info->si_uid, sig_info->si_status);
-
-    time_t now_time = time(NULL);
-    string cmdline = ProcessInfo::get_process_cmdline_by_pid(sig_info->si_pid);
-    string exe = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "exe");
-    string cwd = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "cwd");
-    NOTICE_LOG("terminal time: %ld, process cmdline=%s, exe=%s, cwd=%s", 
-            now_time, cmdline.c_str(), exe.c_str(), cwd.c_str());
-
-    g_task_manager->stop();
-}
-
+/**
+ * 设置信号捕捉
+ */
 static void set_signal_action() {
-    struct sigaction sa;
+    // 中断/退出 信号
+    struct sigaction sa{};
     sa.sa_flags = SA_RESETHAND;
-    sa.sa_handler = handle_segv;
+    sa.sa_handler = [](int sig) {
+        NOTICE_LOG("catch sigal %d!", sig);
+        g_task_manager->stop();
+    };
     sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGINT, &sa, nullptr);
+    sigaction(SIGQUIT, &sa, nullptr);
 
-    struct sigaction act;
-    act.sa_sigaction = termsig_handler;
+    // kill 信号
+    struct sigaction act{};
+    act.sa_sigaction = [](int sig, siginfo_t * sig_info, void *) {
+        NOTICE_LOG("receive terminal signal, sig_num=%d, sending_process_pid=%d, uid=%d, status=%d",
+                   sig, sig_info->si_pid, sig_info->si_uid, sig_info->si_status);
+
+        time_t now_time = time(nullptr);
+        string cmdline = ProcessInfo::get_process_cmdline_by_pid(sig_info->si_pid);
+        string exe = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "exe");
+        string cwd = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "cwd");
+        NOTICE_LOG("terminal time: %ld, process cmdline=%s, exe=%s, cwd=%s",
+                   now_time, cmdline.c_str(), exe.c_str(), cwd.c_str());
+
+        g_task_manager->stop();
+    };
     sigemptyset(&act.sa_mask);
     act.sa_flags = SA_SIGINFO;
-    sigaction(SIGTERM, &act, NULL);
+    sigaction(SIGTERM, &act, nullptr);
 
-    struct sigaction sigpipe;
+    // SIGPIPE信号
+    struct sigaction sigpipe{};
     sigpipe.sa_flags = 0;
-    sigpipe.sa_handler = handle_sigpipe;
+    sigpipe.sa_handler = [](int sig){
+        NOTICE_LOG("catch sigal %d!", sig);
+    };
     sigemptyset(&sigpipe.sa_mask);
-    sigaction(SIGPIPE, &sigpipe, NULL);
+    sigaction(SIGPIPE, &sigpipe, nullptr);
 }
 
+/**
+ * 检测stat文件
+ */
 static void check_stat_file() {
-    struct stat statbuf;
+    struct stat statbuf{};
     if (::stat(g_agent_configure->task_stat_file().c_str(), &statbuf) == 0) {
         if (statbuf.st_size > 10 * 1024 * 1024) {
             if (truncate(g_agent_configure->task_stat_file().c_str(), 0) != 0) {
                 WARNING_LOG("truncate file %s size to 0 failed: %d",
-                        g_agent_configure->task_stat_file().c_str(), errno);
+                            g_agent_configure->task_stat_file().c_str(), errno);
             }
         }
     } else {
@@ -133,7 +139,7 @@ static void check_stat_file() {
         if (statbuf.st_size > 10 * 1024 * 1024) {
             if (truncate(g_agent_configure->peer_stat_file().c_str(), 0) != 0) {
                 WARNING_LOG("truncate file %s size to 0 failed: %d",
-                        g_agent_configure->peer_stat_file().c_str(), errno);
+                            g_agent_configure->peer_stat_file().c_str(), errno);
             }
         }
     } else {
@@ -141,43 +147,61 @@ static void check_stat_file() {
     }
 }
 
-int bbts_agent(int argc, char* argv[]) {
+
+
+} // namespace detail
+} // namespace bbts
+
+
+
+
+int main(int argc, char* argv[]) {
+    using namespace bbts;
+    using namespace bbts::agent;
+
     bbts::LogInstance logInstance;
+
+    // 读取参数
     string conf_file(g_process_info->root_dir() + "/conf/agent.conf");
     string user_conf;
-    if (get_user_conf_file(argc, argv, &user_conf)) {
+    if (bbts::get_user_conf_file(argc, argv, &user_conf)) {
         conf_file.assign(user_conf);
     }
 
+    // 读取配置
     if (!load_pbconf(conf_file, g_agent_configure)) {
         return 1;
     }
 
+    // 初始化日志
     string log_conf_parent_dir = g_process_info->root_dir() + LOG_CONF_DIR;
     string log_conf_name = LOG_CONF_FILE;
     if (!g_agent_configure->log_conf().empty()) {
-        if (!Path::slipt(Path::trim(Path::absolute(g_agent_configure->log_conf())), 
-                    &log_conf_parent_dir, &log_conf_name)) {
+        if (!Path::slipt(Path::trim(Path::absolute(g_agent_configure->log_conf())),
+                         &log_conf_parent_dir, &log_conf_name)) {
             return 1;
         }
     }
     if (!logInstance.loadConfig(log_conf_parent_dir + "/" + log_conf_name)) {
         return 1;
     }
-    
+
     NOTICE_LOG("bbts agent version: %s", GINGKO_VERSION);
 
+    // 初始化路径
     if (!init_agent_running_path()) {
         return 1;
     }
 
+    // 配置锁定
     boost::system::error_code ec;
     if (!File::lock(g_agent_configure->lock_file(), ec)) {
         FATAL_LOG("lock file %s failed: [%d]%s", g_agent_configure->lock_file().c_str(),
-                ec.value(), ec.message().c_str());
+                  ec.value(), ec.message().c_str());
         return 1;
     }
 
+    // 设置信号
     set_signal_action();
 
     GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -188,10 +212,9 @@ int bbts_agent(int argc, char* argv[]) {
     boost::asio::deadline_timer timer(g_task_manager->get_io_service());
     timer_run_cycle("check stat file", timer, hours(1), boost::bind(&check_stat_file));
     g_task_manager->join();
+    // 删除由protobuf产生的对象
     google::protobuf::ShutdownProtobufLibrary();
-    CLOSE_LOG();
     return 0;
 }
 
-} // namespace detail
-} // namespace bbts
+

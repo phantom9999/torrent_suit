@@ -65,9 +65,9 @@ public:
     static std::string subpath(const std::string &path);
 
     static std::string current_working_dir();
-
+/*
     static std::string home_dir();
-
+*/
     /**
      * @brief  补全为绝对路径
      *
@@ -120,11 +120,11 @@ public:
      * @return 成功返回true，失败返回false
      */
     static bool mkdirs(const std::string &dir, mode_t mode);
-
+/*
     static bool is_dir(const std::string &path);
 
     static bool is_file(const std::string &path);
-
+*/
     static bool exist(const std::string &path);
 
     static bool nftw(const std::string &dir, NftwCallback cb, int depth, int flag);
@@ -132,8 +132,8 @@ public:
     static const int MAX_PATH_LEN = 4096;
 
 private:
-    Path();
-    ~Path();
+    Path() = delete;
+    ~Path() = delete;
 };
 
 } /* namespace bbts */

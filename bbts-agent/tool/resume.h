@@ -12,7 +12,7 @@ namespace tool {
  */
 class Resume {
 public:
-    Resume();
+    Resume() = default;
 
     void set_filename(const std::string &resume_file);
 
@@ -24,7 +24,7 @@ public:
 
     bool check_file() const;
 
-    ~Resume();
+    ~Resume() = default;
 
 private:
     std::string _filename;

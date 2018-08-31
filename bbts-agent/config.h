@@ -1,5 +1,6 @@
 #ifndef BBTS_AGENT_CONFIG_H
 #define BBTS_AGENT_CONFIG_H
+#include <string>
 
 #ifndef GINGKO_VERSION
 #define GINGKO_VERSION "unknow version"
@@ -33,6 +34,12 @@ enum {
     RES_AGENT_GETOPT,
     RES_STATUS,
 };
+
+bool get_user_conf_file(int argc, char* argv[], std::string *conf_file);
+
+
+
+
 
 } // namespace bbts
 

@@ -1,7 +1,7 @@
 #include "bbts-agent/path.h"
 
-#include <assert.h>
-#include <errno.h>
+#include <cassert>
+#include <cerrno>
 #include <ftw.h>
 #include <sys/stat.h>
 
@@ -80,11 +80,11 @@ string Path::current_working_dir() {
     }
     return string(ptr);
 }
-
+/*
 string Path::home_dir() {
     return string(getenv("HOME"));
 }
-
+*/
 string Path::absolute(const string &path) {
     string full_path = path;
     if (path.empty() || path[0] != '/') {
@@ -178,14 +178,16 @@ bool Path::mkdirs(const string &path, mode_t mode) {
     return mkdir(path, mode);
 }
 
+/*
 bool Path::is_dir(const string &path) {
     struct stat statbuf;
     if (stat(path.c_str(), &statbuf) != 0) {
         return false;
     }
     return statbuf.st_mode & S_IFDIR;
-}
+}*/
 
+/*
 bool Path::is_file(const string &path) {
     struct stat statbuf;
     if (stat(path.c_str(), &statbuf) != 0) {
@@ -193,6 +195,7 @@ bool Path::is_file(const string &path) {
     }
     return statbuf.st_mode & S_IFREG;
 }
+ */
 
 bool Path::exist(const string &path) {
     struct stat statbuf;

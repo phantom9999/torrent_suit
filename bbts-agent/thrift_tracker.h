@@ -28,8 +28,8 @@ public:
     typedef boost::function<
             void(const boost::shared_ptr<libtorrent::ex_announce_response> &)> AnnounceCallback;
 
-    ThriftTracker(boost::asio::io_service& ios);
-    virtual ~ThriftTracker();
+    explicit ThriftTracker(boost::asio::io_service& ios);
+    ~ThriftTracker() override;
 
     bool have_seed() const {
         return _have_seed;

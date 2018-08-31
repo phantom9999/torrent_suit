@@ -54,9 +54,6 @@ BOOST_AUTO_TEST_CASE(t_options) {
     if (variablesMap.count("help") != 0) {
         std::cout << optionsDescription << std::endl;
     }
-
-
-
 }
 
 

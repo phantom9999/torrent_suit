@@ -23,8 +23,8 @@ public:
             boost::system::error_code &ec);
 
 private:
-    File();
-    ~File();
+    File() = delete;
+    ~File() = delete;
 };
 
 } // namespace bbts

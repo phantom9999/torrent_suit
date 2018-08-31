@@ -1,7 +1,7 @@
 #ifndef  BBTS_AGENT_PBCONF_H
 #define  BBTS_AGENT_PBCONF_H
 
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 
 #include <string>
@@ -28,6 +28,9 @@ inline bool load_pbconf(const std::string &conf_file, google::protobuf::Message 
     }
     return true;
 }
+
+
+
 
 }  // namespace bbts
 

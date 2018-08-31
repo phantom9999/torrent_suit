@@ -1,8 +1,8 @@
 #include "bbts-agent/file.h"
 
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include <sys/stat.h>
 
 #include "bbts-agent/cluster_api.h"

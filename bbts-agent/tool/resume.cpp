@@ -1,6 +1,6 @@
 #include "bbts-agent/tool/resume.h"
 
-#include <string.h>
+#include <cstring>
 #include <sys/stat.h>
 
 #include <boost/system/error_code.hpp>
@@ -15,10 +15,6 @@ using boost::system::error_code;
 
 namespace bbts {
 namespace tool {
-
-Resume::Resume() {}
-
-Resume::~Resume() {}
 
 void Resume::set_filename(const string &filename) {
     _filename = filename;

@@ -27,13 +27,16 @@ aux_source_directory(proto AGENT_SRC)
 aux_source_directory(tool AGENT_SRC)
 aux_source_directory(torrent_plugins AGENT_SRC)
 
-
 include(${PROJECT_SOURCE_DIR}/config_agent.cmake)
-add_executable(gko-agent ${AGENT_SRC})
+add_library(gko3 ${AGENT_SRC})
+add_executable(gko-agent main/agent_main.cpp)
+add_executable(gko-client main/client_main.cpp)
+
 
 target_link_libraries(
         gko-agent
         -Xlinker "-("
+        gko3
         uri_agent
         pb_conf
         common_lib
@@ -52,6 +55,27 @@ target_link_libraries(
         -Xlinker "-)"
 )
 
+target_link_libraries(
+        gko-client
+        -Xlinker "-("
+        gko3
+        uri_agent
+        pb_conf
+        common_lib
+        torrent-rasterbar
+        ${SQLITE_LIB}
+        ${LOG4CPP_LIB}
+        #        ${LIBTORRENT_LIB}
+        ${BOOST_SYSTEM_LIB}
+        ${BOOST_FILESYSTEM_LIB}
+        ${BOOST_THREAD_LIB}
+        ${BOOST_REGEX_LIB}
+        ${THRIFT_LIB}
+        ${PROTOBUF_LIB}
+        ${SNAPPY_LIB}
+        pthread dl rt ssl crypto
+        -Xlinker "-)"
+)
 
 
 set_target_properties(
@@ -59,7 +83,12 @@ set_target_properties(
         INSTALL_RPATH ".:$ENV{HADOOP_HOME}/lib/native:$ENV{JAVA_HOME}/jre/lib/amd64/server"
 )
 
+set_target_properties(
+        gko-client PROPERTIES
+        INSTALL_RPATH ".:$ENV{HADOOP_HOME}/lib/native:$ENV{JAVA_HOME}/jre/lib/amd64/server"
+)
+
 install(
-        TARGETS gko-agent
+        TARGETS gko-agent gko-client
         RUNTIME DESTINATION bin
 )
