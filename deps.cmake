@@ -14,6 +14,7 @@
 
 if (APPLE)
     set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl/1.0.2o_2)
+    set(BOOST_ROOT /usr/local/Cellar/boost/1.67.0_1)
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)

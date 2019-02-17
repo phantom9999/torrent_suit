@@ -8,7 +8,7 @@
 #include <utility>
 
 #include <boost/thread/mutex.hpp>
-#include "common/com_log.h"
+#include "common/log.h"
 
 using std::string;
 using std::make_pair;
@@ -247,7 +247,7 @@ bool StatusManager::Start(int period) {
 }
 
 void StatusManager::UpdateData() {
-  LOG_INFO() << "UpdateData thread created";
+  BLOG(info) << "UpdateData thread created";
   const timespec  unit = {0, 500000000};
   time_t timestamp = time(NULL);
   time_t last_timestamp = 0;
@@ -256,11 +256,11 @@ void StatusManager::UpdateData() {
     if (last_timestamp != timestamp && timestamp % update_period_ == 0) {
       last_timestamp = timestamp;
       UpdateItems(update_period_);
-      LOG_INFO() << "Update monitor status: " << last_timestamp;
+      BLOG(info) << "Update monitor status: " << last_timestamp;
     }
     nanosleep(&unit, NULL);
   }
-  LOG_INFO() << "UpdateData thread exit";
+  BLOG(info) << "UpdateData thread exit";
 }
 
 void StatusManager::Stop() {
@@ -271,7 +271,7 @@ void StatusManager::Stop() {
 bool StatusManager::RegisterItem(const string& name, ItemType type) {
   unique_lock lock(shared_mutex_);
   if (item_map_.find(name) != item_map_.end()) {
-    LOG_WARN() << name << " has already been registered";
+    BLOG(warning) << name << " has already been registered";
     return false;
   }
 
@@ -294,7 +294,7 @@ bool StatusManager::RegisterItem(const string& name, ItemType type) {
       break;
 
     default:
-      LOG_WARN() << "type: " << type << " can't be recognized";
+      BLOG(warning) << "type: " << type << " can't be recognized";
       return false;
   }
   item_map_.insert(make_pair(name, item));
@@ -305,7 +305,7 @@ bool StatusManager::UnregisterItem(const string& name) {
   unique_lock lock(shared_mutex_);
   ItemMap::iterator item_it = item_map_.find(name);
   if (item_it == item_map_.end()) {
-    LOG_WARN() << name << " has not been registered";
+    BLOG(warning) << name << " has not been registered";
     return false;
   }
   item_map_.erase(item_it);
@@ -317,11 +317,11 @@ bool StatusManager::GetItem(const string &key, shared_ptr<Item> *item) const {
   shared_lock lock(shared_mutex_);
   ItemMap::const_iterator iter = item_map_.find(key);
   if (iter == item_map_.end()) {
-    LOG_WARN() << key << " not registered";
+    BLOG(warning) << key << " not registered";
     return false;
   }
   if (iter->second->type() != Item::type_) {
-    LOG_WARN() << key << " doesn't have type " << Item::type_;
+    BLOG(warning) << key << " doesn't have type " << Item::type_;
     return false;
   }
   *item = static_pointer_cast<Item>(iter->second);
@@ -357,7 +357,7 @@ bool StatusManager::GetItemStatus(const string& key, string* value) const {
   }
 
   if (!item->GetValue(update_period_, value)) {
-    LOG_WARN() << key << " expired";
+    BLOG(warning) << key << " expired";
     return false;
   }
   return true;
@@ -371,7 +371,7 @@ bool StatusManager::GetItemStatus(const string& key, double* value) const {
   }
 
   if (!item->GetValue(update_period_, value)) {
-    LOG_WARN() << key << " expired";
+    BLOG(warning) << key << " expired";
     return false;
   }
   return true;
@@ -385,7 +385,7 @@ bool StatusManager::IncreaseItemCounting(const string& key) {
 
 bool StatusManager::IncreaseItemCounting(const string& key, int64_t increasement) {
   if (increasement < 1) {
-    LOG_WARN() << "Invalid increasement " << increasement;
+    BLOG(warning) << "Invalid increasement " << increasement;
     return false;
   }
 

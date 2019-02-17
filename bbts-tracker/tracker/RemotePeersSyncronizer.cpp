@@ -3,7 +3,7 @@
 #include <boost/unordered_set.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "common/com_log.h"
+#include "common/log.h"
 
 #include "bbts-tracker/KeyTypeRWLock.hpp"
 #include "bbts-tracker/RedisCommandCreator.h"
@@ -78,15 +78,15 @@ void RemotePeersSyncronizer::ThreadFunc(shared_ptr<InfoHashQueue> queue_to_syncr
 void RemotePeersSyncronizer::UpdateInfoHashMapByReply(const string &key, redisReply *reply,
                                                       const shared_ptr<InfoHashMap> &info_hash_map) {
   if (reply == NULL) {
-    LOG_ERROR() <<"reply NULL when UpdateInfoHashMapByReply";
+    BLOG(error) <<"reply NULL when UpdateInfoHashMapByReply";
     return;
   }
 
   if (reply->type != REDIS_REPLY_ARRAY) {
-    LOG_ERROR()<<"reply is not REDIS_REPLY_ARRAY when UpdateInfoHashMapByReply";
+    BLOG(error)<<"reply is not REDIS_REPLY_ARRAY when UpdateInfoHashMapByReply";
     return;
   }
-  LOG_INFO() << "reply peers num: " << reply->elements;
+  BLOG(info) << "reply peers num: " << reply->elements;
 
   shared_ptr<SingleInfoHashInfo> single_info_pointer(new SingleInfoHashInfo());
   assert(single_info_pointer);
@@ -101,7 +101,7 @@ void RemotePeersSyncronizer::UpdateInfoHashMapByReply(const string &key, redisRe
     try {
       peer_info_pointer->ConstructPeerInfoByString(decode_string);
     } catch (std::exception &e) {
-      LOG_ERROR() << "construct peer from remote failed: " << e.what();
+      BLOG(error) << "construct peer from remote failed: " << e.what();
       continue;
     }
     single_info_pointer->peer_map[peer_info_pointer->GetBase64PeerId()] = peer_info_pointer;

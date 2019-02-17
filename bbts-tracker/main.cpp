@@ -29,8 +29,7 @@
 #include "pb_config/redis_conf.pb.h"
 #include "pb_config/tracker_conf.pb.h"
 
-#include "common/com_log.h"
-
+#include <common/log.h>
 
 
 using std::string;
@@ -106,13 +105,13 @@ static string GenerateTrackerId(int port) {
     error_code ec;
     hostname = boost::asio::ip::host_name(ec);
     if (ec) {
-        LOG_WARN() << "get host name failed";
+        BLOG(warning) << "get host name failed";
         hostname = "unknow";
     } else {
         string::size_type pos = hostname.rfind(".baidu.com");
         hostname = hostname.substr(0, pos);
     }
-    DLOG_INFO() << "hostname is:" << hostname;
+    DLOG(info) << "hostname is:" << hostname;
     return (boost::format("%s:%d") % hostname % port).str();
 }
 
@@ -213,11 +212,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    bbts::LogInstance logInstance(dirname + "/" + tracker_conf.log_conf());
+    // bbts::LogInstance logInstance(dirname + "/" + tracker_conf.log_conf());
+    bbts::logInit();
 
     RedisConf redisConf;
     if (!LoadConf(dirname + "/" + tracker_conf.redis_conf(), &redisConf)) {
-        LOG_ERROR() << "parse redis config error";
+        BLOG(error) << "parse redis config error";
         return 1;
     }
 
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
     StartHttpServer(&http_server, tracker_conf.httpd_port());
 
     if (!g_pRedisManager->Start(redisConf)) {
-        LOG_ERROR() << "can't initialize redis";
+        BLOG(error) << "can't initialize redis";
         return 1;
     }
 
@@ -251,7 +251,7 @@ int main(int argc, char **argv) {
                  queue_to_syncronize,
                  remote_map));
     }
-    LOG_INFO() << "remote_peers_syncronizers started";
+    BLOG(info) << "remote_peers_syncronizers started";
 
     shared_ptr<AnnounceHandler> handler(new AnnounceHandler());
     peer_handler = &handler->get_peer_handler();
@@ -276,7 +276,7 @@ int main(int argc, char **argv) {
         g_my_server->serve();
     }
     catch (std::exception &e) {
-        LOG_ERROR() << "catch exception: " << e.what();
+        BLOG(error) << "catch exception: " << e.what();
         return 9;
     }
     return 0;
