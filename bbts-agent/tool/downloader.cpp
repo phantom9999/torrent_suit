@@ -81,19 +81,18 @@ namespace tool {
 
 static bool catch_stop_sigal = false;
 
-static void handle_stop_sigal(int sig) {
-    NOTICE_LOG("catch sigal %d, will stop download", sig);
-    catch_stop_sigal = true;
-}
-
 static void set_signal_action() {
-    struct sigaction sa;
+    struct sigaction sa{};
     sa.sa_flags = SA_RESETHAND;
-    sa.sa_handler = handle_stop_sigal;
+    // sa.sa_handler = handle_stop_sigal;
+    sa.sa_handler = [](int sig) {
+        NOTICE_LOG("catch sigal %d, will stop download", sig);
+        catch_stop_sigal = true;
+    };
     sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-    sigaction(SIGQUIT, &sa, NULL);
-    sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGINT, &sa, nullptr);
+    sigaction(SIGQUIT, &sa, nullptr);
+    sigaction(SIGTERM, &sa, nullptr);
 }
 
 static void log_progress(const torrent_status &ts, bool need_stdout) {
@@ -1305,10 +1304,12 @@ bool Downloader::check_and_add_source_peers(bool is_from_torrent_provider) {
     tcp::resolver::iterator end;
     for (int i = 0; i < _configure->source_size(); ++i) {
         const message::SourceURI &source_uri = _configure->source(i);
+        // 协议
         if (source_uri.protocol() != "gko3") {
             WARNING_LOG("protocol(%s) invalid, must be gko3!", source_uri.protocol().c_str());
             continue;
         }
+        // 端口
         if (source_uri.port() == 0) {
             WARNING_LOG("port:0 is invalid, must great than 0!");
             continue;
@@ -1387,14 +1388,18 @@ bool Downloader::auto_add_task(int32_t seeding_time) {
 }
 
 bool Downloader::init() {
+    // 信号处理
     set_signal_action();
+    // 打开peer文件
     if (!_stat.open_peer_file(_configure->peer_stat_file())) {
         WARNING_LOG("Open peer stat file %s failed", _configure->peer_stat_file().c_str());
     }
 
     if (_configure->tracker_size() == 0) {
         const string &machine_room = g_process_info->machine_room();
+        // 载入指定配置
         if (!_thrift_tracker.load_conf(_configure->routing_conf_file(), machine_room)) {
+            // 如果失败则载入目标配置
             if (!_thrift_tracker.load_conf(
                     g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
                 FATAL_LOG("load thrift trackers fail");
@@ -1402,7 +1407,9 @@ bool Downloader::init() {
             }
         }
     }
+    // 设置路由信息
     _torrent_provider.set_routing_conf(_configure->routing_conf_file());
+    // 设置路由信息
     _stat.set_routing_conf(_configure->routing_conf_file());
 
     if (!check_and_add_source_peers(false)) {

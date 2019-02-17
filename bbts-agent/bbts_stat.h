@@ -68,7 +68,7 @@ private:
     **/
     void print_peer_statistics(const PeerStatAlert& alert);
 
-    FILE *_peer_file;
+    FILE *_peer_file{nullptr};
     std::vector<stat::PeerInfo> _peer_info_vector;
     stat::TaskInfo  _task_info;
 };

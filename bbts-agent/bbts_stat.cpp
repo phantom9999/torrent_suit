@@ -1,6 +1,6 @@
 #include "bbts_stat.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <boost/shared_ptr.hpp>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -20,7 +20,7 @@ using ::apache::thrift::TException;
 
 namespace bbts {
 
-BbtsStat::BbtsStat() : _peer_file(NULL) {
+BbtsStat::BbtsStat() {
     set_service_name("bbts_stat");
 }
 

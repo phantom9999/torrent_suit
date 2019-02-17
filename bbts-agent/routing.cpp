@@ -48,11 +48,7 @@ string Routing::get_machine_room_area(const string &machine_room) {
 
 bool Routing::check_machine_room_area_default(const std::string &machine_room) {
     std::string area = get_machine_room_area_inner(machine_room);
-    if (area != _s_default_inner_machine_room_area) {
-        return false;
-    }
-
-    return true;
+    return area == _s_default_inner_machine_room_area;
 }
 
 string Routing::get_machine_room_area_inner(const string &machine_room) {

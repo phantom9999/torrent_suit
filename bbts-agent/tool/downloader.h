@@ -30,9 +30,7 @@ namespace tool {
 
 class ClusterDownloader;
 
-/**
- * @brief
- */
+
 class Downloader : public boost::noncopyable {
 public:
     Downloader(message::DownloadConfigure *configure);
@@ -41,22 +39,42 @@ public:
 
 private:
     struct SourcePeerInfo {
-        SourcePeerInfo()
-            : disconnect_time(0),
-              is_connect_success(false),
-              is_failed(false) {}
+        SourcePeerInfo() = default;
         std::string path;
-        int64_t disconnect_time;
-        bool is_connect_success;
-        bool is_failed;
+        int64_t disconnect_time{0};
+        bool is_connect_success{false};
+        bool is_failed{false};
     };
 
+    /**
+     *
+     * @return
+     */
     bool init();
+
+    /**
+     *
+     * @return
+     */
     bool add_download_task();
+    /**
+     *
+     * @param buffer
+     * @param torrent_params
+     * @return
+     */
     bool add_torrent_file(const std::vector<char> &buffer,
             libtorrent::add_torrent_params *torrent_params);
+    /**
+     *
+     * @param ti
+     * @param file_priorities
+     */
     void slip_files_to_muti_paths(libtorrent::torrent_info *ti,
             const std::vector<int> &file_priorities);
+    /**
+     *
+     */
     void start_download();
     void process_alert(int *retval, bool loop);
     bool correct_mode_and_symlinks();
