@@ -43,11 +43,7 @@ target_link_libraries(
         torrent-rasterbar
         ${SQLITE_LIB}
         ${LOG4CPP_LIB}
-#        ${LIBTORRENT_LIB}
-        ${BOOST_SYSTEM_LIB}
-        ${BOOST_FILESYSTEM_LIB}
-        ${BOOST_THREAD_LIB}
-        ${BOOST_REGEX_LIB}
+        ${Boost_LIBRARIES}
         ${THRIFT_LIB}
         ${PROTOBUF_LIB}
         ${SNAPPY_LIB}
@@ -65,11 +61,7 @@ target_link_libraries(
         torrent-rasterbar
         ${SQLITE_LIB}
         ${LOG4CPP_LIB}
-        #        ${LIBTORRENT_LIB}
-        ${BOOST_SYSTEM_LIB}
-        ${BOOST_FILESYSTEM_LIB}
-        ${BOOST_THREAD_LIB}
-        ${BOOST_REGEX_LIB}
+        ${Boost_LIBRARIES}
         ${THRIFT_LIB}
         ${PROTOBUF_LIB}
         ${SNAPPY_LIB}

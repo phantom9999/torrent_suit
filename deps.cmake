@@ -12,55 +12,35 @@
 # - hadoop
 #
 
-
 if (APPLE)
     set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl/1.0.2o_2)
 endif()
 
-find_path(BOOST_H NAMES boost/version.hpp)
-if (NOT BOOST_H)
-    message(FATAL_ERROR "header not found")
-endif()
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREAD ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(
+        Boost COMPONENTS
+        system
+        filesystem
+        thread
+        log
+        regex
+        unit_test_framework
+        program_options
+        REQUIRED
+)
 
-find_library(BOOST_SYSTEM_LIB NAMES boost_system)
-if (NOT BOOST_SYSTEM_LIB)
-    message(FATAL_ERROR "BOOST_SYSTEM_LIB not found")
-endif()
+if (Boost_FOUND)
+    #message(STATUS"Boost_INCLUDE_DIRS:${Boost_INCLUDE_DIRS}")
+    #message(STATUS"Boost_LIBRARIES:${Boost_LIBRARIES}")
+    #message(STATUS"Boost_VERSION:${Boost_VERSION}")
+    #include_directories(${Boost_INCLUDE_DIRS})
+    link_directories(${Boost_LIBRARY_DIRS})
+else()
+    message(FATAL_ERROR "boost not found.")
+endif ()
 
-find_library(BOOST_FILESYSTEM_LIB NAMES boost_filesystem)
-if (NOT BOOST_FILESYSTEM_LIB)
-    message(FATAL_ERROR "BOOST_FILESYSTEM_LIB not found")
-endif()
-
-find_library(BOOST_THREAD_LIB NAMES boost_thread)
-if (NOT BOOST_THREAD_LIB)
-    message(FATAL_ERROR "BOOST_THREAD_LIB not found")
-endif()
-
-find_library(BOOST_REGEX_LIB NAMES boost_regex)
-if (NOT BOOST_REGEX_LIB)
-    message(FATAL_ERROR "BOOST_REGEX_LIB not found")
-endif()
-
-find_library(BOOST_TEST_LIB NAMES boost_unit_test_framework)
-if (NOT BOOST_TEST_LIB)
-    message(FATAL_ERROR "BOOST_TEST_LIB not found")
-endif()
-
-find_library(BOOST_OPTIONS_LIB NAMES boost_program_options)
-if (NOT BOOST_OPTIONS_LIB)
-    message(FATAL_ERROR "BOOST_OPTIONS_LIB not found")
-endif()
-
-find_library(BOOST_LOG_LIB NAMES boost_log)
-if (NOT BOOST_LOG_LIB)
-    message(FATAL_ERROR "BOOST_LOG_LIB not found")
-endif()
-
-#find_library(BOOST_LOG_SETUP_LIB NAMES boost_log_setup)
-#if (NOT BOOST_LOG_LIB)
-#    message(FATAL_ERROR "BOOST_LOG_SETUP_LIB not found")
-#endif()
 
 find_path(LIBEVENT_H NAMES event.h)
 find_library(LIBEVENT_LIB NAMES event)
@@ -96,24 +76,11 @@ if(NOT LOG4CPP_H OR NOT LOG4CPP_LIB)
     message(FATAL_ERROR "log4cpp not found")
 endif()
 
-#find_path(GLOG_H NAMES glog/logging.h)
-#find_library(GLOG_LIB NAMES glog)
-#if(NOT GLOG_H OR NOT GLOG_LIB)
-#    message(FATAL_ERROR "glog not found.")
-#endif()
-
-#find_path(GFLAGS_H NAMES gflags/gflags.h)
-#find_library(GFLAGS_LIB NAMES gflags)
-#if(NOT GFLAGS_H OR NOT GFLAGS_LIB)
-#    message(FATAL_ERROR "gflags not found.")
-#endif()
-
 find_path(SQLITE_H NAMES sqlite3.h)
 find_library(SQLITE_LIB NAMES sqlite3)
 if (NOT SQLITE_H OR NOT SQLITE_LIB)
     message(FATAL_ERROR "sqlite not found")
 endif()
-
 
 find_path(HIREDIS_H NAMES hiredis/hiredis.h)
 find_library(HIREDIS_LIB NAMES hiredis)
@@ -124,15 +91,12 @@ endif()
 
 
 include_directories(
-        ${BOOST_H}
         ${LIBEVENT_H}
         ${THRIFT_H}
         ${PROTOBUF_H}
         ${SNAPPY_H}
         ${LOG4CPP_H}
-#        ${GLOG_H}
-#        ${GFLAGS_H}
-        ${GLOG_H}
+        ${Boost_INCLUDE_DIRS}
         ${SQLITE_H}
         ${HIREDIS_H}
 )
