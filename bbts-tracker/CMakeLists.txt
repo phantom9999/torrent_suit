@@ -7,6 +7,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/config_tracker.cmake)
 ADD_EXECUTABLE(gko3-tracker ${GKO3_TRACKER_SRC})
 
 TARGET_LINK_LIBRARIES(gko3-tracker
+        -Xlinker "-("
         gko3-protocol
         pb_conf
         common_lib
@@ -18,8 +19,9 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         ${PROTOBUF_LIB}
         ${LIBEVENT_LIB}
         ${LOG4CPP_LIB}
-        pthread
-        rt)
+        pthread rt
+        -Xlinker "-)"
+        )
 
 INSTALL(
         TARGETS gko3-tracker

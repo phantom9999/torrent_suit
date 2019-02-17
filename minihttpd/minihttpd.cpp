@@ -10,7 +10,7 @@
 #include <event2/http_struct.h>
 #include <boost/thread/lock_guard.hpp>
 
-#include "common/com_log.h"
+#include "common/log.h"
 
 namespace argus {
 namespace common {
@@ -140,7 +140,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
     // and relative-refs like
     // [path][?query][#fragment]
 
-    LOG_INFO() << "request from " << req->remote_host << ":"
+    BLOG(info) << "request from " << req->remote_host << ":"
               << req->remote_port << ", uri " << req->uri;
 
     if (enableIpFilter_ && !inAllowIps(req->remote_host)) {
@@ -150,7 +150,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
         evbuffer_add(evb, res, strlen(res));
         ::evhttp_send_reply(req, HTTP_SERVUNAVAIL, "forbidden", evb);
         evbuffer_free(evb);
-        LOG_WARN() << req->remote_host << " forbidden!!!";
+        BLOG(warning) << req->remote_host << " forbidden!!!";
         return;
     }
 
@@ -160,7 +160,7 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
         evbuffer_add(evb, res, strlen(res));
         ::evhttp_send_reply(req, HTTP_OK, "OK", evb);
         evbuffer_free(evb);
-        LOG_WARN() << "response to " << req->remote_host << ":"
+        BLOG(warning) << "response to " << req->remote_host << ":"
                      << req->remote_port << ", content:\n" << res;
         return;
     }
@@ -199,9 +199,9 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
                       "text/plain; charset=UTF-8");
     evhttp_add_header(req->output_headers, "Connection", "close");
 
-    LOG_INFO() << "response to " << req->remote_host << ":" << req->remote_port
+    BLOG(info) << "response to " << req->remote_host << ":" << req->remote_port
               << ". path='" << path << "', query='" << query << "'";
-    DLOG_INFO() << "response content:\n" << response;
+    DLOG(info) << "response content:\n" << response;
     struct evbuffer *evb = evbuffer_new();
     evbuffer_add(evb, response.data(), response.size());
     ::evhttp_send_reply(req, HTTP_OK, "OK", evb);

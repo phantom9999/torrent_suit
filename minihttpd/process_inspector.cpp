@@ -2,7 +2,7 @@
 #include "minihttpd/process_info.h"
 #include "minihttpd/minihttpd.h"
 #include <cstdio>
-#include "common/com_log.h"
+#include "common/log.h"
 
 namespace argus {
 namespace common {
@@ -12,7 +12,7 @@ void ProcessInspector::registerCallBacks(MiniHttpd *httpd) {
     if (!httpd->setCallBack(MiniHttpd::baseInfoPath,
                             ProcessInspector::baseInfo,
                             &retmsg)) {
-        LOG_ERROR() << "failed registerCallBacks" << retmsg;
+        BLOG(error) << "failed registerCallBacks" << retmsg;
     }
     httpd->setCallBack("start_time", ProcessInspector::startTime);
     httpd->setCallBack("account", ProcessInspector::account);
