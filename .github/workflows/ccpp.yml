@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: fedora:33
+    runs-on: fedora-33
 
     steps:
     - uses: actions/checkout@v2
