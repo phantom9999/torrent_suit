@@ -9,12 +9,14 @@ on:
 jobs:
   build:
 
-    runs-on: fedora-33
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: configure
-      run: ./configure
+    - name: install deps
+      run: apt-get install cmake
+    - name: cmake
+      run: cmake .
     - name: make
       run: make
     - name: make check
