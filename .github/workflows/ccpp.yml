@@ -20,8 +20,9 @@ jobs:
         sudo apt-get install automake bison flex g++ git libboost-all-dev libevent-dev libssl-dev libtool make pkg-config
         git clone https://github.com/apache/thrift.git
         cd thrift
-        cmake .
-        make -j8
+        sh bootstrap.sh
+        ./configure --without-qt5 --without-as3 --without-c_glib --without-csharp --without-java --without-erlang --without-nodejs --without-nodets --without-lua  --without-python --without-py3 --without-perl --without-php --without-php_extension --without-dart --without-ruby --without-haskell --without-go --without-swift --without-rs --without-cl --without-haxe --without-dotnetcore --without-d
+        make -j
         sudo make install
     - name: cmake
       run: cmake .
