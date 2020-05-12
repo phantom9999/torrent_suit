@@ -24,11 +24,21 @@ jobs:
         ./configure --without-qt5 --without-as3 --without-c_glib --without-csharp --without-java --without-erlang --without-nodejs --without-nodets --without-lua  --without-python --without-py3 --without-perl --without-php --without-php_extension --without-dart --without-ruby --without-haskell --without-go --without-swift --without-rs --without-cl --without-haxe --without-dotnetcore --without-d
         make -j
         sudo make install
-    - name: cmake
-      run: cmake .
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: connan
+      run: |
+        sudo apt-get install cmake3; alias cmake='cmake3' || true
+        sudo apt-get install -y libsnappy1 libsnappy-dev libgoogle-glog-dev
+        sudo apt-get install -y libgflags-dev libgflags2
+        sudo apt-get install -y openjdk-7-jdk openjdk-7-jre
+        sudo apt-get install -y libprotobuf-dev libprotobuf8 protobuf-compiler
+        sudo apt-get install -y libhiredis-dev libhiredis0.10
+        sudo apt-get install -y libgtest-dev
+        sudo apt-get install -y libevent-2.0-5 libevent-dev
+        sudo apt-get install -y thrift-compiler
+        sudo apt-get install -y liblog4cpp5 liblog4cpp5-dev
+        sudo apt-get install -y libgoogle-glog0 libgoogle-glog-dev
+        sudo pip install conan || true
+        conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
+        sudo conan install . --build=missing
+    - name: gen
+      run: source build_by_conan.sh; cmake . ; make -j
