@@ -14,7 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install deps
-      run: sudo apt-get install cmake thrift-compiler libboost-all-dev libevent-dev libprotobuf-dev libgoogle-glog-dev libgflags-dev libhiredis-dev libgtest-dev
+      run: sudo apt-get install cmake libboost-all-dev libevent-dev libprotobuf-dev libgoogle-glog-dev libgflags-dev libhiredis-dev libgtest-dev
+    - name: thrift
+      run: |
+        git clone https://github.com/apache/thrift.git
+        cd thrift
+        cmake .
+        make -j8
+        sudo make install
     - name: cmake
       run: cmake .
     - name: make
