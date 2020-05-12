@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install deps
-      run: sudo apt-get update; sudo apt-get install cmake libboost-all-dev libevent-dev libprotobuf-dev libgoogle-glog-dev libgflags-dev libhiredis-dev libgtest-dev
+      run: sudo apt-get install cmake thrift-compiler libboost-all-dev libevent-dev libprotobuf-dev libgoogle-glog-dev libgflags-dev libhiredis-dev libgtest-dev
     - name: cmake
       run: cmake .
     - name: make
