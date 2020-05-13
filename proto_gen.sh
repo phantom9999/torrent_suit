@@ -8,6 +8,7 @@ thrift --gen cpp -out . transfer_server.thrift
 thrift --gen cpp -out . stat.thrift
 thrift --gen cpp -out . tracker.thrift
 thrift --gen cpp -out . announce.thrift
+find .
 cd -
 
 # tracker
@@ -15,6 +16,7 @@ cd tracker-protocol
 thrift --gen cpp -out . tracker.thrift
 thrift --gen cpp -out . inner.thrift
 thrift --gen cpp -out . announce.thrift
+find .
 cd -
 
 rm `find -name *skeleton.cpp`
@@ -24,6 +26,7 @@ rm `find -name *skeleton.cpp`
 # pb_config
 cd pb_config
 protoc --cpp_out=. *.proto
+find .
 cd -
 
 
