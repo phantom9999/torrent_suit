@@ -26,7 +26,7 @@ jobs:
         sudo make install
     - name: connan
       run: |
-        sudo apt-get install -y libsnappy1 libsnappy-dev libgoogle-glog-dev
+        sudo apt-get install -y libsnappy libsnappy-dev libgoogle-glog-dev
         sudo apt-get install -y libgflags-dev libgflags2
         sudo apt-get install -y openjdk-7-jdk openjdk-7-jre
         sudo apt-get install -y libprotobuf-dev libprotobuf8 protobuf-compiler
