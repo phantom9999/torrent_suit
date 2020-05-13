@@ -26,7 +26,6 @@ jobs:
         sudo make install
     - name: connan
       run: |
-        sudo apt-get install cmake3; alias cmake='cmake3' || true
         sudo apt-get install -y libsnappy1 libsnappy-dev libgoogle-glog-dev
         sudo apt-get install -y libgflags-dev libgflags2
         sudo apt-get install -y openjdk-7-jdk openjdk-7-jre
