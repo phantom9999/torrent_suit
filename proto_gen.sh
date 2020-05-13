@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 # agent
 cd bbts-agent/proto
