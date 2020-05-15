@@ -6,6 +6,9 @@ zypper install -y \
     libboost_program_options1_66_0-devel \
     libboost_log1_66_0-devel \
     libboost_filesystem1_66_0-devel \
+    libboost_thread1_66_0-devel \
+    libboost_regex1_66_0-devel \
+    libboost_test1_66_0-devel \
     libevent-devel \
     sqlite3-devel \
     libthrift-devel \
