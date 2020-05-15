@@ -17,7 +17,7 @@ if (APPLE)
     set(BOOST_ROOT /usr/local/Cellar/boost/1.67.0_1)
 endif()
 
-set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(
