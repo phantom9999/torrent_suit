@@ -1,7 +1,20 @@
 #! /bin/bash
-set -e
+set -x
 
-zypper install -y boost_1_58_0-devel libevent-devel sqlite3-devel libthrift-devel hiredis-devel protobuf-devel snappy-devel log4cpp-devel libopenssl-devel cmake make thrift
+zypper install -y \
+    libboost_system1_66_0-devel \
+    libboost_program_options1_66_0-devel \
+    libboost_log1_66_0-devel \
+    libboost_filesystem1_66_0-devel \
+    libevent-devel \
+    sqlite3-devel \
+    libthrift-devel \
+    hiredis-devel \
+    protobuf-devel \
+    snappy-devel \
+    log4cpp-devel \
+    libopenssl-devel \
+    cmake make thrift
 
 sh proto_gen.sh ;
 cmake . -DBOOST_TEST_DYN_LINK=1; 
