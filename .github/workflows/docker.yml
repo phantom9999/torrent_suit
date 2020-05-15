@@ -14,8 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: use docker build
-      uses: phantom9999/actions@v17
+      uses: phantom9999/actions@v18
       with:
           shell_main: "action.sh"
-          shell_pre: "action_pre.sh"
           shell_post: "action_post.sh"
