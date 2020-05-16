@@ -28,6 +28,7 @@ find_package(
         log
         regex
         unit_test_framework
+        test_exec_monitor
         program_options
         REQUIRED
 )

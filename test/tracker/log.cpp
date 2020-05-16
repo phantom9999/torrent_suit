@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(t_trivial_file) {
     BOOST_LOG_TRIVIAL(fatal) << "a fatal";
 
 
-    BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(my_logger, src::logger_mt)
+    // BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(my_logger, src::logger_mt)
 
 }
 

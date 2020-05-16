@@ -1,5 +1,6 @@
 #include "com_log.h"
 #include <iostream>
+#include <string>
 #include <boost/filesystem.hpp>
 #include <log4cpp/PatternLayout.hh>
 #include <log4cpp/OstreamAppender.hh>
