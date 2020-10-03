@@ -14,7 +14,7 @@
 
 namespace bbts {
 
-bool logInit();
+bool blogInit(const std::string& configDir, const std::string& logDir);
 
 }
 

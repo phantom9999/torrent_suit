@@ -200,7 +200,7 @@ bool TorrentProvider::upload_torrent_file(
         }
     }
 
-    return success == 0 ? true : false;
+    return success == 0;
 }
 
 bool TorrentProvider::get_infohash_torrent_file(
@@ -209,8 +209,8 @@ bool TorrentProvider::get_infohash_torrent_file(
         vector<char> *buffer) {
     if (infohash.empty()
         || infohash.length() != 40
-        || source == NULL
-        || buffer == NULL) {
+        || source == nullptr
+        || buffer == nullptr) {
         return false;
     }
     source->clear();

@@ -23,7 +23,7 @@ public:
     /**
      *
      */
-    ~TorrentProvider() = default;
+    ~TorrentProvider() override = default;
 
     /**
      *

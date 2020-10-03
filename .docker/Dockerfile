@@ -1,4 +1,4 @@
-FROM opensuse
+FROM opensuse/leap:42.3
 
 MAINTAINER phantom9999
 

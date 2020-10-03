@@ -1,25 +1,23 @@
 # 依赖包括:
 # - boost
-# - libevent
+# - libevent 包管理
 # - thrift
 # - protobuf
 # - snappy
 # - log4cpp
-# - glog
-# - sqlite
+# - sqlite 包管理
 # - hiredis
 # - jdk
 # - hadoop
+# - zlib 包管理
+# - openssl 包管理
 #
 
-if (APPLE)
-    set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl/1.0.2o_2)
-    set(BOOST_ROOT /usr/local/Cellar/boost/1.67.0_1)
-endif()
+link_directories(.)
 
-#set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREAD ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_MULTITHREAD ON)
+#set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(
         Boost COMPONENTS
         system
@@ -33,9 +31,9 @@ find_package(
         REQUIRED
 )
 
-add_definitions(
-        -DBOOST_ALL_DYN_LINK
-)
+#add_definitions(
+#        -DBOOST_ALL_DYN_LINK
+#)
 
 if (Boost_FOUND)
     #message(STATUS"Boost_INCLUDE_DIRS:${Boost_INCLUDE_DIRS}")
@@ -43,6 +41,7 @@ if (Boost_FOUND)
     #message(STATUS"Boost_VERSION:${Boost_VERSION}")
     #include_directories(${Boost_INCLUDE_DIRS})
     link_directories(${Boost_LIBRARY_DIRS})
+    include_directories(${Boost_INCLUDE_DIRS})
 else()
     message(FATAL_ERROR "boost not found.")
 endif ()
@@ -52,6 +51,8 @@ find_path(LIBEVENT_H NAMES event.h)
 find_library(LIBEVENT_LIB NAMES event)
 if(NOT LIBEVENT_H OR NOT LIBEVENT_LIB)
     message(FATAL_ERROR "libevent not found.")
+else()
+    include_directories(${LIBEVENT_H})
 endif()
 
 
@@ -60,18 +61,23 @@ find_library(THRIFT_LIB NAMES thrift)
 find_library(THRIFT_NB_LIB NAMES thriftnb)
 if(NOT THRIFT_H OR NOT THRIFT_LIB OR NOT THRIFT_NB_LIB)
     message(FATAL_ERROR "thrift not found.")
+else()
+    include_directories(${THRIFT_H})
 endif()
 
-find_path(PROTOBUF_H NAMES google/protobuf/message.h)
-find_library(PROTOBUF_LIB NAMES protobuf)
-if(NOT PROTOBUF_H OR NOT PROTOBUF_LIB)
+find_package(Protobuf)
+if (NOT Protobuf_FOUND)
     message(FATAL_ERROR "protobuf not found.")
+else()
+    include_directories(${Protobuf_INCLUDE_DIRS})
 endif()
 
 find_path(SNAPPY_H NAMES snappy.h)
 find_library(SNAPPY_LIB NAMES snappy)
 if(NOT SNAPPY_H OR NOT SNAPPY_LIB)
     message(FATAL_ERROR "snappy not found.")
+else()
+    include_directories(${SNAPPY_H})
 endif()
 
 
@@ -80,33 +86,39 @@ find_path(LOG4CPP_H NAMES log4cpp/Category.hh)
 find_library(LOG4CPP_LIB NAMES log4cpp)
 if(NOT LOG4CPP_H OR NOT LOG4CPP_LIB)
     message(FATAL_ERROR "log4cpp not found")
+else()
+    include_directories(${LOG4CPP_H})
 endif()
 
 find_path(SQLITE_H NAMES sqlite3.h)
 find_library(SQLITE_LIB NAMES sqlite3)
 if (NOT SQLITE_H OR NOT SQLITE_LIB)
     message(FATAL_ERROR "sqlite not found")
+else()
+    include_directories(${SQLITE_H})
 endif()
 
 find_path(HIREDIS_H NAMES hiredis/hiredis.h)
 find_library(HIREDIS_LIB NAMES hiredis)
 if(NOT HIREDIS_H OR NOT HIREDIS_LIB)
     message(FATAL_ERROR "hiredis not found.")
+else()
+    include_directories(${HIREDIS_H})
 endif()
 
+find_package(OpenSSL)
+if (NOT OPENSSL_FOUND)
+    message(FATAL_ERROR "openssl not found.")
+else()
+    include_directories(${OPENSSL_INCLUDE_DIR})
+endif()
 
-
-include_directories(
-        ${LIBEVENT_H}
-        ${THRIFT_H}
-        ${PROTOBUF_H}
-        ${SNAPPY_H}
-        ${LOG4CPP_H}
-        ${Boost_INCLUDE_DIRS}
-        ${SQLITE_H}
-        ${HIREDIS_H}
-)
-
+find_package(ZLIB)
+if(NOT ZLIB_FOUND)
+    message(FATAL_ERROR "zlib not found.")
+else()
+    include_directories(${ZLIB_INCLUDE_DIRS})
+endif()
 
 add_compile_options(
         -g -fPIC -ggdb -w -Wall -pipe -fpermissive -ftemplate-depth-128

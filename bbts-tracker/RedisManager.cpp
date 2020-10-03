@@ -12,9 +12,6 @@ typedef boost::mutex::scoped_lock ScopedLock;
 
 namespace bbts {
 
-RedisManager::RedisManager()
-    : redis_num_(0), timeout_(3), terminated_(false) {}
-
 bool RedisManager::Start(const RedisConf &redis_conf) {
     timeout_ = redis_conf.timeout();
     database_ = redis_conf.database();
@@ -37,11 +34,11 @@ bool RedisManager::Start(const RedisConf &redis_conf) {
 
     DoConnection();
     threads_.create_thread(bind(&RedisManager::CheckAndConnectRedis, this));
-    for (int j = 0; j < 2; ++j) {
+    for (auto & context_manager : context_managers_) {
         for (int i = 0; i < redis_num_; ++i) {
             threads_.create_thread(bind(&RedisManager::SendToRedis,
                                         this,
-                                        &context_managers_[j][i]));
+                                        &context_manager[i]));
         }
     }
 
@@ -54,8 +51,7 @@ void RedisManager::Disconnect(redisContext **c) {
     *c = NULL;
 }
 
-bool
-RedisManager::ConnectRedis(const RedisServer &server, redisContext **context) {
+bool RedisManager::ConnectRedis(const RedisServer &server, redisContext **context) {
     struct timeval timeout = {timeout_ / 1000, timeout_ % 1000 * 1000};
     redisContext *c =
         redisConnectWithTimeout(server.hostname.c_str(), server.port, timeout);

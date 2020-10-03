@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/asio.hpp>
 
 struct sqlite3;
 

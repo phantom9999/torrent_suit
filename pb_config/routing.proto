@@ -1,3 +1,4 @@
+syntax = "proto2";
 package bbts.message;
 
 message Server {

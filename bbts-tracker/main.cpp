@@ -208,15 +208,18 @@ int main(int argc, char **argv) {
     // 配置文件解析
     TrackerConf tracker_conf;
     if (!LoadConf(dirname + "/" + filename, &tracker_conf)) {
-        std::cout << "parse tracker config error" << std::endl;
+        BLOG(error) << "parse tracker config error";
         return 1;
     }
 
     // bbts::LogInstance logInstance(dirname + "/" + tracker_conf.log_conf());
-    bbts::logInit();
+    if (!bbts::blogInit(tracker_conf.log_conf(), tracker_conf.log_dir())) {
+        BLOG(error) << "parse log error";
+        return 1;
+    }
 
     RedisConf redisConf;
-    if (!LoadConf(dirname + "/" + tracker_conf.redis_conf(), &redisConf)) {
+    if (!LoadConf(tracker_conf.redis_conf(), &redisConf)) {
         BLOG(error) << "parse redis config error";
         return 1;
     }

@@ -27,23 +27,14 @@ namespace BFileSystem = boost::filesystem;
 
 namespace bbts {
 
-bool logInit() {
+bool blogInit(const std::string& configDir, const std::string& logDir) {
     typedef BFileSystem::path Path;
     typedef boost::system::error_code ErrorCode;
 
-    ErrorCode ec;
-    Path binPath = BFileSystem::canonical("/proc/self/exe", ec);
-    if (ec.value() != 0) {
-        return false;
-    }
-
-    Path workspace = BFileSystem::current_path().parent_path();
-    Path confPath = Path(workspace).append("conf/log.conf");
-    Path logPath = Path(workspace).append("log");
-    std::cout << "use default config " << confPath.generic_string()
-              << std::endl;
-    std::cout << "use default log dir " << logPath.generic_string()
-              << std::endl;
+    Path workspace = BFileSystem::current_path();
+    BLOG(trace) << "use workspace: " << workspace.string();
+    Path confPath = workspace / configDir;
+    Path logPath = workspace / logDir;
 
     BLogging::add_common_attributes();
     BLogging::register_simple_formatter_factory<BTri::severity_level, char>(
@@ -52,16 +43,17 @@ bool logInit() {
         "Severity");
 
     if (!BFileSystem::exists(logPath)) {
+        BLOG(trace) << "mkdir " << logPath.string();
         BFileSystem::create_directory(logPath);
     }
 
     try {
-        std::ifstream file(confPath.generic_string());
+        std::ifstream file(confPath.string());
         BLogging::init_from_stream(file);
     }
     catch (const std::exception &e) {
-        std::cout << "init_logger is fail, read log config file fail. curse: "
-                  << e.what() << std::endl;
+        BLOG(error) << "init_logger is fail, read log config file fail. curse: "
+                  << e.what() << " use " << confPath.string() << std::endl;
         return false;
     }
     return true;

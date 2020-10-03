@@ -10,7 +10,7 @@ export CMAKE_C_COMPILER_ARG1="gcc"
 
 workspace=$(cd $(dirname $0) && pwd)
 third_party=( \
-    boost \
+    boost_old \
     protobuf \
     libevent \
     snappy \
@@ -22,6 +22,8 @@ third_party=( \
     hiredis \
     gtest \
     sqlite \
+    openssl \
+    zlib \
 )
 dep_dir=${workspace}/third-party
 

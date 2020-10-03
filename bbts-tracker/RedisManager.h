@@ -22,29 +22,22 @@ struct RedisServer {
 };
 
 struct ContextManager {
-    ContextManager()
-        : charge_context(NULL), release_context(NULL), charged_commands(0),
-          release_commands(0), flag(false) {}
-
     // context used for charging redis command, pipeline mode used
-    redisContext *charge_context;
+    redisContext *charge_context{nullptr};
     // context used for pipeline release
-    redisContext *release_context;
+    redisContext *release_context{nullptr};
     // how many commands were charged
-    int charged_commands;
-    int release_commands;
+    int charged_commands{0};
+    int release_commands{0};
     boost::mutex charge_mutex;
     boost::mutex release_mutex;
-    bool flag;
+    bool flag{false};
 };
 
 struct SyncContextManager {
-    SyncContextManager()
-        : execute_context(NULL), flag(false) {}
-
     // context used for direct interaction(synchronized)
-    redisContext *execute_context;
-    bool flag;
+    redisContext *execute_context{nullptr};
+    bool flag{false};
 };
 
 class RedisConf;
@@ -53,7 +46,7 @@ class RedisConf;
  **/
 class RedisManager: private boost::noncopyable {
 public:
-    RedisManager();
+    RedisManager() = default;
     ~RedisManager() = default;
     // @brief start redis manager. Tasks including:
     //   1. mark all redis-cluster flags to 'disabled'
@@ -70,12 +63,9 @@ public:
     bool Start(const RedisConf &redis_conf);
 
     // pipeline command to redis, will not wait
-    bool
-    PipelineCommand(const std::string &redis_key, const std::string &command);
+    bool PipelineCommand(const std::string &redis_key, const std::string &command);
 
-    bool ExecuteCommand(const std::string &redis_key,
-                        const std::string &command,
-                        redisReply **reply);
+    bool ExecuteCommand(const std::string &redis_key, const std::string &command, redisReply **reply);
 
     void FreeReplyObject(redisReply **reply);
 
@@ -106,13 +96,11 @@ private:
 
     bool AppendCommand(ContextManager *context, const std::string &command);
 
-    bool ExcuteCommandInternal(const RedisServer &server,
-                               SyncContextManager *context,
-                               const std::string &command,
-                               redisReply **reply);
+    bool ExcuteCommandInternal(const RedisServer &server, SyncContextManager *context,
+                               const std::string &command, redisReply **reply);
 
 private:
-    int redis_num_;
+    int redis_num_{0};
 
     // redis server config
     RedisServer redis_servers_[2][MAX_REDIS_SERVERS];
@@ -124,11 +112,11 @@ private:
     // connection params for redis server
     std::string database_;
     std::string passwd_;
-    int timeout_;
+    int timeout_{3};
 
     boost::thread_group threads_;
 
-    bool terminated_;
+    bool terminated_{false};
 };
 
 // way to get a singleton object of RedisAManager

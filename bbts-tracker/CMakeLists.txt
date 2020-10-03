@@ -16,7 +16,7 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         minihttpd
         ${HIREDIS_LIB}
         ${Boost_LIBRARIES}
-        ${PROTOBUF_LIB}
+        ${Protobuf_LIBRARIES}
         ${LIBEVENT_LIB}
         ${LOG4CPP_LIB}
         pthread rt

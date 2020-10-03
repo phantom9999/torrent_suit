@@ -9,15 +9,13 @@ namespace tracker {
 
 class AnnounceHandler : virtual public AnnounceIf {
  public:
-  AnnounceHandler() {
-    // Your initialization goes here
-  }
+  AnnounceHandler() = default;
 
-  virtual void announce(AnnounceResponse &_return, const AnnounceRequest &_request);
+  void announce(AnnounceResponse &_return, const AnnounceRequest &_request) override;
 
-  virtual void StopByInfohash(BaseResponse& _return, const ControlByInfohashRequest& request);
+  void StopByInfohash(BaseResponse& _return, const ControlByInfohashRequest& request) override;
 
-  virtual void ResumeByInfohash(BaseResponse& _return, const ControlByInfohashRequest& request);
+  void ResumeByInfohash(BaseResponse& _return, const ControlByInfohashRequest& request) override;
 
   PeerHandler& get_peer_handler() {
     return peer_handler_;

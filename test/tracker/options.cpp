@@ -10,7 +10,7 @@ BOOST_AUTO_TEST_SUITE(s_options)
  * DEFINE_string(dir, "../conf", "conf file dir");
  * DEFINE_string(file, "tracker.conf", "conf file");
  * DEFINE_string(log, "../log/tracker.log", "log file name");
- * DEFINE_string(redis_file, "redis.conf", "redis conf file");
+ * DEFINE_string(redis_file, "tracker_redis.conf", "redis conf file");
  */
 BOOST_AUTO_TEST_CASE(t_options) {
     char* argv[9] = {
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(t_options) {
         "-dir", "../conf",
         "--file", "tracker.conf",
         "--log", "../log/tracker.log",
-        "--redis_file", "redis.conf"
+        "--redis_file", "tracker_redis.conf"
     };
     const int argc = 9;
     using std::string;
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(t_options) {
         ("dir", value<string>(&dirname)->default_value("../conf"), "the path of config")
         ("file", value<string>(&filename)->default_value("tracker.conf"), "the file of config")
         ("log", value<string>(&logfile)->default_value("../log/tracker.log"), "the path of log")
-        ("redis_file", value<string>(&redisfile)->default_value("redis.conf"), "the path of redis config")
+        ("redis_file", value<string>(&redisfile)->default_value("tracker_redis.conf"), "the path of redis config")
         ;
     variables_map variablesMap;
     try {

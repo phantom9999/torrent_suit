@@ -97,8 +97,9 @@ bool UnixSocketServer::serve(mode_t mode) {
     }
     chmod(_endpoint.path().c_str(), mode);
 
-    Acceptor::non_blocking_io non_block(true);
-    _acceptor.io_control(non_block, ec);
+    // Acceptor::non_blocking_io non_block(true);
+    // _acceptor.io_control(non_block, ec);
+    _acceptor.non_blocking(true);
     if (ec) {
         WARNING_LOG("set socket(%s) non blocking io failed.", _endpoint.path().c_str());
         return false;

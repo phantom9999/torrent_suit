@@ -1,3 +1,4 @@
+syntax = "proto2";
 package bbts.tracker;
 
 message TrackerConf {
@@ -5,14 +6,15 @@ message TrackerConf {
   required int32  thread_num                   = 2;
   required int32  httpd_port                   = 3;
   required string log_conf                     = 4;
-  required string redis_conf                   = 5;
-  required int32  monitor_cycle_second         = 6;
-  required int32  info_hash_expire_time        = 7;
-  required int32  remote_peers_syncronizer_num = 8;
-  required int32  server_send_timeout          = 9;
-  required int32  server_recv_timeout          = 10;
-  required int32  server_accept_timeout        = 11;
-  required int32  task_expire_time             = 12;
+  required string log_dir                      = 5;
+  required string redis_conf                   = 6;
+  required int32  monitor_cycle_second         = 7;
+  required int32  info_hash_expire_time        = 8;
+  required int32  remote_peers_syncronizer_num = 9;
+  required int32  server_send_timeout          = 10;
+  required int32  server_recv_timeout          = 11;
+  required int32  server_accept_timeout        = 12;
+  required int32  task_expire_time             = 13;
 }
 
 

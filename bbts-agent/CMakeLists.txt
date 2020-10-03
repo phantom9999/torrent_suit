@@ -29,12 +29,12 @@ aux_source_directory(torrent_plugins AGENT_SRC)
 
 include(${PROJECT_SOURCE_DIR}/config_agent.cmake)
 add_library(gko3 ${AGENT_SRC})
-add_executable(gko-agent main/agent_main.cpp)
-add_executable(gko-client main/client_main.cpp)
+add_executable(bbts-agent main/agent_main.cpp)
+add_executable(bbts-client main/client_main.cpp)
 
 
 target_link_libraries(
-        gko-agent
+        bbts-agent
         -Xlinker "-("
         gko3
         uri_agent
@@ -45,14 +45,16 @@ target_link_libraries(
         ${LOG4CPP_LIB}
         ${Boost_LIBRARIES}
         ${THRIFT_LIB}
-        ${PROTOBUF_LIB}
+        ${Protobuf_LIBRARIES}
         ${SNAPPY_LIB}
-        pthread dl rt ssl crypto
+        ${ZLIB_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
+        pthread dl rt
         -Xlinker "-)"
 )
 
 target_link_libraries(
-        gko-client
+        bbts-client
         -Xlinker "-("
         gko3
         uri_agent
@@ -63,24 +65,26 @@ target_link_libraries(
         ${LOG4CPP_LIB}
         ${Boost_LIBRARIES}
         ${THRIFT_LIB}
-        ${PROTOBUF_LIB}
+        ${Protobuf_LIBRARIES}
         ${SNAPPY_LIB}
-        pthread dl rt ssl crypto
+        ${ZLIB_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
+        pthread dl rt
         -Xlinker "-)"
 )
 
 
 set_target_properties(
-        gko-agent PROPERTIES
+        bbts-agent PROPERTIES
         INSTALL_RPATH ".:$ENV{HADOOP_HOME}/lib/native:$ENV{JAVA_HOME}/jre/lib/amd64/server"
 )
 
 set_target_properties(
-        gko-client PROPERTIES
+        bbts-client PROPERTIES
         INSTALL_RPATH ".:$ENV{HADOOP_HOME}/lib/native:$ENV{JAVA_HOME}/jre/lib/amd64/server"
 )
 
 install(
-        TARGETS gko-agent gko-client
+        TARGETS bbts-agent bbts-client
         RUNTIME DESTINATION bin
 )
