@@ -120,6 +120,14 @@ else()
     include_directories(${ZLIB_INCLUDE_DIRS})
 endif()
 
+find_path(FORMAT_H NAMES fmt/format.h)
+find_library(FORMAT_LIB NAMES libfmt.a)
+if(NOT FORMAT_H OR NOT FORMAT_LIB)
+    message(FATAL_ERROR "fmt not found.")
+else()
+    include_directories(${FORMAT_H})
+endif()
+
 add_compile_options(
         -g -fPIC -ggdb -w -Wall -pipe -fpermissive -ftemplate-depth-128
         -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof

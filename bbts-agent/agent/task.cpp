@@ -64,7 +64,7 @@ Task::~Task() {
         update_status(true);
         if (!(_flags & TASK_FLAG_PERSIST)) {
             delete_resume_file();
-            NOTICE_LOG("task(%ld) has been delete.", _id);
+            NOTICE_LOG("task({}) has been delete.", _id);
         }
         remove_torrent();
     }
@@ -79,7 +79,7 @@ void Task::remove_torrent() {
         try {
             g_task_manager->get_session()->remove_torrent(_torrent);
         } catch (libtorrent::libtorrent_exception &e) {
-            WARNING_LOG("task(%ld) %s", _id, e.what());
+            WARNING_LOG("task({}) {}", _id, e.what());
         }
         /* to-do
         _bbts_stat.set_task(_stat);
@@ -165,7 +165,7 @@ shared_ptr<Task> Task::create(
     }
     torrent_handle th = g_task_manager->get_session()->add_torrent(params, ec);
     if (ec) {
-        WARNING_LOG("add torrent(%s) failed, %s.", task->_infohash.c_str(), ec.message().c_str());
+        WARNING_LOG("add torrent({}) failed, {}.", task->_infohash.c_str(), ec.message().c_str());
         return shared_ptr<Task>();
     }
     task->_torrent = th;
@@ -187,7 +187,7 @@ shared_ptr<Task> Task::create(
 shared_ptr<Task> Task::create_from_resume_file(const string &resume_file, int64_t file_size) {
     std::ifstream ifs(resume_file.c_str(), std::ios::binary);
     if (!ifs) {
-        WARNING_LOG("can't open resume file: %s", resume_file.c_str());
+        WARNING_LOG("can't open resume file: {}", resume_file.c_str());
         return shared_ptr<Task>();
     }
     scoped_array<char> buffer(new char[file_size]);
@@ -195,7 +195,7 @@ shared_ptr<Task> Task::create_from_resume_file(const string &resume_file, int64_
     ifs.close();
     entry resume_data = libtorrent::bdecode(buffer.get(), buffer.get() + file_size);
     if (resume_data.type() != entry::dictionary_t) {
-        WARNING_LOG("bdecode resume file failed: %s, type: %d",
+        WARNING_LOG("bdecode resume file failed: {}, type: {}",
                 resume_file.c_str(),
                 resume_data.type());
         return shared_ptr<Task>();
@@ -229,7 +229,7 @@ shared_ptr<Task> Task::create_from_resume_file(const string &resume_file, int64_
         task->_infohash = resume_data["info_hash"].string();
         string bytes;
         if (task->_infohash.length() != 40 || !hex_decode(task->_infohash, &bytes)) {
-            WARNING_LOG("task(%ld) info hash(%s) not correct.", task->_id, task->_infohash.c_str());
+            WARNING_LOG("task({}) info hash({}) not correct.", task->_id, task->_infohash.c_str());
             return shared_ptr<Task>();
         }
         params.ti = new torrent_info(sha1_hash(bytes), 0, task->_new_name);
@@ -243,16 +243,16 @@ shared_ptr<Task> Task::create_from_resume_file(const string &resume_file, int64_
                     metadata,
                     ec);
             if (ret != 0 || !params.ti->parse_info_section(metadata, ec, 0)) {
-                WARNING_LOG("Parse metadata from resume file(%) failed: %s.",
+                WARNING_LOG("Parse metadata from resume file({}) failed: {}.",
                         resume_file.c_str(), ec.message().c_str());
                 return shared_ptr<Task>();
             }
         } else {
-            WARNING_LOG("Resume file(%s) not found metadata!", resume_file.c_str());
+            WARNING_LOG("Resume file({}) not found metadata!", resume_file.c_str());
             return shared_ptr<Task>();
         }
     } else {
-        WARNING_LOG("Resume file(%s) not found infohash!", resume_file.c_str());
+        WARNING_LOG("Resume file({}) not found infohash!", resume_file.c_str());
         return shared_ptr<Task>();
     }
 
@@ -289,7 +289,7 @@ shared_ptr<Task> Task::create_from_resume_file(const string &resume_file, int64_
 
     torrent_handle th = g_task_manager->get_session()->add_torrent(params, ec);
     if (ec) {
-        WARNING_LOG("add torrent(%s) failed, %s.", task->_infohash.c_str(), ec.message().c_str());
+        WARNING_LOG("add torrent({}) failed, {}.", task->_infohash.c_str(), ec.message().c_str());
         return shared_ptr<Task>();
     }
     task->_torrent = th;
@@ -328,7 +328,7 @@ bool Task::gen_task_id() {
     for (int i = 0; i < 3; ++i) {
         TaskDB *db = g_task_manager->get_task_db();
         if (!db->excute(sql.str(), &insert_task_cb, &_id) || _id < 0) {
-            WARNING_LOG("excute sql failed(%s), reconnect and try again(%d)", sql.str().c_str(), i);
+            WARNING_LOG("excute sql failed({}), reconnect and try again({})", sql.str().c_str(), i);
             db->reconnect();
             continue;
         }
@@ -367,7 +367,7 @@ void Task::set_options(const message::TaskOptions &task_opt) const {
         modify = true;
     }
 
-    NOTICE_LOG("Task(%ld) setopt uplimit: %s/s, maxconn: %d",
+    NOTICE_LOG("Task({}) setopt uplimit: {}/s, maxconn: {}",
             _id, StringUtil::bytes_to_readable(_torrent.upload_limit()).c_str(),
             _torrent.max_connections());
     if (modify) {
@@ -466,7 +466,7 @@ void Task::get_status(message::TaskStatus *task_status) const {
         for (int i = 0; i < 3; ++i) {
             if (!db->excute(sql.str(), get_status_cb, task_status)) {
                 db->reconnect();
-                WARNING_LOG("excute sql(%s) failed %d.", sql.str().c_str(), i);
+                WARNING_LOG("excute sql({}) failed {}.", sql.str().c_str(), i);
                 continue;
             }
             excute_success = true;
@@ -482,7 +482,7 @@ void Task::get_status(message::TaskStatus *task_status) const {
         if (!task_info->has_infohash()) {
             task_status->set_status(message::TaskStatus::UNKNOW);
             task_status->set_error("task not found");
-            WARNING_LOG("not find task %ld", _id);
+            WARNING_LOG("not find task {}", _id);
             return;
         }
     }
@@ -495,10 +495,10 @@ void Task::to_seeding() {
     }
 
     if (_seeding_time == -1) {
-        NOTICE_LOG("task(%ld) seeding for infinite", _id, _seeding_time);
+        NOTICE_LOG("task({}) seeding for infinite", _id, _seeding_time);
         return;
     }
-    NOTICE_LOG("Task(%ld) seeding for %d seconds", _id, _seeding_time);
+    NOTICE_LOG("Task({}) seeding for {} seconds", _id, _seeding_time);
     timer_run_once("seeding timer", _seeding_timer, seconds(_seeding_time),
             boost::bind(&TaskManager::seeding_timer_callback, g_task_manager, _id));
 }
@@ -529,12 +529,12 @@ void Task::update_status(bool is_finish) const {
     sql << " where id = " << _id;
     TaskDB *db = g_task_manager->get_task_db();
     if (!db->excute(sql.str())) {
-        WARNING_LOG("excute sql(%s) failed.", sql.str().c_str());
+        WARNING_LOG("excute sql({}) failed.", sql.str().c_str());
         db->reconnect();
         return;
     }
 
-    DEBUG_LOG("update task(%ld) status success.", _id);
+    DEBUG_LOG("update task({}) status success.", _id);
 }
 
 void Task::generate_resume_file() const {
@@ -571,7 +571,7 @@ void Task::generate_resume_file() const {
 
     boost::intrusive_ptr<torrent_info const> ti = _torrent.torrent_file();
     if (ti->info_hash() == sha1_hash(0)) {
-        WARNING_LOG("task(%ld) have no metadata to resume file, skip.", _id);
+        WARNING_LOG("task({}) have no metadata to resume file, skip.", _id);
         return;
     }
     shared_array<char> metadata = ti->metadata();
@@ -582,13 +582,13 @@ void Task::generate_resume_file() const {
     strm << g_agent_configure->resume_dir() << "/" << _id << "." << "resume";
     std::ofstream ofs(strm.str().c_str(), std::ios::binary);
     if (!ofs) {
-        WARNING_LOG("open file failed: %s.", strm.str().c_str());
+        WARNING_LOG("open file failed: {}.", strm.str().c_str());
         return;
     }
 
     libtorrent::bencode(std::ostream_iterator<char>(ofs), resume_data);
     ofs.close();
-    TRACE_LOG("generate resume data to file: %s", strm.str().c_str());
+    TRACE_LOG("generate resume data to file: {}", strm.str().c_str());
     return;
 }
 

@@ -35,7 +35,7 @@ bool get_ip_addr_by_hostname(string hostname, struct in_addr* addr) {
     struct hostent *ptr = NULL;
     int ret = gethostbyname_r(hostname.c_str(), &ent, buf, sizeof(buf), &ptr, &h_err);
     if (ret != 0 || h_err != 0) {
-        WARNING_LOG("get host by name(%s) failed: %s", hostname.c_str(), hstrerror(h_err));
+        WARNING_LOG("get host by name({}) failed: {}", hostname.c_str(), hstrerror(h_err));
         return false;
     }
     *addr = *(struct in_addr *)(ent.h_addr);
@@ -134,10 +134,10 @@ int ProcessInfo::random() const {
 
 bool ProcessInfo::set_evn(const string &key, const string &value) const {
     if (setenv(key.c_str(), value.c_str(), 1) != 0) {
-        WARNING_LOG("setevn %s=%s failed.", key.c_str(), value.c_str());
+        WARNING_LOG("setevn {}={} failed.", key.c_str(), value.c_str());
         return false;
     }
-    DEBUG_LOG("setevn %s=%s", key.c_str(), value.c_str());
+    DEBUG_LOG("setevn {}={}", key.c_str(), value.c_str());
     return true;
 }
 
@@ -157,7 +157,7 @@ string ProcessInfo::get_link_info_by_pid_and_type(pid_t pid, const string &type)
         buf[n] = '\0';
         link_info = string(buf);
     } else {
-        WARNING_LOG("fail to readlink for file %s, error_info: %s\n",
+        WARNING_LOG("fail to readlink for file {}, error_info: {}\n",
                 link_info_file.str().c_str(), strerror(errno));
     }
     return link_info;
@@ -171,7 +171,7 @@ string ProcessInfo::get_process_cmdline_by_pid(pid_t pid) {
     
     FILE *fp = fopen(filename.str().c_str(), "rb");
     if (fp == NULL) {
-        WARNING_LOG("open %s error", filename.str().c_str());
+        WARNING_LOG("open {} error", filename.str().c_str());
         return process_name;
     }
     char ch = '\0';

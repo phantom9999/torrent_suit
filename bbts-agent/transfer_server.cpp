@@ -32,7 +32,7 @@ void TransferServer::request_transfer(const RequestTransferInfo &info) {
     string machine_room = g_process_info->machine_room();
     if (!load_conf(routing_conf(), machine_room)) {
         if (!load_conf(g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
-            WARNING_LOG("load transfer conf(%s/conf/routing.conf) failed",
+            WARNING_LOG("load transfer conf({}/conf/routing.conf) failed",
                     g_process_info->root_dir().c_str());
             return;
         }
@@ -52,9 +52,9 @@ void TransferServer::request_transfer(const RequestTransferInfo &info) {
         TransferServerClient client(protocol);
         try {
             transport->open();
-            NOTICE_LOG("[open transfer:%s:%d][success]", it->first.c_str(), it->second);
+            NOTICE_LOG("[open transfer:{}:{}][success]", it->first.c_str(), it->second);
         } catch (TException &tx) {
-            WARNING_LOG("[open transer:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+            WARNING_LOG("[open transer:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
             continue;
         }
 
@@ -63,13 +63,13 @@ void TransferServer::request_transfer(const RequestTransferInfo &info) {
             try {
                 GeneralResponse response;
                 client.request_transfer(response, info);
-                TRACE_LOG("transfer server[%s:%d] said:%s",
+                TRACE_LOG("transfer server[{}:{}] said:{}",
                         it->first.c_str(), it->second, response.message.c_str());
                 success = true;
                 break;
             }
             catch (TException &e) {
-                WARNING_LOG("get transfer server failed %d: %s", ++retry, e.what());
+                WARNING_LOG("get transfer server failed {}: {}", ++retry, e.what());
                 sleep(1);
             }
         }  // while
@@ -77,7 +77,7 @@ void TransferServer::request_transfer(const RequestTransferInfo &info) {
         try {
             transport->close();
         } catch (TException &tx) {
-            WARNING_LOG("[close transfer:%s:%d][fail:%s]",
+            WARNING_LOG("[close transfer:{}:{}][fail:{}]",
                     it->first.c_str(), it->second, tx.what());
         }
     } // for

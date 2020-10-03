@@ -57,11 +57,11 @@ ClusterDownloader::~ClusterDownloader() {
 
 bool ClusterDownloader::start_download() {
     if (!_cluster_api) {
-        WARNING_LOG("Not support cluster(%s) download.", _cluster_uri.protocol().c_str());
+        WARNING_LOG("Not support cluster({}) download.", _cluster_uri.protocol().c_str());
         _retval = -23;
         return false;
     }
-    TRACE_LOG("Support cluster download, will download from %s.", _cluster_uri.protocol().c_str());
+    TRACE_LOG("Support cluster download, will download from {}.", _cluster_uri.protocol().c_str());
 
     _fs = _cluster_api->connect_cluster_with_timeout(_cluster_uri, 120);
     if (!_fs) {
@@ -115,10 +115,10 @@ bool ClusterDownloader::start_download() {
     if (num_pieces < _threads_num) {
         _threads_num = num_pieces;
     }
-    DEBUG_LOG("will start cluster thread, max hdfs cache pieces: %d", _max_hdfs_cache_pieces);
+    DEBUG_LOG("will start cluster thread, max hdfs cache pieces: {}", _max_hdfs_cache_pieces);
     _start_time = time(NULL);
     for (int i = 0; i < _threads_num; ++i) {
-        DEBUG_LOG("cluster thread %i start", i);
+        DEBUG_LOG("cluster thread {} start", i);
         _thread_group.create_thread(boost::bind(&ClusterDownloader::download, this));
     }
     _is_start = true;
@@ -237,7 +237,7 @@ int ClusterDownloader::get_piece_to_download() {
     int piece_index = -1;
     scoped_lock lock(_mutex);
     while (piece_index < 0 && !_should_stop) {
-        DEBUG_LOG("CURRENT HDFS CACHE PIECES: %d", _waiting_for_disk_pieces.size());
+        DEBUG_LOG("CURRENT HDFS CACHE PIECES: {}", _waiting_for_disk_pieces.size());
         if (_waiting_for_disk_pieces.size() >= _max_hdfs_cache_pieces) {
             DEBUG_LOG("piece is exceed, wait ...");
             _cond.wait(lock);
@@ -268,10 +268,10 @@ void ClusterDownloader::download() {
 
         std::string errstr;
         int piece_size = _btinfo->piece_size(piece_index);
-        DEBUG_LOG("will read piece %d", piece_index);
+        DEBUG_LOG("will read piece {}", piece_index);
         if (_cluster_api->read_piece_content(
                 _fs, _btinfo.get(), piece_index, buffer.get(), errstr) < 0) {
-            WARNING_LOG("read piece %d fail: %s", piece_index, errstr.c_str());
+            WARNING_LOG("read piece {} fail: {}", piece_index, errstr.c_str());
             if (!_ignore_error) {
                 _should_stop = true;
                 _retval = -21;
@@ -281,7 +281,7 @@ void ClusterDownloader::download() {
             sleep(15);
             continue;
         }
-        DEBUG_LOG("piece %d readed success", piece_index);
+        DEBUG_LOG("piece {} readed success", piece_index);
 
         {
             scoped_lock lock(_mutex);
@@ -294,7 +294,7 @@ void ClusterDownloader::download() {
         } else if (!_disable_hash_check) {
             libtorrent::hasher piece_hash(buffer.get(), piece_size);
             if (piece_hash.final() != _btinfo->hash_for_piece(piece_index)) {  // hash失败
-                WARNING_LOG("hash for piece %d failed", piece_index);
+                WARNING_LOG("hash for piece {} failed", piece_index);
                 if (!_ignore_error) {
                     _should_stop = true;
                     _retval = -22;

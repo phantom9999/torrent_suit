@@ -5,6 +5,8 @@
 #include <boost/noncopyable.hpp>
 #include <log4cpp/Category.hh>
 #include <log4cpp/Priority.hh>
+#include <fmt/core.h>
+#include <boost/log/trivial.hpp>
 
 #define FILEINFO() .operator<<("[")\
 .operator<<(__FILE__)\
@@ -59,29 +61,29 @@
 #define LOGLINE_(x) #x
 #define LOGFILEINFO() "[" __FILE__ ":" LOGLINE(__LINE__) "]"
 
-#define FATAL_LOG(fmt, arg...) \
+#define FATAL_LOG(logFormat, arg...) \
 do { \
-  log4cpp::Category::getRoot().fatal(LOGFILEINFO() fmt, ##arg); \
+  BOOST_LOG_TRIVIAL(fatal) << fmt::format("[{}:{}] " logFormat, __FILE__, __LINE__, ##arg); \
 } while (0)
 
-#define WARNING_LOG(fmt, arg...) \
+#define WARNING_LOG(logFormat, arg...) \
 do { \
-  log4cpp::Category::getRoot().warn(LOGFILEINFO() fmt, ##arg); \
+  BOOST_LOG_TRIVIAL(warning) << fmt::format("[{}:{}] " logFormat, __FILE__, __LINE__, ##arg); \
 } while (0)
 
-#define NOTICE_LOG(fmt, arg...) \
+#define NOTICE_LOG(logFormat, arg...) \
 do { \
-  log4cpp::Category::getRoot().notice(LOGFILEINFO() fmt, ##arg); \
+  BOOST_LOG_TRIVIAL(info) << fmt::format("[{}:{}] " logFormat, __FILE__, __LINE__, ##arg); \
 } while (0)
 
-#define TRACE_LOG(fmt, arg...) \
+#define TRACE_LOG(logFormat, arg...) \
 do { \
-  log4cpp::Category::getRoot().info(LOGFILEINFO() fmt, ##arg); \
+  BOOST_LOG_TRIVIAL(trace) << fmt::format("[{}:{}] " logFormat, __FILE__, __LINE__, ##arg); \
 } while (0)
 
-#define DEBUG_LOG(fmt, arg...) \
+#define DEBUG_LOG(logFormat, arg...) \
 do { \
-  log4cpp::Category::getRoot().debug(LOGFILEINFO() fmt, ##arg); \
+  BOOST_LOG_TRIVIAL(debug) << fmt::format("[{}:{}] " logFormat, __FILE__, __LINE__, ##arg); \
 } while (0)
 
 

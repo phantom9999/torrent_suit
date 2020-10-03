@@ -45,7 +45,7 @@ UnixSocketConnection::UnixSocketConnection(
 
 UnixSocketConnection::~UnixSocketConnection() {
     close();
-    DEBUG_LOG("connection release with remote(%s)", _remote_endpoint.path().c_str());
+    DEBUG_LOG("connection release with remote({})", _remote_endpoint.path().c_str());
     _close_callback(_remote_endpoint);
 }
 
@@ -54,7 +54,7 @@ void UnixSocketConnection::handle_write_message(const error_code &ec, size_t byt
         if (ec == error::make_error_code(error::operation_aborted)) {
             //CDEBUG_LOG("write data to remote(%s) canceled.", remote_endpoint_.path().c_str());
         } else {
-            WARNING_LOG("write data to remote(%s) fail: %s",
+            WARNING_LOG("write data to remote({}) fail: {}",
                     _remote_endpoint.path().c_str(), ec.message().c_str());
         }
         close();
@@ -107,19 +107,19 @@ void UnixSocketConnection::handle_read_data(
         size_t bytes_readed) {
     if (ec) {
         if (ec == error::make_error_code(error::eof)) {
-            DEBUG_LOG("connection close by remote(%s): %s", _remote_endpoint.path().c_str());
+            DEBUG_LOG("connection close by remote({}): {}", _remote_endpoint.path().c_str());
         }
         if (ec == error::make_error_code(error::operation_aborted)) {
             //CDEBUG_LOG("read data from remote(%s) canceled.", remote_endpoint_.path().c_str());
         } else {
-            WARNING_LOG("read data from remote(%s) failed: %s",
+            WARNING_LOG("read data from remote({}) failed: {}",
                     _remote_endpoint.path().c_str(), ec.message().c_str());
         }
         close();
         return;
     }
     if (data->size() != bytes_readed) {
-        WARNING_LOG("read data from remote(%s) fail, length too short.",
+        WARNING_LOG("read data from remote({}) fail, length too short.",
                 _remote_endpoint.path().c_str());
         close();
         return;
@@ -133,18 +133,18 @@ void UnixSocketConnection::handle_read_data(
 void UnixSocketConnection::handle_read_head(const error_code &ec, size_t bytes_transferred) {
     if (ec) {
         if (ec == error::make_error_code(error::eof)) {
-            DEBUG_LOG("connection close by remote(%s)", _remote_endpoint.path().c_str());
+            DEBUG_LOG("connection close by remote({})", _remote_endpoint.path().c_str());
         } else if (ec == error::make_error_code(error::operation_aborted)) {
             //CDEBUG_LOG("read header from remote(%s) canceled.", remote_endpoint_.path().c_str());
         } else {
-            WARNING_LOG("read header from remote(%s) failed: %s",
+            WARNING_LOG("read header from remote({}) failed: {}",
                     _remote_endpoint.path().c_str(), ec.message().c_str());
         }
         close();
         return;
     }
     if (!_read_header.is_valid()) {
-        WARNING_LOG("read header from remote(%s) vaild fail",
+        WARNING_LOG("read header from remote({}) vaild fail",
                 _remote_endpoint.path().c_str(), ec.message().c_str());
         close();
         return;
@@ -174,9 +174,9 @@ void UnixSocketConnection::handle_read_head(const error_code &ec, size_t bytes_t
 void UnixSocketConnection::handle_heartbeat_recv(const error_code &ec) {
     if (ec) {
         if (ec == error::make_error_code(error::operation_aborted)) {
-            //CDEBUG_LOG("remote(%s) heartbeat recv timer canceled.", remote_endpoint_.path().c_str());
+            //CDEBUG_LOG("remote({}) heartbeat recv timer canceled.", remote_endpoint_.path().c_str());
         } else {
-            WARNING_LOG("remote(%s) heartbeat recv timer failed: %s",
+            WARNING_LOG("remote({}) heartbeat recv timer failed: {}",
                     _remote_endpoint.path().c_str(), ec.message().c_str());
         }
         return;
@@ -187,9 +187,9 @@ void UnixSocketConnection::handle_heartbeat_recv(const error_code &ec) {
 void UnixSocketConnection::handle_heartbeat_send(const error_code &ec) {
     if (ec) {
         if (ec == error::make_error_code(error::operation_aborted)) {
-            //CDEBUG_LOG("remote(%s) heartbeat send timer canceled.", remote_endpoint_.path().c_str());
+            //CDEBUG_LOG("remote({}) heartbeat send timer canceled.", remote_endpoint_.path().c_str());
         } else {
-            WARNING_LOG("remote(%s) heartbeat send timer failed: %s",
+            WARNING_LOG("remote({}) heartbeat send timer failed: {}",
                     _remote_endpoint.path().c_str(), ec.message().c_str());
         }
         return;

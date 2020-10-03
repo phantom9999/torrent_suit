@@ -58,7 +58,7 @@ void BbtsStat::send_stat() {
     std::string machine_room = g_process_info->machine_room();
     if (!load_conf(routing_conf(), machine_room)) {
         if (!load_conf(g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
-            WARNING_LOG("load stat conf(%s/conf/routing.conf) failed",
+            WARNING_LOG("load stat conf({}/conf/routing.conf) failed",
                     g_process_info->root_dir().c_str());
             return;
         }
@@ -81,27 +81,27 @@ void BbtsStat::send_stat() {
         while (retry <= max_retry_times) {
             try {
                 transport->open();
-                DEBUG_LOG("[open stat server: %s:%d][success]", it->first.c_str(), it->second);
+                DEBUG_LOG("[open stat server: {}:{}][success]", it->first.c_str(), it->second);
 
                 if (client.report_stat(_peer_info_vector, _task_info)) {
-                    DEBUG_LOG("[stat server: %s:%d] report success!",
+                    DEBUG_LOG("[stat server: {}:{}] report success!",
                             it->first.c_str(), it->second);
-                    DEBUG_LOG("infohash is %s", _task_info.infohash.c_str());
-                    DEBUG_LOG("download is %d", _task_info.payload_downloaded);
-                    DEBUG_LOG("upload is %d", _task_info.payload_uploaded);
+                    DEBUG_LOG("infohash is {}", _task_info.infohash.c_str());
+                    DEBUG_LOG("download is {}", _task_info.payload_downloaded);
+                    DEBUG_LOG("upload is {}", _task_info.payload_uploaded);
                     success = true;
                     transport->close();
                     break;
                 }
                 transport->close();
                 ++retry;
-                DEBUG_LOG("[stat server: %s:%d] report fail %d times!", 
+                DEBUG_LOG("[stat server: {}:{}] report fail {} times!",
                         it->first.c_str(), it->second, retry);
 
             } catch (TException &e) {
                 transport->close();
                 ++retry;
-                DEBUG_LOG("[send to stat server: %s:%d][fail %d times: %s]", 
+                DEBUG_LOG("[send to stat server: {}:{}][fail {} times: {}]",
                         it->first.c_str(), it->second, retry, e.what());
                 sleep(1);
             }

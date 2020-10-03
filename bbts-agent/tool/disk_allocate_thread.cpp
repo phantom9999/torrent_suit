@@ -68,7 +68,7 @@ void DiskAllocateThread::disk_allocate() {
         off_t current_offset = 0;
         struct stat statbuf;
         if (stat(file_name.c_str(), &statbuf) == 0) {
-            TRACE_LOG("file %s has size:%ld, and goat size is %ld"
+            TRACE_LOG("file {} has size:{}, and goat size is {}"
                     , file_name.c_str(), statbuf.st_size, fe.size);
             int end_piece = ti->map_file(i, statbuf.st_size, 0).piece;
             for (int piece_index = start_piece; piece_index < end_piece; ++piece_index) {
@@ -77,7 +77,7 @@ void DiskAllocateThread::disk_allocate() {
             _torrent.prioritize_pieces(current_piece_priorities);
             notify_cluster_downloader(end_piece);
             if (statbuf.st_size == fe.size) {
-                TRACE_LOG("file %s already allocated, so don't allocate again", file_name.c_str());
+                TRACE_LOG("file {} already allocated, so don't allocate again", file_name.c_str());
                 continue;
             }
             current_offset = statbuf.st_size;
@@ -91,7 +91,7 @@ void DiskAllocateThread::disk_allocate() {
         }
         int fd = open(file_name.c_str(), open_flag, fe.mode);
         if (fd < 0) {
-            WARNING_LOG("open file %s failed, will not use dynamic pre-allocate mode: [%d]:%s",
+            WARNING_LOG("open file {} failed, will not use dynamic pre-allocate mode: [{}]:{}",
                     file_name.c_str(), errno, strerror(errno));
             close(fd);
             break;
@@ -104,11 +104,11 @@ void DiskAllocateThread::disk_allocate() {
             }
             int fallocate_ret = posix_fallocate(fd, current_offset, allocate_length);
             if (fallocate_ret != 0 && fallocate_ret != EINVAL) {
-                WARNING_LOG("posix_fallocate failed:ret=%d, offset=%ld, len=%ld, file=%s",
+                WARNING_LOG("posix_fallocate failed:ret={}, offset={}, len={}, file={}",
                         fallocate_ret, current_offset, allocate_length, file_name.c_str());
                 break;
             }
-            DEBUG_LOG("allocate current_offset:%ld", current_offset);
+            DEBUG_LOG("allocate current_offset:{}", current_offset);
             int begin_piece = ti->map_file(i, current_offset, 0).piece;
             int end_piece = ti->map_file(i, current_offset + allocate_length, 0).piece;
             for (int piece_index = begin_piece; piece_index < end_piece; ++piece_index) {

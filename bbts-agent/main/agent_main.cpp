@@ -32,17 +32,17 @@ namespace agent {
  */
 static bool init_agent_running_path() {
     if (!Path::mkdir(g_agent_configure->working_dir(), 0755)) {
-        FATAL_LOG("mkdir %s failed.", g_agent_configure->working_dir().c_str());
+        FATAL_LOG("mkdir {} failed.", g_agent_configure->working_dir().c_str());
         return false;
     }
 
     if (chdir(g_agent_configure->working_dir().c_str()) != 0) {
-        FATAL_LOG("chdir to working path %s failed", g_agent_configure->working_dir().c_str());
+        FATAL_LOG("chdir to working path {} failed", g_agent_configure->working_dir().c_str());
         return false;
     }
 
     if (!Path::mkdir(g_agent_configure->resume_dir(), 0755)) {
-        FATAL_LOG("mkdir %s failed", g_agent_configure->resume_dir().c_str());
+        FATAL_LOG("mkdir {} failed", g_agent_configure->resume_dir().c_str());
         return false;
     }
 
@@ -50,7 +50,7 @@ static bool init_agent_running_path() {
     mode_t mode = umask(0);
     int fd = open(g_agent_configure->task_stat_file().c_str(), O_CREAT | O_WRONLY | O_APPEND, 0666);
     if (fd < 0) {
-        FATAL_LOG("open %s failed: %d", g_agent_configure->task_stat_file().c_str(), errno);
+        FATAL_LOG("open {} failed: {}", g_agent_configure->task_stat_file().c_str(), errno);
         return false;
     }
     close(fd);
@@ -58,7 +58,7 @@ static bool init_agent_running_path() {
 
     fd = open(g_agent_configure->peer_stat_file().c_str(), O_CREAT | O_WRONLY | O_APPEND, 0666);
     if (fd < 0) {
-        FATAL_LOG("open %s failed: %d", g_agent_configure->peer_stat_file().c_str(), errno);
+        FATAL_LOG("open {} failed: {}", g_agent_configure->peer_stat_file().c_str(), errno);
         return false;
     }
     close(fd);
@@ -66,7 +66,7 @@ static bool init_agent_running_path() {
 
     fd = open(g_agent_configure->download_log_file().c_str(), O_CREAT | O_WRONLY | O_APPEND, 0666);
     if (fd < 0) {
-        FATAL_LOG("open %s failed: %d", g_agent_configure->download_log_file().c_str(), errno);
+        FATAL_LOG("open {} failed: {}", g_agent_configure->download_log_file().c_str(), errno);
         return false;
     }
     close(fd);
@@ -83,7 +83,7 @@ static void set_signal_action() {
     struct sigaction sa{};
     sa.sa_flags = SA_RESETHAND;
     sa.sa_handler = [](int sig) {
-        NOTICE_LOG("catch sigal %d!", sig);
+        NOTICE_LOG("catch sigal {}!", sig);
         g_task_manager->stop();
     };
     sigemptyset(&sa.sa_mask);
@@ -93,14 +93,14 @@ static void set_signal_action() {
     // kill 信号
     struct sigaction act{};
     act.sa_sigaction = [](int sig, siginfo_t * sig_info, void *) {
-        NOTICE_LOG("receive terminal signal, sig_num=%d, sending_process_pid=%d, uid=%d, status=%d",
+        NOTICE_LOG("receive terminal signal, sig_num={}, sending_process_pid={}, uid={}, status={}",
                    sig, sig_info->si_pid, sig_info->si_uid, sig_info->si_status);
 
         time_t now_time = time(nullptr);
         string cmdline = ProcessInfo::get_process_cmdline_by_pid(sig_info->si_pid);
         string exe = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "exe");
         string cwd = ProcessInfo::get_link_info_by_pid_and_type(sig_info->si_pid, "cwd");
-        NOTICE_LOG("terminal time: %ld, process cmdline=%s, exe=%s, cwd=%s",
+        NOTICE_LOG("terminal time: {}, process cmdline={}, exe={}, cwd={}",
                    now_time, cmdline.c_str(), exe.c_str(), cwd.c_str());
 
         g_task_manager->stop();
@@ -113,7 +113,7 @@ static void set_signal_action() {
     struct sigaction sigpipe{};
     sigpipe.sa_flags = 0;
     sigpipe.sa_handler = [](int sig){
-        NOTICE_LOG("catch sigal %d!", sig);
+        NOTICE_LOG("catch sigal {}!", sig);
     };
     sigemptyset(&sigpipe.sa_mask);
     sigaction(SIGPIPE, &sigpipe, nullptr);
@@ -127,23 +127,23 @@ static void check_stat_file() {
     if (::stat(g_agent_configure->task_stat_file().c_str(), &statbuf) == 0) {
         if (statbuf.st_size > 10 * 1024 * 1024) {
             if (truncate(g_agent_configure->task_stat_file().c_str(), 0) != 0) {
-                WARNING_LOG("truncate file %s size to 0 failed: %d",
+                WARNING_LOG("truncate file {} size to 0 failed: {}",
                             g_agent_configure->task_stat_file().c_str(), errno);
             }
         }
     } else {
-        WARNING_LOG("can't stat file %s: %d", g_agent_configure->task_stat_file().c_str(), errno);
+        WARNING_LOG("can't stat file {}: {}", g_agent_configure->task_stat_file().c_str(), errno);
     }
 
     if (::stat(g_agent_configure->peer_stat_file().c_str(), &statbuf) == 0) {
         if (statbuf.st_size > 10 * 1024 * 1024) {
             if (truncate(g_agent_configure->peer_stat_file().c_str(), 0) != 0) {
-                WARNING_LOG("truncate file %s size to 0 failed: %d",
+                WARNING_LOG("truncate file {} size to 0 failed: {}",
                             g_agent_configure->peer_stat_file().c_str(), errno);
             }
         }
     } else {
-        WARNING_LOG("can't stat file %s: %d", g_agent_configure->peer_stat_file().c_str(), errno);
+        WARNING_LOG("can't stat file {}: {}", g_agent_configure->peer_stat_file().c_str(), errno);
     }
 }
 
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    NOTICE_LOG("bbts agent version: %s", GINGKO_VERSION);
+    NOTICE_LOG("bbts agent version: {}", GINGKO_VERSION);
 
     // 初始化路径
     if (!init_agent_running_path()) {
@@ -196,7 +196,7 @@ int main(int argc, char* argv[]) {
     // 配置锁定
     boost::system::error_code ec;
     if (!File::lock(g_agent_configure->lock_file(), ec)) {
-        FATAL_LOG("lock file %s failed: [%d]%s", g_agent_configure->lock_file().c_str(),
+        FATAL_LOG("lock file {} failed: [{}]{}", g_agent_configure->lock_file().c_str(),
                   ec.value(), ec.message().c_str());
         return 1;
     }

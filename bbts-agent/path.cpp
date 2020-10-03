@@ -75,7 +75,7 @@ string Path::current_working_dir() {
     char path[MAX_PATH_LEN] = { 0 };
     char *ptr = ::getcwd(path, MAX_PATH_LEN);
     if (!ptr) {
-        FATAL_LOG("get current working dir failed: %s", strerror(errno));
+        FATAL_LOG("get current working dir failed: {}", strerror(errno));
         exit(11);
     }
     return string(ptr);
@@ -150,7 +150,7 @@ bool Path::mkdir(const string &dir, mode_t mode) {
     struct stat statbuf;
     if (stat(dir.c_str(), &statbuf) != 0) {  // 没有该路径则创建
         if (::mkdir(dir.c_str(), mode) != 0) {
-            WARNING_LOG("mkdir %s failed: %s(%d)", dir.c_str(), strerror(errno), errno);
+            WARNING_LOG("mkdir {} failed: {}({})", dir.c_str(), strerror(errno), errno);
             return false;
         }
         return true;
@@ -159,7 +159,7 @@ bool Path::mkdir(const string &dir, mode_t mode) {
     if (statbuf.st_mode & S_IFDIR) {
         return true;
     }
-    WARNING_LOG("mkdir %s failed: not a dir", dir.c_str());
+    WARNING_LOG("mkdir {} failed: not a dir", dir.c_str());
     return false;
 }
 
@@ -224,7 +224,7 @@ bool Path::nftw(const std::string &dir, NftwCallback cb, int depth, int flag) {
         *user_cb = cb;
     }
     if (::nftw(dir.c_str(), detail::nftw_cb, depth, flag) != 0) {
-        WARNING_LOG("nftw %s failed: %d", dir.c_str(), errno);
+        WARNING_LOG("nftw {} failed: {}", dir.c_str(), errno);
         return false;
     }
     return true;

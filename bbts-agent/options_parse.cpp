@@ -110,7 +110,7 @@ bool parse_uri_entry(const string &uri, message::SourceURI *source_uri) {
     } else {
         source_uri->set_host(uri.substr(pos_at, pos_slash - pos_at));
     }
-    DEBUG_LOG("cluster uri user: %s, passwd: %s, host: %s, port: %d, path: %s", 
+    DEBUG_LOG("cluster uri user: {}, passwd: {}, host: {}, port: {}, path: {}",
             source_uri->user().c_str(), 
             source_uri->passwd().c_str(), 
             source_uri->host().c_str(), 
@@ -460,15 +460,15 @@ void print_status(const message::Status &status, bool debug) {
 bool check_cluster_uri(const std::string &uri) {
     message::SourceURI cluster_uri;
     if (!parse_uri_entry(uri, &cluster_uri)) {
-        FATAL_LOG("can't parse cluster uri: %s", uri.c_str());
+        FATAL_LOG("can't parse cluster uri: {}", uri.c_str());
         return false;
     }
     if (cluster_uri.protocol() != "hdfs" && cluster_uri.protocol() != "nfs") {
-        FATAL_LOG("protocol %s not support, only nfs and hdfs", cluster_uri.protocol().c_str());
+        FATAL_LOG("protocol {} not support, only nfs and hdfs", cluster_uri.protocol().c_str());
         return false;
     }
     if (cluster_uri.protocol() == "nfs" && cluster_uri.path().find(":/") == string::npos) {
-        FATAL_LOG("nfs format: %s", "protocol://user:passwd@host:port/mount_point:/path");
+        FATAL_LOG("nfs format: {}", "protocol://user:passwd@host:port/mount_point:/path");
         return false;
     }
     if (cluster_uri.user().empty() || cluster_uri.host().empty()
@@ -480,7 +480,7 @@ bool check_cluster_uri(const std::string &uri) {
 }
 
 bool check_download_configure(const message::DownloadConfigure &configure) {
-    TRACE_LOG("%s", configure.cmd().c_str());
+    TRACE_LOG("{}", configure.cmd().c_str());
 
     if (configure.save_path().empty() && configure.muti_save_paths_size() == 0) {
         FATAL_LOG("no save path or muti save paths");
@@ -488,109 +488,109 @@ bool check_download_configure(const message::DownloadConfigure &configure) {
     }
 
     if (!configure.infohash().empty() && configure.infohash().length() != 40) {
-        FATAL_LOG("infohash[sha1 hex] invalid: %s", configure.infohash().c_str());
+        FATAL_LOG("infohash[sha1 hex] invalid: {}", configure.infohash().c_str());
         return false;
     }
 
     if (configure.seeding_time() < -2) {
-        FATAL_LOG("seeding time[>=-1] invalid: %d", configure.seeding_time());
+        FATAL_LOG("seeding time[>=-1] invalid: {}", configure.seeding_time());
         return false;
     }
 
     if (configure.download_limit() < 0 || configure.download_limit() > 500 * 1024 * 1024) {
-        FATAL_LOG("download limit[0-500MB/s] invalid: %d", configure.download_limit());
+        FATAL_LOG("download limit[0-500MB/s] invalid: {}", configure.download_limit());
         return false;
     }
 
     if (configure.upload_limit() < 0 || configure.upload_limit() > 500 * 1024 * 1024) {
-        FATAL_LOG("upload limit[0-500MB/s] invalid: %d", configure.upload_limit());
+        FATAL_LOG("upload limit[0-500MB/s] invalid: {}", configure.upload_limit());
         return false;
     }
 
     if (configure.dynamic_allocate_limit() < 0
             || configure.dynamic_allocate_limit() > 1000 * 1024 * 1024) {
-        FATAL_LOG("upload limit[0-1000MB/s] invalid: %d", configure.dynamic_allocate_limit());
+        FATAL_LOG("upload limit[0-1000MB/s] invalid: {}", configure.dynamic_allocate_limit());
         return false;
     }
 
     if (configure.connection_limit() < 0 || configure.connection_limit() > 10000) {
-        FATAL_LOG("connections limit[0-10000] invalid: %d", configure.connection_limit());
+        FATAL_LOG("connections limit[0-10000] invalid: {}", configure.connection_limit());
         return false;
     }
 
     if (configure.progress_interval() < 1) {
-        FATAL_LOG("progress interval[>=1] invalid: %d", configure.progress_interval());
+        FATAL_LOG("progress interval[>=1] invalid: {}", configure.progress_interval());
         return false;
     }
 
     if (configure.hang_timeout() < 0) {
-        FATAL_LOG("hang check timeout[>=0] invalid: %d", configure.hang_timeout());
+        FATAL_LOG("hang check timeout[>=0] invalid: {}", configure.hang_timeout());
         return false;
     }
 
     if (configure.send_socket_buffer_size() < 0 || configure.send_socket_buffer_size() > 4194304) {
-        FATAL_LOG("send buffer size[0-4MB] invalid: %d", configure.send_socket_buffer_size());
+        FATAL_LOG("send buffer size[0-4MB] invalid: {}", configure.send_socket_buffer_size());
         return false;
     }
 
     if (configure.recv_socket_buffer_size() < 0 || configure.recv_socket_buffer_size() > 4194304) {
-        FATAL_LOG("recv buffer size[0-4MB] invalid: %d", configure.recv_socket_buffer_size());
+        FATAL_LOG("recv buffer size[0-4MB] invalid: {}", configure.recv_socket_buffer_size());
         return false;
     }
 
     if (configure.cluster_thread_num() < 0 || configure.cluster_thread_num() > 32) {
-        FATAL_LOG("hdfs thread num[0-32] invalid: %d", configure.cluster_thread_num());
+        FATAL_LOG("hdfs thread num[0-32] invalid: {}", configure.cluster_thread_num());
         return false;
     }
 
     if (configure.peers_num_want() < 0 || configure.peers_num_want() > 10000) {
-        FATAL_LOG("peers num want[0-10000] invalid: %d", configure.peers_num_want());
+        FATAL_LOG("peers num want[0-10000] invalid: {}", configure.peers_num_want());
         return false;
     }
 
     if (configure.max_announce_interval() < 10 || configure.max_announce_interval() > 3600) {
-        FATAL_LOG("max announce interval[10-3600] invalid: %d", configure.max_announce_interval());
+        FATAL_LOG("max announce interval[10-3600] invalid: {}", configure.max_announce_interval());
         return false;
     }
 
     if (configure.dynamic_allocate() < -1 || configure.dynamic_allocate() > 300) {
-        FATAL_LOG("dynamic allocate[-1-300] invalid: %d", configure.dynamic_allocate());
+        FATAL_LOG("dynamic allocate[-1-300] invalid: {}", configure.dynamic_allocate());
         return false;
     }
 
     if (configure.mem_limit() != 0 && configure.mem_limit() < 50) {
-        FATAL_LOG("memery limit[>=50M] invalid: %d", configure.mem_limit());
+        FATAL_LOG("memery limit[>=50M] invalid: {}", configure.mem_limit());
         return false;
     }
 
     if (configure.write_cache_line_size() < 0 || configure.write_cache_line_size() > 1024) {
-        FATAL_LOG("write cache line size[0-1024] invalid: %d", configure.write_cache_line_size());
+        FATAL_LOG("write cache line size[0-1024] invalid: {}", configure.write_cache_line_size());
         return false;
     }
 
     if (configure.read_cache_line_size() < 0 || configure.read_cache_line_size() > 1024) {
-        FATAL_LOG("read cache line size[0-1024] invalid: %d", configure.read_cache_line_size());
+        FATAL_LOG("read cache line size[0-1024] invalid: {}", configure.read_cache_line_size());
         return false;
     }
 
     if (configure.timeout() < -1) {
-        FATAL_LOG("timeout[>=-1] invalid: %d", configure.timeout());
+        FATAL_LOG("timeout[>=-1] invalid: {}", configure.timeout());
         return false;
     }
 
     if (configure.max_hdfs_cache_pieces() < 1) {
-        FATAL_LOG("max hdfs cache pieces[>=1] invalid: %d", configure.max_hdfs_cache_pieces());
+        FATAL_LOG("max hdfs cache pieces[>=1] invalid: {}", configure.max_hdfs_cache_pieces());
         return false;
     }
 
     if (configure.cache_size() < 0) {
-        FATAL_LOG("cache pieces[>=0] invalid: %d", configure.cache_size());
+        FATAL_LOG("cache pieces[>=0] invalid: {}", configure.cache_size());
         return false;
     }
 
     if (configure.listen_port_start() < 1025 || configure.listen_port_start() > 65535
             || configure.listen_port_end() < 1025 || configure.listen_port_end() > 65535) {
-        FATAL_LOG("listen port range[1025-65535] invalid: %d-%d",
+        FATAL_LOG("listen port range[1025-65535] invalid: {}-{}",
                 configure.listen_port_start(), configure.listen_port_end());
         return false;
     }

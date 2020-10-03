@@ -35,7 +35,7 @@ TorrentProvider::TorrentProvider() : _is_file_no_found(false) {
 bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) {
     message::SourceURI source_uri;
     if (!parse_uri_entry(uri, &source_uri)) {
-        WARNING_LOG("can't parse uri: %s", uri.c_str());
+        WARNING_LOG("can't parse uri: {}", uri.c_str());
         return false;
     }
     string machine_room = ProcessInfo::get_machine_room(source_uri.host(), true);
@@ -44,7 +44,7 @@ bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) 
     }
     if (!load_conf(routing_conf(), machine_room)) {
         if (!load_conf(g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
-            WARNING_LOG("load provider conf(%s/conf/routing.conf) failed",
+            WARNING_LOG("load provider conf({}/conf/routing.conf) failed",
                     g_process_info->root_dir().c_str());
             return false;
         }
@@ -64,9 +64,9 @@ bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) 
         TorrentProviderServiceClient client(protocol);
         try {
             transport->open();
-            NOTICE_LOG("[open provider:%s:%d][success]", it->first.c_str(), it->second);
+            NOTICE_LOG("[open provider:{}:{}][success]", it->first.c_str(), it->second);
         } catch (TException &tx) {
-            WARNING_LOG("[open provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+            WARNING_LOG("[open provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
             continue;
         }
 
@@ -74,19 +74,19 @@ bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) 
             try {
                 client.getTorrentZipCode(response, uri);
             } catch (TException &tx) {
-                WARNING_LOG("[provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+                WARNING_LOG("[provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
                 break;
             }
             if (response.torrentStatus == TorrentStatus::STATUS_PROCESS) {
-                TRACE_LOG("get torrent provider in process: %s", response.message.c_str());
+                TRACE_LOG("get torrent provider in process: {}", response.message.c_str());
                 sleep(2);
                 continue;
             } else if (response.torrentStatus == TorrentStatus::STATUS_OK) {
-                DEBUG_LOG("get torrent from provider success: %s", response.message.c_str());
+                DEBUG_LOG("get torrent from provider success: {}", response.message.c_str());
                 success = 0;
                 break;
             } else {
-                WARNING_LOG("get torrent provider failed: %s", response.message.c_str());
+                WARNING_LOG("get torrent provider failed: {}", response.message.c_str());
                 if (response.torrentStatus == TorrentStatus::STATUS_ERROR_FILE_NOT_EXIST) {
                     _is_file_no_found = true;
                 }
@@ -97,7 +97,7 @@ bool TorrentProvider::get_torrent_file(const string &uri, vector<char> *buffer) 
         try {
             transport->close();
         } catch (TException &tx) {
-            WARNING_LOG("[close provider:%s:%d][fail:%s]",
+            WARNING_LOG("[close provider:{}:{}][fail:{}]",
                     it->first.c_str(), it->second, tx.what());
         }
     }
@@ -125,7 +125,7 @@ bool TorrentProvider::upload_torrent_file(
         || infohash.length() != 40
         || source.empty()
         || torrent_code.size() == 0) {
-        WARNING_LOG("param invalid! infohash:%s, source:%s, code_size:%d",
+        WARNING_LOG("param invalid! infohash:{}, source:{}, code_size:{}",
                 infohash.c_str(), source.c_str(), torrent_code.size());
         return false;
     }
@@ -137,7 +137,7 @@ bool TorrentProvider::upload_torrent_file(
         WARNING_LOG("compress torrent code error!");
         return false;
     }
-    DEBUG_LOG("infohash:%s, source:%s, old_size:%d, new_size:%d",
+    DEBUG_LOG("infohash:{}, source:{}, old_size:{}, new_size:{}",
             infohash.c_str(), source.c_str(), torrent_code.size(), data.length());
     InfohashTorrent infohash_torrent;
     infohash_torrent.__set_infohash(infohash);
@@ -148,7 +148,7 @@ bool TorrentProvider::upload_torrent_file(
     string machine_room = ProcessInfo::get_machine_room(g_process_info->hostname(), false);
     if (!load_conf(routing_conf(), machine_room)) {
         if (!load_conf(g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
-            WARNING_LOG("load provider conf(%s/conf/routing.conf) failed",
+            WARNING_LOG("load provider conf({}/conf/routing.conf) failed",
                     g_process_info->root_dir().c_str());
             return false;
         }
@@ -168,9 +168,9 @@ bool TorrentProvider::upload_torrent_file(
         TorrentProviderServiceClient client(protocol);
         try {
             transport->open();
-            NOTICE_LOG("[open provider:%s:%d][success]", it->first.c_str(), it->second);
+            NOTICE_LOG("[open provider:{}:{}][success]", it->first.c_str(), it->second);
         } catch (TException &tx) {
-            WARNING_LOG("[open provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+            WARNING_LOG("[open provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
             continue;
         }
 
@@ -178,16 +178,16 @@ bool TorrentProvider::upload_torrent_file(
             try {
                 client.uploadTorrent(response, infohash_torrent);
             } catch (TException &tx) {
-                WARNING_LOG("[provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+                WARNING_LOG("[provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
                 break;
             }
 
             if (response.retCode == 0) {
-                DEBUG_LOG("upload torrent to provider success: %s", response.message.c_str());
+                DEBUG_LOG("upload torrent to provider success: {}", response.message.c_str());
                 success = 0;
                 break;
             } else {
-                WARNING_LOG("upload torrent to provider failed: %s", response.message.c_str());
+                WARNING_LOG("upload torrent to provider failed: {}", response.message.c_str());
                 success = 1;
                 break;
             }
@@ -195,7 +195,7 @@ bool TorrentProvider::upload_torrent_file(
         try {
             transport->close();
         } catch (TException &tx) {
-            WARNING_LOG("[close provider:%s:%d][fail:%s]",
+            WARNING_LOG("[close provider:{}:{}][fail:{}]",
                     it->first.c_str(), it->second, tx.what());
         }
     }
@@ -218,7 +218,7 @@ bool TorrentProvider::get_infohash_torrent_file(
     string machine_room = ProcessInfo::get_machine_room(g_process_info->hostname(), false);
     if (!load_conf(routing_conf(), machine_room)) {
         if (!load_conf(g_process_info->root_dir() + "/conf/routing.conf", machine_room)) {
-            WARNING_LOG("load provider conf(%s/conf/routing.conf) failed",
+            WARNING_LOG("load provider conf({}/conf/routing.conf) failed",
                     g_process_info->root_dir().c_str());
             return false;
         }
@@ -238,9 +238,9 @@ bool TorrentProvider::get_infohash_torrent_file(
         TorrentProviderServiceClient client(protocol);
         try {
             transport->open();
-            NOTICE_LOG("[open provider:%s:%d][success]", it->first.c_str(), it->second);
+            NOTICE_LOG("[open provider:{}:{}][success]", it->first.c_str(), it->second);
         } catch (TException &tx) {
-            WARNING_LOG("[open provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+            WARNING_LOG("[open provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
             continue;
         }
 
@@ -248,21 +248,21 @@ bool TorrentProvider::get_infohash_torrent_file(
             try {
                 client.getInfohashTorrent(infohash_torrent, infohash);
             } catch (TException &tx) {
-                WARNING_LOG("[provider:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+                WARNING_LOG("[provider:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
                 break;
             }
             if (infohash_torrent.torrentStatus == TorrentStatus::STATUS_PROCESS) {
-                TRACE_LOG("get torrent provider in process: %s",
+                TRACE_LOG("get torrent provider in process: {}",
                         infohash_torrent.message.c_str());
                 sleep(2);
                 continue;
             } else if (infohash_torrent.torrentStatus == TorrentStatus::STATUS_OK) {
-                DEBUG_LOG("get torrent from provider success: %s",
+                DEBUG_LOG("get torrent from provider success: {}",
                         infohash_torrent.message.c_str());
                 success = 0;
                 break;
             } else {
-                WARNING_LOG("get torrent provider failed: %s",
+                WARNING_LOG("get torrent provider failed: {}",
                         infohash_torrent.message.c_str());
                 success = 1;
                 break;
@@ -271,7 +271,7 @@ bool TorrentProvider::get_infohash_torrent_file(
         try {
             transport->close();
         } catch (TException &tx) {
-            WARNING_LOG("[close provider:%s:%d][fail:%s]",
+            WARNING_LOG("[close provider:{}:{}][fail:{}]",
                     it->first.c_str(), it->second, tx.what());
         }
     }

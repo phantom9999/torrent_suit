@@ -41,7 +41,7 @@ void TorrentGenerator::run() {
     boost::system::error_code ec;
     _ios.run(ec);
     if (ec) {
-        WARNING_LOG("[torrent generator thread run fail: %s", ec.message().c_str());
+        WARNING_LOG("[torrent generator thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("torrent generator thread run end");
     CLOSE_LOG_R();
@@ -67,11 +67,11 @@ void TorrentGenerator::get_torrent(
     std::string message;
     if (!make_torrent(make_torrent_args, &infohash, &torrent, &message)) {
         message.append("\n");
-        WARNING_LOG("generate torrent code failed for path[%s]:%s",
+        WARNING_LOG("generate torrent code failed for path[{}]:{}",
                 path.c_str(), message.c_str());
     } else {
         message.assign("OK\n");
-        TRACE_LOG("path[%s] generate torrent success, infohash:%s",
+        TRACE_LOG("path[{}] generate torrent success, infohash:{}",
                 path.c_str(), infohash.c_str());
     }
 
@@ -103,7 +103,7 @@ void TorrentGenerator::get_timestamp(
         message.assign("stat path:" + path + " error:");
         message.append(strerror(errno));
         message.append("\n");
-        WARNING_LOG("stat path:%s error[%d]:%s", path.c_str(), errno, strerror(errno));
+        WARNING_LOG("stat path:{} error[{}]:{}", path.c_str(), errno, strerror(errno));
     } else {
         char tmp[50] = {'\0'};
         snprintf(tmp, 50, "%ld", buf.st_mtime);
@@ -131,7 +131,7 @@ void TorrentGenerator::check_path(
         message.assign(path + " error:");
         message.append(strerror(errno));
         message.append("\n");
-        WARNING_LOG("stat path:%s error[%d]:%s", path.c_str(), errno, strerror(errno));
+        WARNING_LOG("stat path:{} error[{}]:{}", path.c_str(), errno, strerror(errno));
     }
 
     boost::mutex::scoped_lock lock(_mutex);

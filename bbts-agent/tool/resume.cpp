@@ -29,25 +29,25 @@ void Resume::load(vector<char> *buffer) const {
     error_code ec;
     File::read(_filename, &tmp_buffer, ec, 10 * 1024 * 1024);
     if (ec) {
-        WARNING_LOG("load resume %s failed: %s, ignore", _filename.c_str(), ec.message().c_str());
+        WARNING_LOG("load resume {} failed: {}, ignore", _filename.c_str(), ec.message().c_str());
         return;
     }
     buffer->swap(tmp_buffer);
-    NOTICE_LOG("load resume %s success", _filename.c_str());
+    NOTICE_LOG("load resume {} success", _filename.c_str());
 }
 
 void Resume::save(const vector<char> &buffer) const {
     error_code ec;
     File::write(_tmp_filename, buffer, ec);
     if (ec) {
-        WARNING_LOG("save resume %s failed: %s", _tmp_filename.c_str(), ec.message().c_str());
+        WARNING_LOG("save resume {} failed: {}", _tmp_filename.c_str(), ec.message().c_str());
         return;
     }
     if (rename(_tmp_filename.c_str(), _filename.c_str()) < 0) {
-        WARNING_LOG("rename to resume %s failed: %s", _filename.c_str(), strerror(errno));
+        WARNING_LOG("rename to resume {} failed: {}", _filename.c_str(), strerror(errno));
         return;
     }
-    DEBUG_LOG("save reume %s success", _filename.c_str());
+    DEBUG_LOG("save reume {} success", _filename.c_str());
 }
 
 void Resume::remove() const {

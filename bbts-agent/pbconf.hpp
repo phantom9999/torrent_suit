@@ -16,14 +16,14 @@ namespace bbts {
 inline bool load_pbconf(const std::string &conf_file, google::protobuf::Message *conf) {
     int conf_fd = open(conf_file.c_str(), O_RDONLY);
     if (conf_fd < 0) {
-        DEBUG_LOG("open conf %s failed: %d", conf_file.c_str(), errno);
+        DEBUG_LOG("open conf {} failed: {}", conf_file.c_str(), errno);
         return false;
     }
 
     google::protobuf::io::FileInputStream ifs(conf_fd);
     ifs.SetCloseOnDelete(true);
     if (!google::protobuf::TextFormat::Parse(&ifs, conf)) {
-        DEBUG_LOG("parse conf %s failed", conf_file.c_str());
+        DEBUG_LOG("parse conf {} failed", conf_file.c_str());
         return false;
     }
     return true;

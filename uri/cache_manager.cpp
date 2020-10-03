@@ -76,7 +76,7 @@ shared_ptr<Buffer> CacheManager::fetch(
                     total_bytes = total_bytes - item.piece_offset + ii->piece_offset;
                 }
                 block_num = total_bytes / kDefaultPieceRequestSize;
-                DEBUG_LOG("ii.index:%d,offset:%d,item.index:%d,offset:%d;total:%ld,block_num:%d",
+                DEBUG_LOG("ii.index:{},offset:{},item.index:{},offset:{};total:{},block_num:{}",
                         ii->piece_index, ii->piece_offset, item.piece_index,
                         item.piece_offset, total_bytes, block_num);
             }
@@ -84,7 +84,7 @@ shared_ptr<Buffer> CacheManager::fetch(
     }  // mutex lock
 
     if (!insert_into_block_cache(piece_request, &item, block_num, error_msg)) {
-        WARNING_LOG("insert block cache failed:%s, infohash:%s, piece_index:%d, piece_offset:%d",
+        WARNING_LOG("insert block cache failed:{}, infohash:{}, piece_index:{}, piece_offset:{}",
                 error_msg.c_str(), item.infohash.c_str(),
                 item.piece_index, item.piece_offset);
         return shared_ptr<Buffer>();
@@ -165,7 +165,7 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
         struct stat stat_buf;
         if (stat(filename.c_str(), &stat_buf) != 0) {
             error_msg = "stat file " + filename + " failed: " + strerror(errno);
-            WARNING_LOG("stat file %s failed:%s", filename.c_str(), strerror(errno));
+            WARNING_LOG("stat file {} failed:{}", filename.c_str(), strerror(errno));
             buffer_list.clear();
             return buffer_list;
         }
@@ -198,13 +198,13 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
 
         struct iovec *iov = new struct iovec[block_size];
         int loop_start = 0;
-        DEBUG_LOG("total_readed:%d, piece_size:%d, block_size:%d, loop_start:%d, last_piece_length:%d, file->size:%d, file->offset:%d",
+        DEBUG_LOG("total_readed:{}, piece_size:{}, block_size:{}, loop_start:{}, last_piece_length:{}, file->size:{}, file->offset:{}",
                 total_readed, piece_request.size, block_size, loop_start, last_piece_length, i->size, i->offset);
         if (last_piece_length > 0) {
             shared_ptr<Buffer> tmp_buffer = buffer_list.at(buffer_list.size() - 1);
             if (!tmp_buffer) {
                 error_msg = "internal error when read file " + filename;
-                WARNING_LOG("buffer_list.size():%d, but last is empty, return!", buffer_list.size());
+                WARNING_LOG("buffer_list.size():{}, but last is empty, return!", buffer_list.size());
                 delete[] iov;
                 buffer_list.clear();
                 return buffer_list;
@@ -223,7 +223,7 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
         int fd = open(filename.c_str(), O_RDONLY);
         if (fd == -1) {
             error_msg = "open file " + filename + " failed:" + strerror(errno);
-            WARNING_LOG("%s open: %s", filename.c_str(), strerror(errno));
+            WARNING_LOG("{} open: {}", filename.c_str(), strerror(errno));
             delete[] iov;
             buffer_list.clear();
             return buffer_list;
@@ -231,7 +231,7 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
 
         if (lseek(fd, i->offset, SEEK_SET) != static_cast<off_t>(i->offset)) {
             error_msg = "lseek file " + filename + " failed:" + strerror(errno);
-            WARNING_LOG("%s lseek: %s", filename.c_str(), strerror(errno));
+            WARNING_LOG("{} lseek: {}", filename.c_str(), strerror(errno));
             close(fd);
             delete[] iov;
             buffer_list.clear();
@@ -241,7 +241,7 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
         int readed = readv(fd, iov, block_size);
         if (readed != total_readed) {
             error_msg = "readv file " + filename + " failed:" + strerror(errno);
-            WARNING_LOG("%s readv: %s, readed:%d, required:%d",
+            WARNING_LOG("{} readv: {}, readed:{}, required:{}",
                     filename.c_str(), strerror(errno), readed, total_readed);
             close(fd);
             delete[] iov;
@@ -251,7 +251,7 @@ std::vector<shared_ptr<Buffer> > CacheManager::read_block(
         delete[] iov;
         close(fd);
 
-        DEBUG_LOG("piece_request.index:%d, offset:%d, readed is %d, size is %d",
+        DEBUG_LOG("piece_request.index:{}, offset:{}, readed is {}, size is {}",
                 piece_request.piece_index, piece_request.piece_offset, readed, piece_request.size);
 
         last_piece_length += readed % piece_request.size;
@@ -281,7 +281,7 @@ shared_ptr<Buffer> CacheManager::calculate_hash(
     }  // mutex lock
 
     if (!insert_into_hash_check_cache(piece_request, &item, error_msg)) {
-        WARNING_LOG("insert hash check cache failed:%s, infohash:%s, piece_index:%d",
+        WARNING_LOG("insert hash check cache failed:{}, infohash:{}, piece_index:{}",
                 error_msg.c_str(), item.infohash.c_str(), item.piece_index);
         return shared_ptr<Buffer>();
     }

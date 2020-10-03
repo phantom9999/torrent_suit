@@ -86,7 +86,7 @@ static void set_signal_action() {
     sa.sa_flags = SA_RESETHAND;
     // sa.sa_handler = handle_stop_sigal;
     sa.sa_handler = [](int sig) {
-        NOTICE_LOG("catch sigal %d, will stop download", sig);
+        NOTICE_LOG("catch sigal {}, will stop download", sig);
         catch_stop_sigal = true;
     };
     sigemptyset(&sa.sa_mask);
@@ -100,8 +100,8 @@ static void log_progress(const torrent_status &ts, bool need_stdout) {
     string uprate = StringUtil::bytes_to_readable(ts.upload_rate);
     string download = StringUtil::bytes_to_readable(ts.total_payload_download);
     string upload = StringUtil::bytes_to_readable(ts.total_payload_upload);
-    NOTICE_LOG("status: %d, progress: %5.2f%%, downrate: %8s/s, uprate: %8s/s, "
-            "download: %12s, upload: %12s", ts.state, (ts).progress * 100, downrate.c_str(),
+    NOTICE_LOG("status: {}, progress: {:5.2f}%, downrate: {:8s}/s, uprate: {:8s}/s, "
+            "download: {:12s}, upload: {:12s}", ts.state, (ts).progress * 100, downrate.c_str(),
             uprate.c_str(), download.c_str(), upload.c_str());
     if (need_stdout) {
         fprintf(stdout, "\rstatus: %d, progress: %5.2f%%, downrate: %8s/s, uprate: %8s/s, "
@@ -152,13 +152,13 @@ bool Downloader::get_ip_filter(ip_filter *filter) {
             address::from_string("255.255.255.255", ec), !flag);
     for (int i = 0; i < _configure->ip_filter_size(); ++i) {
         if (!parse_ip_filter(_configure->ip_filter(i), flag, filter)) {
-            FATAL_LOG("parse ip filter(%d) failed: %s", flag, _configure->ip_filter(i).c_str());
+            FATAL_LOG("parse ip filter({}) failed: {}", flag, _configure->ip_filter(i).c_str());
             return false;
         }
     }
     for (int i = 0; i < _configure->subnet_mask_size(); ++i) {
         if (!parse_subnet_mask(g_process_info->ip(), _configure->subnet_mask(i), filter)) {
-            FATAL_LOG("parse subnet mask(%s) failed", _configure->subnet_mask(i).c_str());
+            FATAL_LOG("parse subnet mask({}) failed", _configure->subnet_mask(i).c_str());
             return false;
         }
     }
@@ -187,7 +187,7 @@ void Downloader::remove_torrent() {
         if (_torrent.is_valid()) {
             _stat.get_task_info().__set_downloaded_from_hdfs(
                     _cluster_downloader->total_download());
-            NOTICE_LOG("hadoop download: %lld, p2p download: %lld", 
+            NOTICE_LOG("hadoop download: {}, p2p download: {}",
                     _stat.get_task_info().downloaded_from_hdfs,
                     ts.total_payload_download - _stat.get_task_info().downloaded_from_hdfs);
             PeerStatAlert alert(_torrent.info_hash(), _cluster_downloader->start_time(), 0, 
@@ -322,11 +322,11 @@ void Downloader::hang_check_callback() {
         long virt = 0;
         long rss = 0;
         FILE *fp = fopen("/proc/self/statm", "r");
-        fscanf(fp, "%ld%ld", &virt, &rss);
+        fscanf(fp, "{}{}", &virt, &rss);
         fclose(fp);
         rss = rss * PAGE_SIZE / 1024 / 1024;
         if (rss > _configure->mem_limit()) {
-            FATAL_LOG("rss(%ldM) exceed memery limit(%d)", rss, _configure->mem_limit());
+            FATAL_LOG("rss({}M) exceed memery limit({})", rss, _configure->mem_limit());
             _is_mem_exceed = true;
             remove_torrent();
             return;
@@ -398,7 +398,7 @@ void Downloader::to_seeding() {
             seeding_time = tmp;
         }
     }
-    NOTICE_LOG("seeding for %d seconds", seeding_time);
+    NOTICE_LOG("seeding for {} seconds", seeding_time);
     timer_run_once("seeding timer", _seeding_timer, seconds(seeding_time),
             bind(&Downloader::seeding_complete_callback, this));
 }
@@ -423,10 +423,10 @@ bool Downloader::correct_mode_and_symlinks() {
             }
             string path = save_path + "/" + it->path;
             if (symlink(it->symlink_path.c_str(), path.c_str()) < 0) {
-                FATAL_LOG("symlink %s -> %s failed.", path.c_str(), it->symlink_path.c_str());
+                FATAL_LOG("symlink {} -> {} failed.", path.c_str(), it->symlink_path.c_str());
                 return false;
             }
-            DEBUG_LOG("symlink file %s -> %s success.", path.c_str(), it->symlink_path.c_str());
+            DEBUG_LOG("symlink file {} -> {} success.", path.c_str(), it->symlink_path.c_str());
         }
     }
 
@@ -438,7 +438,7 @@ bool Downloader::correct_mode_and_symlinks() {
             continue;
         }
         if (chmod(file_name.c_str(), fe.mode) != 0) {
-            FATAL_LOG("file(%s) chmod to %o failed, errno[%d]:%s",
+            FATAL_LOG("file({}) chmod to {} failed, errno[{}]:{}",
                     file_name.c_str(), fe.mode, errno, strerror(errno));
             return false;
         }
@@ -451,7 +451,7 @@ bool Downloader::on_torrent_finished() {
         int current_finished_pieces = _torrent.status(0).pieces.count();
         if (current_finished_pieces < _disk_allocate_thread.pieces_count()) {
             // not really finished
-            DEBUG_LOG("current_finished_pieces = %d, pieces_count = %d",
+            DEBUG_LOG("current_finished_pieces = {}, pieces_count = {}",
                     current_finished_pieces, _disk_allocate_thread.pieces_count());
             return true;
         }
@@ -466,7 +466,7 @@ bool Downloader::on_torrent_finished() {
     error_code ec;
     _hang_check_timer.cancel(ec);
     if (_configure->need_down_to_tmp_first()) {
-        TRACE_LOG("mv data from %s to %s", _tmp_save_path.c_str(), _configure->save_path().c_str());
+        TRACE_LOG("mv data from {} to {}", _tmp_save_path.c_str(), _configure->save_path().c_str());
         _torrent.move_storage(_configure->save_path());
         return true;
     }
@@ -487,7 +487,7 @@ void Downloader::check_and_request_transfer(
         const std::string &uri) {
     // check if source host the same area with dest
     // if so, not need request transfer
-    DEBUG_LOG("check and request transfer uri is %s", uri.c_str());
+    DEBUG_LOG("check and request transfer uri is {}", uri.c_str());
     std::string local_machine_room = g_process_info->machine_room_without_digit();
 
     // get source machine room
@@ -510,7 +510,7 @@ void Downloader::check_and_request_transfer(
     Routing rout;
     rout.set_service_name("transfer");
     if (!rout.load_conf(conf_file, local_machine_room)) {
-        WARNING_LOG("load conf:%s for machine_room:%s failed",
+        WARNING_LOG("load conf:{} for machine_room:{} failed",
                 conf_file.c_str(), local_machine_room.c_str());
         return;
     }
@@ -519,7 +519,7 @@ void Downloader::check_and_request_transfer(
     std::string source_area = rout.get_machine_room_area(source_machine_room);
 
     if (local_area == source_area && _configure->force_transfer_number() <= 0) {
-        NOTICE_LOG("local_machine_room:%s and source:%s are the same, don't need transfer",
+        NOTICE_LOG("local_machine_room:{} and source:{} are the same, don't need transfer",
                 local_machine_room.c_str(), source_machine_room.c_str());
         return;
     }
@@ -552,7 +552,7 @@ void Downloader::check_and_request_transfer(
 }
 
 bool Downloader::on_state_changed(const libtorrent::state_changed_alert *alert) {
-    NOTICE_LOG("%s", alert->message().c_str());
+    NOTICE_LOG("{}", alert->message().c_str());
 
     intrusive_ptr<torrent_info const> ti = _torrent.torrent_file();
     if (alert->state != torrent_status::downloading_metadata && ti
@@ -621,7 +621,7 @@ bool Downloader::on_state_changed(const libtorrent::state_changed_alert *alert) 
             return true;
         }
 
-        TRACE_LOG("product tag is %s", _configure->product_tag().c_str());
+        TRACE_LOG("product tag is {}", _configure->product_tag().c_str());
         _stat.get_task_info().__set_product_tag(_configure->product_tag());
         _is_request_transfer_server = true;
 
@@ -629,12 +629,12 @@ bool Downloader::on_state_changed(const libtorrent::state_changed_alert *alert) 
             && _configure->cluster_uri().empty()
             && _configure->source_size() == 0
             && _configure->force_transfer_number() <= 0) {
-            NOTICE_LOG("use product tag:%s, but both cluster_uri and source_uri is empty!",
+            NOTICE_LOG("use product tag:{}, but both cluster_uri and source_uri is empty!",
                     _configure->product_tag().c_str());
         } else if (!_configure->cluster_uri().empty()) {
             message::SourceURI param_cluster_uri;
             if (!parse_uri_entry(_configure->cluster_uri(), &param_cluster_uri)) {
-                WARNING_LOG("can't parse cluster uri:%s", _configure->cluster_uri().c_str());
+                WARNING_LOG("can't parse cluster uri:{}", _configure->cluster_uri().c_str());
                 return true;
             }
             check_and_request_transfer(param_cluster_uri.host(), _configure->cluster_uri());
@@ -663,7 +663,7 @@ void Downloader::on_metadata_received() {
         _torrent.prioritize_files(file_priorities);
         if (_configure->log_level() == LOG_LEVEL_DEBUG && is_patition_download()) {
             for (unsigned i = 0; i < file_priorities.size(); ++i) {
-                DEBUG_LOG("file %d priorities: %d", i, file_priorities[i]);
+                DEBUG_LOG("file {} priorities: {}", i, file_priorities[i]);
             }
         }
     } else {
@@ -685,14 +685,14 @@ void Downloader::on_metadata_received() {
 }
 
 void Downloader::on_hash_failed(const libtorrent::hash_failed_alert *alert) {
-    WARNING_LOG("alert: %s.", alert->message().c_str());
+    WARNING_LOG("alert: {}.", alert->message().c_str());
     if (_cluster_downloader) {
         _cluster_downloader->add_failed_piece(alert->piece_index);
     }
 }
 
 void Downloader::on_piece_finished(const libtorrent::piece_finished_alert * alert) {
-    DEBUG_LOG("alert: %s.", alert->message().c_str());
+    DEBUG_LOG("alert: {}.", alert->message().c_str());
     if (_cluster_downloader) {
         _cluster_downloader->notify_piece_finished(alert->piece_index);
     }
@@ -726,12 +726,12 @@ void Downloader::on_peer_connect(const libtorrent::peer_connect_alert *alert) {
 
 void Downloader::on_peer_source_failed(const PeerSourceRequestFailedAlert *alert) {
     _source_peers[alert->ip].is_failed = true;
-    WARNING_LOG("%s", alert->message().c_str());
+    WARNING_LOG("{}", alert->message().c_str());
 }
 
 bool Downloader::on_peer_stat_alert(const PeerStatAlert *alert) {
     _stat.add_to_peer_vector(*alert);
-    DEBUG_LOG("set peer info: %s", alert->infohash().c_str());
+    DEBUG_LOG("set peer info: {}", alert->infohash().c_str());
     return true;
 }
 
@@ -756,7 +756,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             const libtorrent::tcp::endpoint &ep = lf_alert->endpoint;
             if (lf_alert->sock_type == libtorrent::listen_failed_alert::tcp
                     && ep.address().is_v4() && ep.port() != 0) {
-                FATAL_LOG("%s", lf_alert->message().c_str());
+                FATAL_LOG("{}", lf_alert->message().c_str());
                 remove_torrent();
                 ret = -2;
             }
@@ -771,12 +771,12 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         case libtorrent::metadata_received_alert::alert_type:
-            NOTICE_LOG("%s", (*it)->message().c_str());
+            NOTICE_LOG("{}", (*it)->message().c_str());
             on_metadata_received();
             break;
 
         case libtorrent::torrent_finished_alert::alert_type: {
-            TRACE_LOG("%s", (*it)->message().c_str());
+            TRACE_LOG("{}", (*it)->message().c_str());
             if (!on_torrent_finished()) {
                 remove_torrent();
                 ret = -4;
@@ -785,7 +785,7 @@ void Downloader::process_alert(int *retval, bool loop) {
         }
 
         case libtorrent::storage_moved_alert::alert_type:
-            TRACE_LOG("%s", (*it)->message().c_str());
+            TRACE_LOG("{}", (*it)->message().c_str());
             if (!on_storage_moved()) {
                 remove_torrent();
                 ret = -5;
@@ -793,7 +793,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         case libtorrent::torrent_error_alert::alert_type:
-            FATAL_LOG("download failed: %s", (*it)->message().c_str());
+            FATAL_LOG("download failed: {}", (*it)->message().c_str());
             remove_torrent();
             ret = -6;
             break;
@@ -803,7 +803,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         case libtorrent::torrent_removed_alert::alert_type: {
-            TRACE_LOG("%s", (*it)->message().c_str());
+            TRACE_LOG("{}", (*it)->message().c_str());
             if (_is_timeout) {
                 ret = -7;
             } else if (_is_mem_exceed) {
@@ -816,7 +816,7 @@ void Downloader::process_alert(int *retval, bool loop) {
         }
 
         case libtorrent::storage_moved_failed_alert::alert_type:
-            FATAL_LOG("%s", (*it)->message().c_str());
+            FATAL_LOG("{}", (*it)->message().c_str());
             remove_torrent();
             ret = -8;
             break;
@@ -836,12 +836,12 @@ void Downloader::process_alert(int *retval, bool loop) {
         case libtorrent::tracker_reply_alert::alert_type:
         case libtorrent::tracker_announce_alert::alert_type:
         case libtorrent::torrent_checked_alert::alert_type:
-            TRACE_LOG("%s", (*it)->message().c_str());
+            TRACE_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_blocked_alert::alert_type:
         case libtorrent::peer_ban_alert::alert_type:
-            NOTICE_LOG("%s", (*it)->message().c_str());
+            NOTICE_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_error_alert::alert_type:
@@ -852,17 +852,17 @@ void Downloader::process_alert(int *retval, bool loop) {
         case libtorrent::file_error_alert::alert_type:
         case libtorrent::save_resume_data_failed_alert::alert_type:
         case libtorrent::fastresume_rejected_alert::alert_type:
-            WARNING_LOG("%s", (*it)->message().c_str());
+            WARNING_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_disconnected_alert::alert_type:
             on_peer_disconnect((libtorrent::peer_disconnected_alert *)(*it));
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_connect_alert::alert_type:
             on_peer_connect((libtorrent::peer_connect_alert *)(*it));
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
 
         case PeerSourceRequestFailedAlert::ALERT_TYPE:
@@ -871,7 +871,7 @@ void Downloader::process_alert(int *retval, bool loop) {
 
         case libtorrent::incoming_connection_alert::alert_type:
         case libtorrent::performance_alert::alert_type:
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::piece_finished_alert::alert_type:
@@ -879,7 +879,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         default:
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
         }
         delete *it;
@@ -952,7 +952,7 @@ void Downloader::slip_files_to_muti_paths(torrent_info *ti, const vector<int> &f
         pop_heap(heap.begin(), heap.end(), &compair);
         pair<string, uint64_t> &last_elem = heap.back();
         string new_filename = last_elem.first + '/' + Path::subpath(fe.path);
-        DEBUG_LOG("rename file from %s to %s", fe.path.c_str(), new_filename.c_str());
+        DEBUG_LOG("rename file from {} to {}", fe.path.c_str(), new_filename.c_str());
         ti->rename_file(i, new_filename);
         last_elem.second += fe.size;
         push_heap(heap.begin(), heap.end(), &compair);
@@ -963,7 +963,7 @@ bool Downloader::add_torrent_file(const vector<char> &buffer, add_torrent_params
     error_code ec;
     torrent_params->ti = new torrent_info(&buffer[0], buffer.size(), ec, 0, _configure->new_name());
     if (ec) {
-        FATAL_LOG("pares torrent file(%s) failed, ret(%d): %s.",
+        FATAL_LOG("pares torrent file({}) failed, ret({}): {}.",
                 _configure->torrent_path().c_str(), ec.value(), ec.message().c_str());
         return false;
     }
@@ -989,10 +989,10 @@ void Downloader::save_infohash_file() {
     if (save_infohash_file_path.empty()) {
         return;
     }
-    DEBUG_LOG("save infohash file path is %s", save_infohash_file_path.c_str());
+    DEBUG_LOG("save infohash file path is {}", save_infohash_file_path.c_str());
     ofstream ofs(save_infohash_file_path.c_str());
     if (!ofs) {
-        WARNING_LOG("open file(%s) to save infohash failed", save_infohash_file_path.c_str());
+        WARNING_LOG("open file({}) to save infohash failed", save_infohash_file_path.c_str());
         return;
     } 
     ofs << _configure->infohash();
@@ -1004,7 +1004,7 @@ void Downloader::save_torrent_file(bool dynamic_hash_check) {
     if (save_torrent_path.empty()) {
         return;
     }
-    DEBUG_LOG("save torrent file path is %s", save_torrent_path.c_str());
+    DEBUG_LOG("save torrent file path is {}", save_torrent_path.c_str());
     intrusive_ptr<torrent_info const> ti = _torrent.torrent_file();
     libtorrent::create_torrent ct(*ti);
     // 如果动态校验，需要保持旧的infohash，在libtorrent里 解析时如果有sp则用它替换掉infohash
@@ -1016,7 +1016,7 @@ void Downloader::save_torrent_file(bool dynamic_hash_check) {
     entry te = ct.generate();
     ofstream ofs(save_torrent_path.c_str());
     if (!ofs) {
-        WARNING_LOG("open file(%s) to save torrent failed", save_torrent_path.c_str());
+        WARNING_LOG("open file({}) to save torrent failed", save_torrent_path.c_str());
         return;
     }
     libtorrent::bencode(ostream_iterator<char>(ofs), te);
@@ -1034,10 +1034,10 @@ void Downloader::save_torrent_file_by_data(
             buffer.size(), ec, 0, _configure->new_name());
     libtorrent::create_torrent ct(*ti);
     entry te = ct.generate();
-    DEBUG_LOG("save torrent file by data path is %s", save_torrent_path.c_str());
+    DEBUG_LOG("save torrent file by data path is {}", save_torrent_path.c_str());
     ofstream ofs(save_torrent_path.c_str());
     if (!ofs) {
-        WARNING_LOG("open file(%s) to save torrent failed", save_torrent_path.c_str());
+        WARNING_LOG("open file({}) to save torrent failed", save_torrent_path.c_str());
         return;
     } 
     libtorrent::bencode(ostream_iterator<char>(ofs), te);
@@ -1047,7 +1047,7 @@ void Downloader::save_torrent_file_by_data(
 bool Downloader::add_download_task() {
     message::SourceURI cluster_uri;
     if (!parse_uri_entry(_configure->cluster_uri(), &cluster_uri)) {
-        FATAL_LOG("Can't parse cluster uri %s", _configure->cluster_uri().c_str());
+        FATAL_LOG("Can't parse cluster uri {}", _configure->cluster_uri().c_str());
         return false;
     }
     if (_configure->muti_save_paths_size() != 0) {
@@ -1059,14 +1059,14 @@ bool Downloader::add_download_task() {
         for (int i = 0; i < _configure->muti_save_paths_size(); ++i) {
             const string &muti_save_path = _configure->muti_save_paths(i);
             if (!Path::mkdirs(muti_save_path, 0755)) {
-                FATAL_LOG("mkdir muti save path(%s) failed", muti_save_path.c_str());
+                FATAL_LOG("mkdir muti save path({}) failed", muti_save_path.c_str());
                 return false;
             }
         }
         _configure->set_save_path(_configure->muti_save_paths(0));
     }
     if (!Path::mkdirs(_configure->save_path(), 0755)) {
-        FATAL_LOG("mkdirs save path(%s) faled", _configure->save_path().c_str());
+        FATAL_LOG("mkdirs save path({}) faled", _configure->save_path().c_str());
         return false;
     }
 
@@ -1077,7 +1077,7 @@ bool Downloader::add_download_task() {
         vector<char> buffer;
         int size = File::read(_configure->torrent_path(), &buffer, ec, 10 * 1024 * 1024);
         if (size <= 0) {
-            FATAL_LOG("read torrent file(%s) failed: %s",
+            FATAL_LOG("read torrent file({}) failed: {}",
                     _configure->torrent_path().c_str(), ec.message().c_str());
             return false;
         }
@@ -1093,7 +1093,7 @@ bool Downloader::add_download_task() {
         string bytes;
         if (_configure->infohash().length() != 40
                 || !bbts::hex_decode(_configure->infohash(), &bytes)) {
-            FATAL_LOG("infohash(%s) not correct.", _configure->infohash().c_str());
+            FATAL_LOG("infohash({}) not correct.", _configure->infohash().c_str());
             return false;
         }
 
@@ -1105,7 +1105,7 @@ bool Downloader::add_download_task() {
                         _configure->infohash(),
                         &source,
                         &buffer)) {
-                FATAL_LOG("can not get torrent file(%s) from torrent provider",
+                FATAL_LOG("can not get torrent file({}) from torrent provider",
                         _configure->cluster_uri().c_str());
                 return false;
             }
@@ -1143,7 +1143,7 @@ bool Downloader::add_download_task() {
             if (!_configure->save_torrent_path().empty()) {
                 ofstream ofs(_configure->save_torrent_path().c_str());
                 if (!ofs) {
-                    FATAL_LOG("can't create torrent file(%s) for save.",
+                    FATAL_LOG("can't create torrent file({}) for save.",
                             _configure->save_torrent_path().c_str());
                     return false;
                 }
@@ -1168,10 +1168,10 @@ bool Downloader::add_download_task() {
             // 这里取第一个source的地址
             const message::SourceURI &source_uri = _configure->source(0);
             uri = to_string(source_uri);
-            DEBUG_LOG("first source is: %s", uri.c_str());
+            DEBUG_LOG("first source is: {}", uri.c_str());
         }
         if (!_torrent_provider.get_torrent_file(uri, &buffer)) {
-            FATAL_LOG("can not get torrent file(%s) from torrent provider", uri.c_str());
+            FATAL_LOG("can not get torrent file({}) from torrent provider", uri.c_str());
             return false;
         }
         if (!add_torrent_file(buffer, &torrent_params)) {
@@ -1203,7 +1203,7 @@ bool Downloader::add_download_task() {
         _tmp_save_path = _configure->save_path() + "/.gko3_" + _configure->infohash() + "_"
                 + _configure->new_name() + ".tmp";
         if (!Path::mkdir(_tmp_save_path, 0755)) {
-            FATAL_LOG("tmp save path(%s) can not create.", _tmp_save_path.c_str());
+            FATAL_LOG("tmp save path({}) can not create.", _tmp_save_path.c_str());
             return false;
         }
     } else {
@@ -1246,7 +1246,7 @@ bool Downloader::add_download_task() {
                 continue;
             }
             if (statbuf.st_size == fe.size) {
-                DEBUG_LOG("file:%s exist, no check and skip it!", file_name.c_str());
+                DEBUG_LOG("file:{} exist, no check and skip it!", file_name.c_str());
                 torrent_params.file_priorities.at(i) = 0;
             }
         }
@@ -1269,7 +1269,7 @@ bool Downloader::add_download_task() {
             back_inserter(torrent_params.url_seeds));
     _torrent = _session->add_torrent(torrent_params, ec);
     if (ec) {
-        FATAL_LOG("add torrent failed: %s.", ec.message().c_str());
+        FATAL_LOG("add torrent failed: {}.", ec.message().c_str());
         return false;
     }
 
@@ -1290,7 +1290,7 @@ bool Downloader::add_download_task() {
         _cluster_downloader.reset(new ClusterDownloader(cluster_uri, _torrent,
                 _configure->cluster_thread_num(), flags, _configure->max_hdfs_cache_pieces()));
     }
-    NOTICE_LOG("[infohash: %s][downlimit: %s][uplimit: %s][maxconn: %d]",
+    NOTICE_LOG("[infohash: {}][downlimit: {}][uplimit: {}][maxconn: {}]",
             _configure->infohash().c_str(),
             StringUtil::bytes_to_readable(_configure->download_limit()).c_str(),
             StringUtil::bytes_to_readable(_configure->upload_limit()).c_str(),
@@ -1306,7 +1306,7 @@ bool Downloader::check_and_add_source_peers(bool is_from_torrent_provider) {
         const message::SourceURI &source_uri = _configure->source(i);
         // 协议
         if (source_uri.protocol() != "gko3") {
-            WARNING_LOG("protocol(%s) invalid, must be gko3!", source_uri.protocol().c_str());
+            WARNING_LOG("protocol({}) invalid, must be gko3!", source_uri.protocol().c_str());
             continue;
         }
         // 端口
@@ -1318,7 +1318,7 @@ bool Downloader::check_and_add_source_peers(bool is_from_torrent_provider) {
         tcp::resolver::query query(source_uri.host(), StringUtil::to_string(source_uri.port()));
         tcp::resolver::iterator endpoint_iterator = resolver.resolve(query, ec);
         if (ec) {
-            WARNING_LOG("resolve source(%s) failed: %s",
+            WARNING_LOG("resolve source({}) failed: {}",
                     source_uri.host().c_str(), ec.message().c_str());
             continue;
         }
@@ -1355,26 +1355,26 @@ bool Downloader::auto_add_task(int32_t seeding_time) {
     task_info->set_type(message::NOCHECK_TASK);
 
     task_info->set_cmd(_configure->cmd());
-    DEBUG_LOG("auto add task's cmd is:%s", task_info->cmd().c_str());
+    DEBUG_LOG("auto add task's cmd is:{}", task_info->cmd().c_str());
         
     task_info->set_product_tag(_configure->product_tag());
-    DEBUG_LOG("auto add task's product_tag is:%s", task_info->product_tag().c_str());
+    DEBUG_LOG("auto add task's product_tag is:{}", task_info->product_tag().c_str());
     message::TaskOptions *options = add_task_params.mutable_options();
         
     options->set_upload_limit(_configure->upload_limit());
-    DEBUG_LOG("auto add task's upload limit is:%d", options->upload_limit());
+    DEBUG_LOG("auto add task's upload limit is:{}", options->upload_limit());
         
     options->set_max_connections(_configure->connection_limit());
-    DEBUG_LOG("auto add task's max connections is:%d", options->max_connections());
+    DEBUG_LOG("auto add task's max connections is:{}", options->max_connections());
         
     task_info->set_infohash(_configure->infohash());
-    DEBUG_LOG("auto add task's infohash is:%s", task_info->infohash().c_str());
+    DEBUG_LOG("auto add task's infohash is:{}", task_info->infohash().c_str());
 
     task_info->set_save_path(Path::trim(Path::absolute(_configure->save_path())));
-    DEBUG_LOG("auto add task's save path is:%s", task_info->save_path().c_str());
+    DEBUG_LOG("auto add task's save path is:{}", task_info->save_path().c_str());
 
     task_info->set_seeding_time(seeding_time);
-    DEBUG_LOG("auto add task's seeding time is:%d", task_info->seeding_time());
+    DEBUG_LOG("auto add task's seeding time is:{}", task_info->seeding_time());
 
     task_info->set_type(message::SEEDING_TASK);
 
@@ -1383,7 +1383,7 @@ bool Downloader::auto_add_task(int32_t seeding_time) {
     if (client.create_task(add_task_params, &taskid) != 0) {
         return false;
     }
-    NOTICE_LOG("auto add for %d seconds, taskid:%ld\n", seeding_time, taskid);
+    NOTICE_LOG("auto add for {} seconds, taskid:{}\n", seeding_time, taskid);
     return true;
 }
 
@@ -1392,7 +1392,7 @@ bool Downloader::init() {
     set_signal_action();
     // 打开peer文件
     if (!_stat.open_peer_file(_configure->peer_stat_file())) {
-        WARNING_LOG("Open peer stat file %s failed", _configure->peer_stat_file().c_str());
+        WARNING_LOG("Open peer stat file {} failed", _configure->peer_stat_file().c_str());
     }
 
     if (_configure->tracker_size() == 0) {
@@ -1499,7 +1499,7 @@ bool Downloader::init() {
     _stat.get_task_info().__set_upload_limit(_configure->upload_limit());
     _thrift_tracker.set_peerid(_session->id().to_string());
     _thrift_tracker.set_no_p2p(_configure->no_p2p());
-    NOTICE_LOG("[version: %s][build date: %s][local ip: %s][pid: %s]", GINGKO_VERSION, BUILD_DATE,
+    NOTICE_LOG("[version: {}][build date: {}][local ip: {}][pid: {}]", GINGKO_VERSION, BUILD_DATE,
             g_process_info->ip().c_str(), libtorrent::to_hex(_session->id().to_string()).c_str());
     return true;
 }
@@ -1531,10 +1531,10 @@ int Downloader::download() {
     try {
         _io_service.run(ec);
     } catch (libtorrent_exception &e) {
-        FATAL_LOG("exception: %s, torrent maybe removed", e.what());
+        FATAL_LOG("exception: {}, torrent maybe removed", e.what());
         ret = -1;
     } catch (std::exception &e) {
-        FATAL_LOG("exception: %s, torrent maybe removed", e.what());
+        FATAL_LOG("exception: {}, torrent maybe removed", e.what());
         ret = -1;
     }
 
@@ -1543,7 +1543,7 @@ int Downloader::download() {
     }
 
     if (ret != 0) {
-        FATAL_LOG("download fail: %d", ret);
+        FATAL_LOG("download fail: {}", ret);
     } else {
         NOTICE_LOG("download success.");
         if (!_configure->dont_delete_resume_file()) {

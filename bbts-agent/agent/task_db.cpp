@@ -49,11 +49,11 @@ bool TaskDB::reconnect() {
 
     sqlite3 *sqlite_db = NULL;
     if (sqlite3_open(_db_file_name.c_str(), &sqlite_db) != 0) {
-        WARNING_LOG("Can't open db file %s: %s.", _db_file_name.c_str(), sqlite3_errmsg(sqlite_db));
+        WARNING_LOG("Can't open db file {}: {}.", _db_file_name.c_str(), sqlite3_errmsg(sqlite_db));
         sqlite3_close(sqlite_db);
         return false;
     }
-    NOTICE_LOG("open db file %s success.", _db_file_name.c_str());
+    NOTICE_LOG("open db file {} success.", _db_file_name.c_str());
     {
         scoped_lock lock(_task_db_mutex);
         _task_db.reset(sqlite_db, boost::bind(&sqlite3_close, _1));
@@ -81,7 +81,7 @@ bool TaskDB::excute(const string &sql, callback_t callback, void *userdata) {
 
     char *err = NULL;
     if (sqlite3_exec(db.get(), sql.c_str(), callback, userdata, &err) != SQLITE_OK) {
-        WARNING_LOG("SQL error: %s", err);
+        WARNING_LOG("SQL error: {}", err);
         sqlite3_free(err);
         return false;
     }

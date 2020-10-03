@@ -68,7 +68,7 @@ string Routing::get_machine_room_area_inner(const string &machine_room) {
 bool Routing::load_conf(const string &conf_path, const std::string &machine_room) {
     _hashring.clear();
     if (!load_pbconf(conf_path, &_routing_conf)) {
-        DEBUG_LOG("load routing conf(%s) failed", conf_path.c_str());
+        DEBUG_LOG("load routing conf({}) failed", conf_path.c_str());
         return false;
     }
 

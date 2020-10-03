@@ -96,7 +96,7 @@ void parse_need_download_files(
             file_priorities->at(i) = 0;
         }
         if (file_priorities->at(i)) {
-            DEBUG_LOG("will download file: %s", filepath.c_str());
+            DEBUG_LOG("will download file: {}", filepath.c_str());
         }
     }
 }

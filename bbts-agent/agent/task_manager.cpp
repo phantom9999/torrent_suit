@@ -130,7 +130,7 @@ void TaskManager::add_resume_task() {
     string path = g_agent_configure->resume_dir();
     DIR* dir = opendir(const_cast<char *>(path.c_str()));
     if (NULL == dir) {
-        WARNING_LOG("can not open dir: %s", path.c_str());
+        WARNING_LOG("can not open dir: {}", path.c_str());
         return;
     }
 
@@ -144,7 +144,7 @@ void TaskManager::add_resume_task() {
         string file_name = path + "/" + entptr->d_name;
         struct stat statbuf;
         if (0 != ::stat(const_cast<char *>(file_name.c_str()), &statbuf)) {
-            WARNING_LOG("stat failed: %s", file_name.c_str());
+            WARNING_LOG("stat failed: {}", file_name.c_str());
             continue;
         }
         if (!(statbuf.st_mode & S_IFREG)) {
@@ -170,7 +170,7 @@ bool TaskManager::get_agent_options_from_db(message::AgentOptions *options) {
     for (int i = 0; i < 3; ++i) {
         if (!_task_db->excute(sql, &get_agent_config_cb, options)) {
             _task_db->reconnect();
-            WARNING_LOG("execute sql(%s) failed:%d.", sql.c_str(), i);
+            WARNING_LOG("execute sql({}) failed:{}.", sql.c_str(), i);
             continue;
         }
         if_has_agent_config = true;
@@ -188,10 +188,10 @@ bool TaskManager::get_agent_options_from_db(message::AgentOptions *options) {
         for (int i = 0; i < 3; ++i) {
             if (!_task_db->excute(s.str())) {
                 _task_db->reconnect();
-                WARNING_LOG("execute sql(%s) failed:%d", s.str().c_str(), i);
+                WARNING_LOG("execute sql({}) failed:{}", s.str().c_str(), i);
                 continue;
             }
-            DEBUG_LOG("insert one record into agent_config:%s", s.str().c_str());
+            DEBUG_LOG("insert one record into agent_config:{}", s.str().c_str());
             break;
         }
     }
@@ -201,7 +201,7 @@ bool TaskManager::get_agent_options_from_db(message::AgentOptions *options) {
 
 bool TaskManager::start() {
     if (!_peer_stat.open(g_agent_configure->peer_stat_file())) {
-        WARNING_LOG("Open peer stat file %s failed", g_agent_configure->peer_stat_file().c_str());
+        WARNING_LOG("Open peer stat file {} failed", g_agent_configure->peer_stat_file().c_str());
     }
 
     const string &machine_room = g_process_info->machine_room();
@@ -233,7 +233,7 @@ bool TaskManager::start() {
     _session->listen_on(make_pair(listen_port, listen_port),
             ec, "0.0.0.0", session::listen_no_system_port);
     if (ec) {
-        FATAL_LOG("listen on port %d failed.", listen_port);
+        FATAL_LOG("listen on port {} failed.", listen_port);
         return false;
     }
     int upload_rate_limit = -1;
@@ -251,7 +251,7 @@ bool TaskManager::start() {
         if (upload_rate_limit > 500 * 1024 * 1024) {
             upload_rate_limit = 500 * 1024 * 1024;
         }
-        NOTICE_LOG("agent upload rate limit:%d, connection limit:%d",
+        NOTICE_LOG("agent upload rate limit:{}, connection limit:{}",
                 upload_rate_limit,
                 connections_limit);
 
@@ -380,14 +380,14 @@ void TaskManager::add_task(
         const string &data = task_info->data();
         ti.reset(new torrent_info(data.data(), data.length(), ec, 0, task_info->new_name()));
         if (ec) {
-            WARNING_LOG("parse torrent failed, ret(%d): %s.", ec.value(), ec.message().c_str());
+            WARNING_LOG("parse torrent failed, ret({}): {}.", ec.value(), ec.message().c_str());
             return;
         }
         task_info->set_infohash(libtorrent::to_hex(ti->info_hash().to_string()));
     } else if (task_info->has_infohash() || task_info->has_uri()) {
         shared_ptr<Metadata> meta = get_metadata_by_taskinfo(*task_info);
         if (!meta) {
-            WARNING_LOG("[%s%s]: no metadata to find",
+            WARNING_LOG("[{}{}]: no metadata to find",
                     task_info->infohash().c_str(), task_info->uri().c_str());
             ec.assign(bbts::errors::NO_METADATA, get_error_category());
             return;
@@ -398,7 +398,7 @@ void TaskManager::add_task(
         libtorrent::lazy_bdecode(meta->metadata.c_str(),
                 meta->metadata.c_str() + meta->metadata.length(), metadata, ec);
         if (ec) {
-            WARNING_LOG("bdecode metadata(%s) failed: %s.",
+            WARNING_LOG("bdecode metadata({}) failed: {}.",
                     meta->infohash.c_str(), ec.message().c_str());
             return;
         }
@@ -407,11 +407,11 @@ void TaskManager::add_task(
         hex_decode(meta->infohash, &bytes);
         ti.reset(new torrent_info(libtorrent::sha1_hash(bytes), 0, task_info->new_name()));
         if (!ti->parse_info_section(metadata, ec, 0)) {
-            WARNING_LOG("parse metadata(%s) failed: %s",
+            WARNING_LOG("parse metadata({}) failed: {}",
                     meta->infohash.c_str(), ec.message().c_str());
                 return;
         }
-        DEBUG_LOG("get metadata(%s) success", meta->infohash.c_str());
+        DEBUG_LOG("get metadata({}) success", meta->infohash.c_str());
     } else {
         WARNING_LOG("not set info_hash or torrent_path or torrent_url");
         ec.assign(bbts::errors::MSG_ARGS_ERROR, get_error_category());
@@ -434,17 +434,17 @@ void TaskManager::add_task(
             dup_task = data_path_it->second.lock();
         }
         if (dup_task) {
-            DEBUG_LOG("dup task type: %d, new task type: %d",
+            DEBUG_LOG("dup task type: {}, new task type: {}",
                     dup_task->get_type(), task_info->type());
             if (dup_task->get_type() == message::NOCHECK_TASK
                     || task_info->type() == message::SEEDING_TASK) {
-                WARNING_LOG("new task conflict with task(%ld), it will quit.", dup_task->get_id());
+                WARNING_LOG("new task conflict with task({}), it will quit.", dup_task->get_id());
                 ERASE_TASK_FROM_MAP(dup_task);
                 dup_task->remove_torrent();
                 dup_task->cancel();
             } else {
                 WARNING_LOG(
-                        "add torrent(%s) failed: new nocheck task(%s:%s) conflict with seed task.",
+                        "add torrent({}) failed: new nocheck task({}:{}) conflict with seed task.",
                         task_info->infohash().c_str(),
                         data_path.c_str());
                 ec.assign(bbts::errors::DUP_TASK_ERROR, get_error_category());
@@ -457,7 +457,7 @@ void TaskManager::add_task(
     {
         scoped_lock lock(_tasks_lock);
         if (static_cast<int32_t>(_tasks_map.size()) >= g_agent_configure->active_seeds()) {
-            TRACE_LOG("tasks num is %ld, too many, more than config set %ld", _tasks_map.size(), 
+            TRACE_LOG("tasks num is {}, too many, more than config set {}", _tasks_map.size(),
                     g_agent_configure->active_seeds());
             std::multimap<int64_t, int64_t> delete_task_map;
             // 计算task起始时间+ seeding time , 利用map自身有序
@@ -469,7 +469,7 @@ void TaskManager::add_task(
                 } else {
                     end_time += it->second->get_seeding_time();
                 }
-                TRACE_LOG("[task id: %ld] seeding time: %d, calc time: %ld", 
+                TRACE_LOG("[task id: {}] seeding time: {}, calc time: {}",
                         it->first, it->second->get_seeding_time(), end_time);
                 delete_task_map.insert(std::pair<int64_t, int64_t>(end_time, it->first));
             } 
@@ -480,11 +480,11 @@ void TaskManager::add_task(
                 TasksMap::iterator im;
                 im = _tasks_map.find(it->second);
                 if (im == _tasks_map.end()) {
-                    WARNING_LOG("delete task occur error, task id %ld not found!", it->second);
+                    WARNING_LOG("delete task occur error, task id {} not found!", it->second);
                     continue;
                 } 
                 shared_ptr<Task> task = im->second;
-                TRACE_LOG("delete old task id: %ld, infohash: %s, path: %s", it->second, 
+                TRACE_LOG("delete old task id: {}, infohash: {}, path: {}", it->second,
                         task->get_infohash().c_str(), task->get_data_path().c_str());
                 ERASE_TASK_FROM_MAP(task);
                 task->remove_torrent();
@@ -504,7 +504,7 @@ void TaskManager::add_task(
         ADD_TASK_TO_MAP(task);
     }
 
-    NOTICE_LOG("add task(%ld) success", task->get_id());
+    NOTICE_LOG("add task({}) success", task->get_id());
     message::TaskRes response;
     response.set_taskid(task->get_id());
     write_message(connection, RES_TASK, response);
@@ -691,7 +691,7 @@ void TaskManager::set_task_options(
         scoped_lock lock(_tasks_lock);
         TasksMap::iterator it = _tasks_map.find(options.taskid());
         if (it == _tasks_map.end()) {
-            WARNING_LOG("task(%ld) not found in running tasks", options.taskid());
+            WARNING_LOG("task({}) not found in running tasks", options.taskid());
             ec.assign(bbts::errors::TASK_NOT_FOUND, get_error_category());
             return;
         }
@@ -714,7 +714,7 @@ void TaskManager::get_task_options(
         scoped_lock lock(_tasks_lock);
         TasksMap::iterator it = _tasks_map.find(options->taskid());
         if (it == _tasks_map.end()) {
-            WARNING_LOG("task(%ld) not found in running task", options->taskid());
+            WARNING_LOG("task({}) not found in running task", options->taskid());
             ec.assign(bbts::errors::TASK_NOT_FOUND, get_error_category());
             return;
         }
@@ -729,7 +729,7 @@ void TaskManager::set_agent_options(
         error_code &ec) {
     struct ucred cred = any_cast<struct ucred>(connection->get_user_argument());
     if (cred.uid != 0 && cred.uid != g_process_info->uid()) {
-        NOTICE_LOG("uid %d have no cred for change agent opt.", cred.uid);
+        NOTICE_LOG("uid {} have no cred for change agent opt.", cred.uid);
         ec.assign(bbts::errors::CHECK_CRED_FAILED, get_error_category());
         return;
     }
@@ -752,7 +752,7 @@ void TaskManager::set_agent_options(
     bool is_update_success = false;
     for (int i = 0; i < 3; ++i) {
         if (!_task_db->excute(sql.str())) {
-            WARNING_LOG("update agent options in sqlite(%s) failed:%d", sql.str().c_str(), i);
+            WARNING_LOG("update agent options in sqlite({}) failed:{}", sql.str().c_str(), i);
             _task_db->reconnect();
             continue;
         }
@@ -763,7 +763,7 @@ void TaskManager::set_agent_options(
         WARNING_LOG("update agent options failed!");
     }
 
-    NOTICE_LOG("Agent setopt uplimit: %s/s, maxconn: %d",
+    NOTICE_LOG("Agent setopt uplimit: {}/s, maxconn: {}",
             StringUtil::bytes_to_readable(settings.upload_rate_limit).c_str(),
             settings.connections_limit);
     write_base_message(connection, ec);
@@ -835,7 +835,7 @@ void TaskManager::add_metadata(const message::Metadata &message) {
     meta->add_time = time(NULL);
     _metas.push_back(meta);
     _current_metas_total_size += metadata_length;
-    TRACE_LOG("add metadata success: %s", meta->infohash.c_str());
+    TRACE_LOG("add metadata success: {}", meta->infohash.c_str());
 }
 
 #define PARSE_MSG(msg) \
@@ -915,7 +915,7 @@ void TaskManager::process_message(
     }
 
     default:
-        WARNING_LOG("message type (%d) not support.", type);
+        WARNING_LOG("message type ({}) not support.", type);
         ec.assign(bbts::errors::MSG_ARGS_ERROR, get_error_category());
         break;
     }
@@ -933,7 +933,7 @@ void TaskManager::on_read_message(
 
 void TaskManager::on_accept(const shared_ptr<UnixSocketConnection> &connection) {
     int fd = connection->get_socket().native_handle();
-    DEBUG_LOG("process message fd: %d", fd);
+    DEBUG_LOG("process message fd: {}", fd);
     struct ucred cred;
     if (!bbts::recv_cred(fd, &cred)) {
         WARNING_LOG("read cred failed.");
@@ -949,14 +949,14 @@ void TaskManager::seeding_timer_callback(int taskid) {
     it = _tasks_map.find(taskid);
     if (it != _tasks_map.end()) {
         shared_ptr<Task> task = it->second;
-        NOTICE_LOG("task(%ld) finished, will quit.", task->get_id());
+        NOTICE_LOG("task({}) finished, will quit.", task->get_id());
         ERASE_TASK_FROM_MAP(task);
     }
 }
 
 void TaskManager::remove_task_by_error(shared_ptr<Task> task, const string &error) {
     task->set_error(error);
-    WARNING_LOG("task(%ld) failed, will quit. error: %s.", task->get_id(), error.c_str());
+    WARNING_LOG("task({}) failed, will quit. error: {}.", task->get_id(), error.c_str());
     ERASE_TASK_FROM_MAP(task);
 }
 
@@ -976,7 +976,7 @@ void TaskManager::process_task_by_torrent(torrent_handle torrent,
 }
 
 void TaskManager::on_torrent_finished(const libtorrent::torrent_finished_alert *alert) {
-    NOTICE_LOG("%s", alert->message().c_str());
+    NOTICE_LOG("{}", alert->message().c_str());
     process_task_by_torrent(alert->handle, bind(&Task::to_seeding, _1));
 }
 
@@ -985,7 +985,7 @@ void TaskManager::on_listen_failed(const libtorrent::listen_failed_alert *alert)
     if (alert->sock_type == libtorrent::listen_failed_alert::tcp
             && ep.address().is_v4()
             && ep.port() == g_agent_configure->listen_port()) {
-        FATAL_LOG("%s.", alert->message().c_str());
+        FATAL_LOG("{}.", alert->message().c_str());
         stop();
     }
 }
@@ -1036,13 +1036,13 @@ void TaskManager::process_alert() {
                 if (pos != string::npos) {
                     InfohashMap::iterator it = _infohash_map.find(peer_message.substr(0, pos));
                     if (it != _infohash_map.end()) {
-                        DEBUG_LOG("add task_manager peer info: %s", peer_message.c_str());
+                        DEBUG_LOG("add task_manager peer info: {}", peer_message.c_str());
                         it->second.lock()->add_peer_stat(peer_message); 
                     } else {
                         DEBUG_LOG("not found infohash in map");
                     }
                 } else {
-                    DEBUG_LOG("peer message %s can't find ','", peer_message.c_str());
+                    DEBUG_LOG("peer message {} can't find ','", peer_message.c_str());
                 }
             }
             */
@@ -1059,7 +1059,7 @@ void TaskManager::process_alert() {
         case libtorrent::state_changed_alert::alert_type:
         case libtorrent::torrent_resumed_alert::alert_type:
         case libtorrent::torrent_paused_alert::alert_type:
-            NOTICE_LOG("%s", (*it)->message().c_str());
+            NOTICE_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_error_alert::alert_type:
@@ -1070,27 +1070,27 @@ void TaskManager::process_alert() {
         case libtorrent::tracker_error_alert::alert_type:
         case libtorrent::file_error_alert::alert_type:
         case libtorrent::metadata_received_alert::alert_type:
-            WARNING_LOG("%s", (*it)->message().c_str());
+            WARNING_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::tracker_reply_alert::alert_type:
         case libtorrent::tracker_announce_alert::alert_type:
-            TRACE_LOG("%s", (*it)->message().c_str());
+            TRACE_LOG("{}", (*it)->message().c_str());
             break;
 
         case libtorrent::peer_disconnected_alert::alert_type:
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             //on_peer_disconnect(static_cast<libtorrent::peer_disconnected_alert *>(*it));
             break;
 
         case libtorrent::performance_alert::alert_type:
         case libtorrent::peer_connect_alert::alert_type:
         case libtorrent::incoming_connection_alert::alert_type:
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
 
         default:
-            DEBUG_LOG("%s", (*it)->message().c_str());
+            DEBUG_LOG("{}", (*it)->message().c_str());
             break;
         }
 

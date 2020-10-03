@@ -13,13 +13,13 @@ WorkerPool::WorkerPool(const std::string &tag) : _thread_num(0), _tag(tag) {}
 
 
 void WorkerPool::thread_main(int worker_id) {
-    TRACE_LOG("[%s][%d] run begin.", _tag.c_str(), worker_id);
+    TRACE_LOG("[{}][{}] run begin.", _tag.c_str(), worker_id);
     boost::system::error_code ec;
     _io_service.run(ec);
     if (ec) {
-        WARNING_LOG("[%s]thread pool run fail: %s", _tag.c_str(), ec.message().c_str());
+        WARNING_LOG("[{}]thread pool run fail: {}", _tag.c_str(), ec.message().c_str());
     }
-    TRACE_LOG("[%s][%d] run end.", _tag.c_str(), worker_id);
+    TRACE_LOG("[{}][{}] run end.", _tag.c_str(), worker_id);
 }
 
 void WorkerPool::start(int thread_num) {

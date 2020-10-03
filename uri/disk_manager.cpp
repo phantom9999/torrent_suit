@@ -46,7 +46,7 @@ void DiskManager::run() {
     boost::system::error_code ec;
     _ios.run(ec);
     if (ec) {
-        WARNING_LOG("[disk manager thread run fail: %s", ec.message().c_str());
+        WARNING_LOG("[disk manager thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("disk manager thread run end");
     CLOSE_LOG_R();

@@ -20,7 +20,7 @@ bool SyncUnixSocketClient::connect(const UnixSocketConnection::EndPoint &endpoin
     boost::system::error_code ec;
     _socket.connect(endpoint, ec);
     if (ec) {
-        DEBUG_LOG("connect to server(%s) failed: %s",
+        DEBUG_LOG("connect to server({}) failed: {}",
                   endpoint.path().c_str(), ec.message().c_str());
     }
     return !ec;
@@ -38,7 +38,7 @@ bool SyncUnixSocketClient::write_data(const boost::shared_ptr<const std::vector<
     boost::system::error_code ec;
     boost::asio::write(_socket, buffers, ec);
     if (ec) {
-        DEBUG_LOG("write data to server failed: %s", ec.message().c_str());
+        DEBUG_LOG("write data to server failed: {}", ec.message().c_str());
     }
     return !ec;
 }
@@ -49,7 +49,7 @@ bool SyncUnixSocketClient::read_data(boost::shared_ptr<std::vector<char> > *data
     Header header;
     boost::asio::read(_socket, boost::asio::buffer(&header, sizeof(header)), ec);
     if (ec) {
-        DEBUG_LOG("read data from server failed: %s", ec.message().c_str());
+        DEBUG_LOG("read data from server failed: {}", ec.message().c_str());
         return false;
     }
     if (!header.is_valid()) {

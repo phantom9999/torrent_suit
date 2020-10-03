@@ -95,7 +95,7 @@ void ThriftTracker::on_announce(
     using bbts::tracker::AnnounceClient;
     using libtorrent::ex_announce_peer;
 
-    TRACE_LOG("[%s][seed:%d][state:%d][uploaded:%lld][downloaded:%lld][left:%lld][num_want:%d]",
+    TRACE_LOG("[{}][seed:{}][state:{}][uploaded:{}][downloaded:{}][left:{}][num_want:{}]",
             libtorrent::to_hex(request->infohash).c_str(),
             request->is_seed,
             request->stat.status,
@@ -121,15 +121,15 @@ void ThriftTracker::on_announce(
             transport->close();
             announce_success = true;
             if (response->ret == 0) {
-                TRACE_LOG("[tracker:%s:%d][recv:%d][have_seed:%d]",
+                TRACE_LOG("[tracker:{}:{}][recv:{}][have_seed:{}]",
                         it->first.c_str(), it->second, response->peers.size(), response->have_seed);
             } else {
-                WARNING_LOG("[tracker:%s:%d][fail:%s]",
+                WARNING_LOG("[tracker:{}:{}][fail:{}]",
                         it->first.c_str(), it->second, response->failure_reason.c_str());
             }
             break;
         } catch (TException &tx) {
-            WARNING_LOG("[tracker:%s:%d][fail:%s]", it->first.c_str(), it->second, tx.what());
+            WARNING_LOG("[tracker:{}:{}][fail:{}]", it->first.c_str(), it->second, tx.what());
         }
     }
 

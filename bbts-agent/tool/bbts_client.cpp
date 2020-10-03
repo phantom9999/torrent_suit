@@ -39,17 +39,17 @@ BBTSClient::~BBTSClient() {}
 int BBTSClient::create_task(const message::AddTask &params, int64_t *id) {
     const message::Task &task_info = params.task();
     if (task_info.has_infohash() && task_info.infohash().length() != 40) {
-        WARNING_LOG("invalid infohash[sha-1 hex]: %s", task_info.infohash().c_str());
+        WARNING_LOG("invalid infohash[sha-1 hex]: {}", task_info.infohash().c_str());
         return 1;
     }
 
     if (task_info.seeding_time() < -1) {
-        WARNING_LOG("seeding time[>=-1] invalid: %d", task_info.seeding_time());
+        WARNING_LOG("seeding time[>=-1] invalid: {}", task_info.seeding_time());
         return 1;
     }
 
     if (task_info.save_path().empty()) {
-        WARNING_LOG("save path invalid: %s", task_info.save_path().c_str());
+        WARNING_LOG("save path invalid: {}", task_info.save_path().c_str());
         return 1;
     }
 
@@ -61,12 +61,12 @@ int BBTSClient::create_task(const message::AddTask &params, int64_t *id) {
 
     const message::TaskOptions &options = params.options();
     if (options.upload_limit() < 0 || options.upload_limit() > 500 * 1024 * 1024) {
-        WARNING_LOG("upload limit[0-500MB/s] invalid: %d", options.upload_limit());
+        WARNING_LOG("upload limit[0-500MB/s] invalid: {}", options.upload_limit());
         return 1;
     }
 
     if (options.max_connections() < 0 || options.max_connections() > 65535) {
-        WARNING_LOG("connection limit[0-65535] invalid: %d", options.max_connections());
+        WARNING_LOG("connection limit[0-65535] invalid: {}", options.max_connections());
         exit(1);
     }
 
@@ -83,7 +83,7 @@ int BBTSClient::create_task(const message::AddTask &params, int64_t *id) {
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
-        WARNING_LOG("Add new task failed, ret(%d): %s.",
+        WARNING_LOG("Add new task failed, ret({}): {}.",
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 5;
     } else {
@@ -102,7 +102,7 @@ int BBTSClient::list_tasks(const vector<int64_t> &taskids, message::BatchListRes
         for (vector<int64_t>::const_iterator it = taskids.begin(); it != taskids.end(); ++it) {
             int64_t taskid = *it;
             if (taskid < 0) {
-                WARNING_LOG("task id[>=0] invalid: %ld", taskid);
+                WARNING_LOG("task id[>=0] invalid: {}", taskid);
                 return 1;
             }
             req.add_taskids(taskid);
@@ -118,7 +118,7 @@ int BBTSClient::list_tasks(const vector<int64_t> &taskids, message::BatchListRes
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
-        WARNING_LOG("list failed, ret(%d): %s", base_res->ret_code(), base_res->fail_msg().c_str());
+        WARNING_LOG("list failed, ret({}): {}", base_res->ret_code(), base_res->fail_msg().c_str());
         return 2;
     } else {
         assert(type == RES_BATCH_LIST);
@@ -138,7 +138,7 @@ int BBTSClient::get_status(message::Status *status) {
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
-        WARNING_LOG("get status failed, ret(%d): %s",
+        WARNING_LOG("get status failed, ret({}): {}",
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 3;
     } else {
@@ -163,7 +163,7 @@ int BBTSClient::batch_control(
         for (vector<int64_t>::const_iterator it = taskids.begin(); it != taskids.end(); ++it) {
             int64_t taskid = *it;
             if (taskid < 0) {
-                WARNING_LOG("task id[>=0] invalid: %ld", taskid);
+                WARNING_LOG("task id[>=0] invalid: {}", taskid);
                 return 1;
             }
             req.add_taskids(taskid);
@@ -173,7 +173,7 @@ int BBTSClient::batch_control(
             string bytes;
             const string &infohash = *it;
             if (infohash.length() != 40 || !hex_decode(infohash, &bytes)) {
-                WARNING_LOG("infohash %s invalid, please check!", infohash.c_str());
+                WARNING_LOG("infohash {} invalid, please check!", infohash.c_str());
                 return 1;
             }
             req.add_infohashs(infohash);
@@ -190,7 +190,7 @@ int BBTSClient::batch_control(
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
-        WARNING_LOG("batch ctrl failed, ret(%d): %s",
+        WARNING_LOG("batch ctrl failed, ret({}): {}",
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 2;
     } else {
@@ -202,12 +202,12 @@ int BBTSClient::batch_control(
 
 int BBTSClient::set_agent_options(const message::AgentOptions &options) {
     if (options.upload_limit() < 0 || options.upload_limit() > 500 * 1024 * 1024) {
-        WARNING_LOG("upload limit[0-500MB/s] invalid: %d", options.upload_limit());
+        WARNING_LOG("upload limit[0-500MB/s] invalid: {}", options.upload_limit());
         return 1;
     }
 
     if (options.max_connections() < 0 || options.max_connections() > 65535) {
-        WARNING_LOG("connection limit[0-65535] invalid: %d", options.max_connections());
+        WARNING_LOG("connection limit[0-65535] invalid: {}", options.max_connections());
         return 1;
     }
 
@@ -221,7 +221,7 @@ int BBTSClient::set_agent_options(const message::AgentOptions &options) {
     assert(type == RES_BASE);
     message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
     if (base_res->ret_code() != 0) {
-        WARNING_LOG("agent setopt failed, ret(%d): %s",
+        WARNING_LOG("agent setopt failed, ret({}): {}",
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 3;
     }
@@ -239,7 +239,7 @@ int BBTSClient::get_agent_options(message::AgentOptions *options) {
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(res.get());
-        WARNING_LOG("agent setopt failed, ret(%d): %s",
+        WARNING_LOG("agent setopt failed, ret({}): {}",
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 3;
     } else {
@@ -266,12 +266,12 @@ int BBTSClient::set_task_options(const message::TaskOptions &options) {
     }
 
     if (options.upload_limit() < 0 || options.upload_limit() > 500 * 1024 * 1024) {
-        WARNING_LOG("upload limit[0-500MB/s] invalid: %d", options.upload_limit());
+        WARNING_LOG("upload limit[0-500MB/s] invalid: {}", options.upload_limit());
         return 1;
     }
 
     if (options.max_connections() < 0 || options.max_connections() > 65535) {
-        WARNING_LOG("connection limit[0-65535] invalid: %d", options.max_connections());
+        WARNING_LOG("connection limit[0-65535] invalid: {}", options.max_connections());
         return 1;
     }
 
@@ -285,7 +285,7 @@ int BBTSClient::set_task_options(const message::TaskOptions &options) {
     assert(type == RES_BASE);
     message::BaseRes *base_res = static_cast<message::BaseRes *>(response.get());
     if (base_res->ret_code() != 0) {
-        WARNING_LOG("task(%d) setopt failed, ret(%d): %s", options.taskid(),
+        WARNING_LOG("task({}) setopt failed, ret({}): {}", options.taskid(),
                 base_res->ret_code(), base_res->fail_msg().c_str());
         return 3;
     }
@@ -308,7 +308,7 @@ int BBTSClient::get_task_options(message::TaskOptions *options) {
 
     if (type == RES_BASE) {
         message::BaseRes *base_res = static_cast<message::BaseRes *>(response.get());
-        WARNING_LOG("task(%d) setopt failed, ret(%d): %s",
+        WARNING_LOG("task({}) setopt failed, ret({}): {}",
                 options->taskid(), base_res->ret_code(), base_res->fail_msg().c_str());
         return 3;
     } else {
@@ -323,7 +323,7 @@ bool BBTSClient::tell_server(
     boost::asio::io_service ios;
     SyncUnixSocketClient client(ios);
     if (!client.connect(_endpoint)) {
-        WARNING_LOG("connect to server(%s) failed.", _endpoint.path().c_str());
+        WARNING_LOG("connect to server({}) failed.", _endpoint.path().c_str());
         return false;
     }
 
@@ -352,7 +352,7 @@ bool BBTSClient::tell_server(
     }
     data.reset();
     if (!client.read_data(&data)) {
-        WARNING_LOG("read message failed, : %s.");
+        WARNING_LOG("read message failed, : {}.");
         return false;
     }
     client.close();
@@ -411,7 +411,7 @@ bool BBTSClient::tell_server_with_retry(
         if (tell_server(request, type, response)) {
             return true;
         }
-        WARNING_LOG("tell unix server failed, will retry %d.", ++i);
+        WARNING_LOG("tell unix server failed, will retry {}.", ++i);
     }
     return false;
 }

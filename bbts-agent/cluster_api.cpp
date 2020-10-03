@@ -103,20 +103,20 @@ bool ClusterAPI::parse_library(const std::string &library) {
     string library_path = g_process_info->root_dir() + "/lib/lib" + _library_name + "tool.so";
     _cluster_library = dlopen(library_path.c_str(), RTLD_LAZY);
     if (!_cluster_library) {
-        WARNING_LOG("%s: %s", library_path.c_str(), dlerror());
+        WARNING_LOG("{}: {}", library_path.c_str(), dlerror());
         return false;
     }
 
     _connect_cluster = (ConnectClusterFunc)dlsym(_cluster_library, "connect_cluster");
     if (!_connect_cluster) {
-        WARNING_LOG("%s", dlerror());
+        WARNING_LOG("{}", dlerror());
         dlclose(_cluster_library);
         return false;
     }
 
     _close_cluster = (CloseClusterFunc)dlsym(_cluster_library, "close_cluster");
     if (!_close_cluster) {
-        WARNING_LOG("%s", dlerror());
+        WARNING_LOG("{}", dlerror());
         dlclose(_cluster_library);
         return false;
     }
@@ -124,14 +124,14 @@ bool ClusterAPI::parse_library(const std::string &library) {
     read_piece_content = (ReadPieceContentFunc)dlsym(
             _cluster_library, "read_piece_content_from_cluster");
     if (!read_piece_content) {
-        WARNING_LOG("%s", dlerror());
+        WARNING_LOG("{}", dlerror());
         dlclose(_cluster_library);
         return false;
     }
 
     read_file = (ReadFileFunc)dlsym(_cluster_library, "read_file_from_cluster");
     if (!read_file) {
-        WARNING_LOG("%s", dlerror());
+        WARNING_LOG("{}", dlerror());
         dlclose(_cluster_library);
         return false;
     }
@@ -173,7 +173,7 @@ void* ClusterAPI::connect_cluster_with_timeout(const message::SourceURI &source,
         return connection_it->second.get();
     }
 
-    TRACE_LOG("begin to connect cluster(%s)", strm.str().c_str());
+    TRACE_LOG("begin to connect cluster({})", strm.str().c_str());
     void *fs = NULL;
     bool complete = false;
     boost::mutex mut;
@@ -184,12 +184,12 @@ void* ClusterAPI::connect_cluster_with_timeout(const message::SourceURI &source,
     connect_thread.detach();
     cond.timed_wait(lock, boost::posix_time::seconds(timeout));
     if (fs) {
-        TRACE_LOG("connect cluster(%s) success!", strm.str().c_str());
+        TRACE_LOG("connect cluster({}) success!", strm.str().c_str());
         _connection_map[strm.str()] = shared_ptr<void>(fs, boost::bind(&ClusterAPI::close_cluster, this, _1));
     } else if (!complete) {
-        WARNING_LOG("conncet cluster(%s) timeout: %ds", strm.str().c_str(), timeout);
+        WARNING_LOG("conncet cluster({}) timeout: {}s", strm.str().c_str(), timeout);
     } else {
-        WARNING_LOG("conncet cluster(%s) failed!", strm.str().c_str());
+        WARNING_LOG("conncet cluster({}) failed!", strm.str().c_str());
     }
     return fs;
 }

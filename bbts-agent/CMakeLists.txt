@@ -49,6 +49,7 @@ target_link_libraries(
         ${SNAPPY_LIB}
         ${ZLIB_LIBRARIES}
         ${OPENSSL_LIBRARIES}
+        ${FORMAT_LIB}
         pthread dl rt
         -Xlinker "-)"
 )
@@ -69,6 +70,7 @@ target_link_libraries(
         ${SNAPPY_LIB}
         ${ZLIB_LIBRARIES}
         ${OPENSSL_LIBRARIES}
+        ${FORMAT_LIB}
         pthread dl rt
         -Xlinker "-)"
 )

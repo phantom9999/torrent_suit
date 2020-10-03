@@ -52,7 +52,7 @@ public:
             _re.assign(path_reg);
         } catch (boost::bad_expression &e) {
             _error = e.what();
-            WARNING_LOG("path regex(%s) invalid: %s", path_reg.c_str(), e.what());
+            WARNING_LOG("path regex({}) invalid: {}", path_reg.c_str(), e.what());
         }
         _prefix_len = Path::parent_dir(_root_path).length() + 1;
     }
@@ -127,16 +127,16 @@ bool QuickPiecesHashes::read_piece(int i, char *buf, int buf_len) {
         string filename = _root_path + "/" + fs.at(it->file_index).path;
         fp = fopen(filename.c_str(), "rb");
         if (!fp) {
-            WARNING_LOG("open file failed: %s", filename.c_str());
+            WARNING_LOG("open file failed: {}", filename.c_str());
             return false;
         }
         if (fseek(fp, it->offset, SEEK_SET) != 0) {
-            WARNING_LOG("fseek file(%s) to offset(%ld) failed", filename.c_str(), it->offset);
+            WARNING_LOG("fseek file({}) to offset({}) failed", filename.c_str(), it->offset);
             fclose(fp);
             return false;
         }
         if (fread(ptr, 1, it->size, fp) != (size_t)it->size) {
-            WARNING_LOG("fread file(%s) failed, offset: %ld, len: %ld",
+            WARNING_LOG("fread file({}) failed, offset: {}, len: {}",
                     filename.c_str(), it->offset, it->size);
             fclose(fp);
             return false;
@@ -232,7 +232,7 @@ bool make_torrent(
         error_message->assign("path:");
         error_message->append(root_path);
         error_message->append(" is not exist");
-        WARNING_LOG("%s", error_message->c_str());
+        WARNING_LOG("{}", error_message->c_str());
         return false;
     }
 
@@ -256,7 +256,7 @@ bool make_torrent(
     add_files(fs, root_path, filter, flags);
     if (fs.num_files() == 0) {
         error_message->assign("mkseed failed: no files");
-        WARNING_LOG("%s", error_message->c_str());
+        WARNING_LOG("{}", error_message->c_str());
         return false;
     }
 
@@ -264,7 +264,7 @@ bool make_torrent(
     if (!args.cluster_config.empty()) {
         message::SourceURI cluster_uri;
         if (!parse_uri_entry(args.cluster_config, &cluster_uri)) {
-            WARNING_LOG("invalid cluster uri: %s", args.cluster_config.c_str());
+            WARNING_LOG("invalid cluster uri: {}", args.cluster_config.c_str());
             return false;
         }
         t.set_cluster_config(cluster_uri.protocol(), cluster_uri.host(), cluster_uri.port(),
@@ -283,7 +283,7 @@ bool make_torrent(
             libtorrent::set_piece_hashes(t, libtorrent::parent_path(root_path),
                     boost::bind(&detail::print_progress, _1, t.num_pieces()), ec);
             if (ec) {
-                WARNING_LOG("mkseed failed: %s", ec.message().c_str());
+                WARNING_LOG("mkseed failed: {}", ec.message().c_str());
                 return false;
             }
         } else {
@@ -318,7 +318,7 @@ bool make_torrent(
         }
         if (!provider.upload_torrent_file(*infohash, source, *torrent)) {
             error_message->assign("upload torrent file to provider failed!");
-            WARNING_LOG("%s", error_message->c_str());
+            WARNING_LOG("{}", error_message->c_str());
             return false;
         }
     }
@@ -331,15 +331,15 @@ bool dump_torrent(const std::string &filename, bool debug) {
     error_code ec;
     int64_t size = File::size(filename.c_str(), ec);
     if (ec) {
-        WARNING_LOG("torrent %s size failed: %s", filename.c_str(), ec.message().c_str());
+        WARNING_LOG("torrent {} size failed: {}", filename.c_str(), ec.message().c_str());
         return false;
     }
     if (size <= 0) {
-        WARNING_LOG("torrent %s is empty", filename.c_str());
+        WARNING_LOG("torrent {} is empty", filename.c_str());
         return false;
     }
     if (size > max_file_size) {
-        WARNING_LOG("torrent %s size[< %ldMB] invalid: %ldMB",
+        WARNING_LOG("torrent {} size[< {}MB] invalid: {}MB",
                 filename.c_str(), max_file_size / 1024 / 1024, size / 1024 / 1024);
         return false;
     }
@@ -347,7 +347,7 @@ bool dump_torrent(const std::string &filename, bool debug) {
     std::vector<char> buffer;
     int ret = File::read(filename, &buffer, ec, max_file_size);
     if (ret < 0) {
-        WARNING_LOG("load torrent %s failed: %s", filename.c_str(), ec.message().c_str());
+        WARNING_LOG("load torrent {} failed: {}", filename.c_str(), ec.message().c_str());
         return false;
     }
 
@@ -356,7 +356,7 @@ bool dump_torrent(const std::string &filename, bool debug) {
     ret = libtorrent::lazy_bdecode(
             &buffer[0], &buffer[0] + buffer.size(), lazy_e, ec, &pos, 1000, 10000000);
     if (ret != 0) {
-        WARNING_LOG("decode torrent failed: '%s' at character %d", ec.message().c_str(), pos);
+        WARNING_LOG("decode torrent failed: '{}' at character {}", ec.message().c_str(), pos);
         return false;
     }
     if (debug) {
@@ -365,7 +365,7 @@ bool dump_torrent(const std::string &filename, bool debug) {
 
     libtorrent::torrent_info t(lazy_e, ec);
     if (ec) {
-        WARNING_LOG("parse torrent failed: %s", ec.message().c_str());
+        WARNING_LOG("parse torrent failed: {}", ec.message().c_str());
         return false;
     }
     lazy_e.clear();
@@ -434,7 +434,7 @@ int delete_files_cb(const char* path, const struct stat* statbuf, int type, stru
     switch (type) {
     case FTW_F: {
         if (!(statbuf->st_mode & S_IFREG)) {  //非规则文件，如pipe等，则跳过
-            WARNING_LOG("skip pipe, sock file: %s", path);
+            WARNING_LOG("skip pipe, sock file: {}", path);
             break;
         }
         bool found = false;
@@ -447,12 +447,12 @@ int delete_files_cb(const char* path, const struct stat* statbuf, int type, stru
         }
         if (!found) {
             if (unlink(path) != 0) {
-                WARNING_LOG("delete file(%s) error(%d): %s\n ", path, errno, strerror(errno));
+                WARNING_LOG("delete file({}) error({}): {}\n ", path, errno, strerror(errno));
             } else {
-                WARNING_LOG("delete file: %s", path);
+                WARNING_LOG("delete file: {}", path);
             }
         } else {
-            WARNING_LOG("file(%s) is in torrent", base_path.c_str());
+            WARNING_LOG("file({}) is in torrent", base_path.c_str());
         }
         break;
     }
@@ -470,7 +470,7 @@ int delete_files_cb(const char* path, const struct stat* statbuf, int type, stru
         }
         if (!found) {
             if (unlink(path) != 0) {
-                WARNING_LOG("delete symlink file(%s) error(%d): %s", path, errno, strerror(errno));
+                WARNING_LOG("delete symlink file({}) error({}): {}", path, errno, strerror(errno));
             } else {
                 printf("delete symlink file: %s\n", path);
             }
@@ -493,7 +493,7 @@ int delete_files_cb(const char* path, const struct stat* statbuf, int type, stru
         }
         if (!found) {
             if (rmdir(path) != 0) {
-                WARNING_LOG("delete path(%s) error(%d): %s", path, errno, strerror(errno));
+                WARNING_LOG("delete path({}) error({}): {}", path, errno, strerror(errno));
             } else {
                 printf("delete path: %s\n", path);
             }
@@ -504,12 +504,12 @@ int delete_files_cb(const char* path, const struct stat* statbuf, int type, stru
     }
 
     case FTW_DNR:
-        WARNING_LOG("find a not be read path: %s", path);
+        WARNING_LOG("find a not be read path: {}", path);
         return FTW_STOP;
 
     case FTW_NS:  // no break
     default:
-        WARNING_LOG("%s can't process, skip", path);
+        WARNING_LOG("{} can't process, skip", path);
         return FTW_STOP;
     }
 
@@ -552,14 +552,14 @@ bool delete_files_by_torrent(const DeleteFilesArgs &args) {
 
     int64_t size = libtorrent::file_size(args.torrent_path.c_str());
     if (size > 50 * 1024 * 1024 || size <= 0) {
-        WARNING_LOG("file too big (%ld) > 50MB or empty, aborting", size);
+        WARNING_LOG("file too big ({}) > 50MB or empty, aborting", size);
         return false;
     }
 
     error_code ec;
     torrent_info ti(args.torrent_path, ec, 0, args.new_name);
     if (ec) {
-        WARNING_LOG("error: %s", ec.message().c_str());
+        WARNING_LOG("error: {}", ec.message().c_str());
         return false;
     }
 
@@ -586,16 +586,16 @@ bool make_torrent_dir(
         struct stat statbuf;
         if (stat(path.c_str(), &statbuf) != 0) {
             if (!Path::mkdirs(path.c_str(), mode) != 0) {
-                WARNING_LOG("mkdir %s(%o) failed.", path.c_str(), mode);
+                WARNING_LOG("mkdir {}({}) failed.", path.c_str(), mode);
                 return false;
             }
         } else if (statbuf.st_mode & S_IFDIR) {
             if (chmod(path.c_str(), mode) != 0) {
-                WARNING_LOG("path(%s) chmod to %o failed.", path.c_str(), mode);
+                WARNING_LOG("path({}) chmod to {} failed.", path.c_str(), mode);
                 return false;
             }
         } else {
-            WARNING_LOG("path %s is not a dir, can't change mode.", path.c_str());
+            WARNING_LOG("path {} is not a dir, can't change mode.", path.c_str());
             return false;
         }
     }

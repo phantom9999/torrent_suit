@@ -36,10 +36,10 @@ void UnixSocketServer::handle_accepted(
         const error_code& ec) {
     if (ec) {
         if (ec == boost::asio::error::make_error_code(boost::asio::error::operation_aborted)) {
-            DEBUG_LOG("server(%s) accept canceled.", _endpoint.path().c_str());
+            DEBUG_LOG("server({}) accept canceled.", _endpoint.path().c_str());
             return;
         } else {
-            WARNING_LOG("server(%s) accept failed: %s",
+            WARNING_LOG("server({}) accept failed: {}",
                     _endpoint.path().c_str(), ec.message().c_str());
         }
         if (!_acceptor.is_open()) {
@@ -79,20 +79,20 @@ bool UnixSocketServer::can_connect() {
 
 bool UnixSocketServer::serve(mode_t mode) {
     if (can_connect()) {
-        WARNING_LOG("bind address(%s) can connect, can't start serve.", _endpoint.path().c_str());
+        WARNING_LOG("bind address({}) can connect, can't start serve.", _endpoint.path().c_str());
         return false;
     }
 
     error_code ec;
     _acceptor.open(Acceptor::protocol_type(), ec);
     if (ec) {
-        WARNING_LOG("acceptor open failed: %s", ec.message().c_str());
+        WARNING_LOG("acceptor open failed: {}", ec.message().c_str());
         return false;
     }
 
     _acceptor.bind(_endpoint, ec);
     if (ec) {
-        WARNING_LOG("bind path(%s) failed: %s", _endpoint.path().c_str(), ec.message().c_str());
+        WARNING_LOG("bind path({}) failed: {}", _endpoint.path().c_str(), ec.message().c_str());
         return false;
     }
     chmod(_endpoint.path().c_str(), mode);
@@ -101,12 +101,12 @@ bool UnixSocketServer::serve(mode_t mode) {
     // _acceptor.io_control(non_block, ec);
     _acceptor.non_blocking(true);
     if (ec) {
-        WARNING_LOG("set socket(%s) non blocking io failed.", _endpoint.path().c_str());
+        WARNING_LOG("set socket({}) non blocking io failed.", _endpoint.path().c_str());
         return false;
     }
      _acceptor.listen(128, ec);
     if (ec) {
-        WARNING_LOG("listen socket(%s) failed: %s", _endpoint.path().c_str(), ec.message().c_str());
+        WARNING_LOG("listen socket({}) failed: {}", _endpoint.path().c_str(), ec.message().c_str());
         return false;
     }
 

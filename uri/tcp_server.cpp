@@ -48,7 +48,7 @@ void TcpServer::stop() {
     error_code ec;
     _acceptor.close(ec);
     if (ec) {
-        TRACE_LOG("acceptor close failed: %s\n", ec.message().c_str());
+        TRACE_LOG("acceptor close failed: {}\n", ec.message().c_str());
     }
 }
 
@@ -58,7 +58,7 @@ void TcpServer::run() {
     boost::system::error_code ec;
     _ios.run(ec);
     if (ec) {
-        WARNING_LOG("[tcp server thread run fail: %s", ec.message().c_str());
+        WARNING_LOG("[tcp server thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("tcp server thread run end");
     CLOSE_LOG_R();
@@ -66,7 +66,7 @@ void TcpServer::run() {
 
 void TcpServer::accept_cb(shared_ptr<TcpConnection> connection, const error_code& ec) {
     if (ec) {
-        TRACE_LOG("server accept: %s", ec.message().c_str());
+        TRACE_LOG("server accept: {}", ec.message().c_str());
         if (_acceptor.is_open()) {
             async_accept();
         }
@@ -77,7 +77,7 @@ void TcpServer::accept_cb(shared_ptr<TcpConnection> connection, const error_code
         add_connection(connection);
         connection->start();
     } else {
-        WARNING_LOG("reached max connection:%ld, close it!", _max_connection_num);
+        WARNING_LOG("reached max connection:{}, close it!", _max_connection_num);
         connection->close();
     }
 
@@ -95,14 +95,14 @@ bool TcpServer::init() {
     error_code ec;
     _acceptor.open(_endpoint.protocol(), ec);
     if (ec) {
-        WARNING_LOG("open acceptor failed: %s", ec.message().c_str());
+        WARNING_LOG("open acceptor failed: {}", ec.message().c_str());
         return false;
     }
 
     _acceptor.set_option(Tcp::acceptor::reuse_address(true));
     _acceptor.bind(_endpoint, ec);
     if (ec) {
-        WARNING_LOG("bind address[%s] failed: %s",
+        WARNING_LOG("bind address[{}] failed: {}",
                 StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
         return false;
     }
@@ -110,13 +110,13 @@ bool TcpServer::init() {
     Tcp::acceptor::non_blocking_io non_block(true);
     _acceptor.io_control(non_block, ec);
     if (ec) {
-        WARNING_LOG("acceptor[%s] set non blocking failed: %s",
+        WARNING_LOG("acceptor[{}] set non blocking failed: {}",
                 StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
         return false;
     }
     _acceptor.listen(128, ec);
     if (ec) {
-        WARNING_LOG("listen[%s] failed: %s",
+        WARNING_LOG("listen[{}] failed: {}",
                 StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
         return false;
     }
@@ -132,7 +132,7 @@ bool TcpServer::init() {
 }
 
 void TcpServer::add_connection(shared_ptr<TcpConnection> conn) {
-    DEBUG_LOG("add connection:%s", conn->to_string().c_str());
+    DEBUG_LOG("add connection:{}", conn->to_string().c_str());
     _connection_map.insert(ConnectionMap::value_type(conn->id(), conn));
 }
 
@@ -153,7 +153,7 @@ void TcpServer::adjust_upload_limit() {
         return;
     }
 
-    DEBUG_LOG("total_set:%ld, total_used:%ld, total_limit:%ld",
+    DEBUG_LOG("total_set:{}, total_used:{}, total_limit:{}",
             total_set_limit, total_used_per_unit, _total_upload_limit);
 
     if (total_set_limit <= _total_upload_limit) {
@@ -181,14 +181,14 @@ void TcpServer::adjust_upload_limit() {
         }
     } else if (total_set_limit == 0 && total_used_per_unit != 0) {
         // strange!
-        WARNING_LOG("total_set_limit is 0, but total used per unit is not 0:%d, strange!",
+        WARNING_LOG("total_set_limit is 0, but total used per unit is not 0:{}, strange!",
                 total_used_per_unit);
         return;
     } else {
         for (it = _upload_limit_map.begin(); it != _upload_limit_map.end(); ++it) {
             double rate = 0.5 * static_cast<double>(it->second.set_upload_limit) / total_set_limit
                 + 0.5 * static_cast<double>(it->second.total_upload_per_unit) / total_used_per_unit;
-            DEBUG_LOG("infohash:%s, set:%ld, used:%ld, rate is %lf",
+            DEBUG_LOG("infohash:{}, set:{}, used:{}, rate is {}",
                     it->first.c_str(), it->second.set_upload_limit,
                     it->second.total_upload_per_unit, rate);
             it->second.upload_limit = static_cast<int64_t>(rate * _total_upload_limit);
@@ -236,7 +236,7 @@ bool TcpServer::del_connection(shared_ptr<TcpConnection> conn) {
     if (!conn) {
         return false;
     }
-    DEBUG_LOG("delete conn:%s", conn->to_string().c_str());
+    DEBUG_LOG("delete conn:{}", conn->to_string().c_str());
     ConnectionMap::iterator it = _connection_map.find(conn->id());
     if (it == _connection_map.end()) {
         return false;
@@ -279,7 +279,7 @@ void TcpServer::add_total_upload_per_unit_by_infohash(
 
     UploadLimitMap::iterator it = _upload_limit_map.find(infohash);
     if (it == _upload_limit_map.end()) {
-        WARNING_LOG("add total upload per unit, but infohash:%s not found!", infohash.c_str());
+        WARNING_LOG("add total upload per unit, but infohash:{} not found!", infohash.c_str());
         return;
     }
     it->second.total_upload_per_unit += total_upload;
@@ -294,7 +294,7 @@ void TcpServer::add_wait_by_infohash(
 
     UploadLimitMap::iterator it = _upload_limit_map.find(infohash);
     if (it == _upload_limit_map.end()) {
-        WARNING_LOG("add wait bytes but infohash:%s not found!", infohash.c_str());
+        WARNING_LOG("add wait bytes but infohash:{} not found!", infohash.c_str());
         return;
     }
     it->second.total_wait_bytes += wait_bytes;
@@ -309,7 +309,7 @@ void TcpServer::del_wait_by_infohash(
 
     UploadLimitMap::iterator it = _upload_limit_map.find(infohash);
     if (it == _upload_limit_map.end()) {
-        WARNING_LOG("del wait bytes but infohash:%s not found!", infohash.c_str());
+        WARNING_LOG("del wait bytes but infohash:{} not found!", infohash.c_str());
         return;
     }
     it->second.total_wait_bytes -= wait_bytes;
@@ -354,7 +354,7 @@ void TcpServer::calculate_connection_quota() {
             conn->set_upload_quota(static_cast<int64_t>(rate * upload_data.upload_limit));
         }
 
-        DEBUG_LOG("%d, conn:%d, upload_quota:%ld, conn_total_wait:%ld, conn_total_per:%ld, total_wait:%ld, total_send:%ld",
+        DEBUG_LOG("{}, conn:{}, upload_quota:{}, conn_total_wait:{}, conn_total_per:{}, total_wait:{}, total_send:{}",
                 counter, conn->id(), conn->upload_quota(), conn->wait_write_size(), conn->total_upload_per_unit(),
                 upload_data.total_wait_bytes, upload_data.total_upload_per_unit);
 
@@ -385,7 +385,7 @@ void TcpServer::on_tick() {
     for (; it != _connection_map.end();) {
         shared_ptr<TcpConnection> conn = it->second;
         if (_current_timestamp - conn->tick_timestamp() >= conn->active_timeout()) {
-            DEBUG_LOG("connection[%s] active timeout, current:%ld, before:%ld, close it!",
+            DEBUG_LOG("connection[{}] active timeout, current:{}, before:{}, close it!",
                     conn->to_string().c_str(), _current_timestamp, conn->tick_timestamp());
             // if connection close called, connection has been delete from _connection_map
             // close may erase it, so we get the next before erase
@@ -416,11 +416,11 @@ bool TcpServer::set_upload_limit(const std::string &infohash, int64_t upload_lim
 
     UploadLimitMap::iterator it = _upload_limit_map.find(infohash);
     if (it == _upload_limit_map.end()) {
-        WARNING_LOG("infohash:%s not exist!", infohash.c_str());
+        WARNING_LOG("infohash:{} not exist!", infohash.c_str());
         return false;
     }
 
-    TRACE_LOG("set upload limit, infohash:%s, org limit:%ld, new limit:%ld",
+    TRACE_LOG("set upload limit, infohash:{}, org limit:{}, new limit:{}",
             infohash.c_str(), it->second.set_upload_limit, upload_limit * kCheckPeriod / 1000);
 
     it->second.set_upload_limit = upload_limit * kCheckPeriod / 1000;

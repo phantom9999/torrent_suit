@@ -64,7 +64,7 @@ TcpConnection::~TcpConnection() {
     // close maybe a bug for double release
     // close();
     error_code ec;
-    DEBUG_LOG("peer connection[%s:%d] close",
+    DEBUG_LOG("peer connection[{}:{}] close",
             _remote.address().to_string(ec).c_str(), _remote.port());
 }
 
@@ -80,7 +80,7 @@ void TcpConnection::close() {
 
 void TcpConnection::write_data_cb(const error_code &ec, size_t bytes_transferred) {
     if (ec) {
-        DEBUG_LOG("write data to remote(%s): %s",
+        DEBUG_LOG("write data to remote({}): {}",
                 StringUtil::to_string(_remote).c_str(), ec.message().c_str());
         close();
         return;
@@ -301,7 +301,7 @@ void TcpConnection::on_extend_handshake(Buffer::iterator i, Buffer::iterator end
     libtorrent::lazy_entry root;
     int ret = libtorrent::lazy_bdecode(&entry_code[0], &entry_code[0] + entry_code.size(), root, ec, &pos, 100, 100000);
     if (ret != 0 || ec || root.type() != libtorrent::lazy_entry::dict_t) {
-        WARNING_LOG("invalid extend handshake:%s, pos:%d, entry_code:%s",
+        WARNING_LOG("invalid extend handshake:{}, pos:{}, entry_code:{}",
                 ec.message().c_str(), pos, entry_code.c_str());
         close();
         return;
@@ -337,7 +337,7 @@ void TcpConnection::on_bt_message(uint8_t type, Buffer::iterator i, Buffer::iter
 
 void TcpConnection::read_cb(const error_code &ec, size_t readed) {
     if (ec) {
-        DEBUG_LOG("read from remote(%s): %s",
+        DEBUG_LOG("read from remote({}): {}",
                 StringUtil::to_string(_remote).c_str(), ec.message().c_str());
         close();
         return;

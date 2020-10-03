@@ -15,7 +15,7 @@ static void timer_callback(
         const boost::system::error_code &ec,
         bool rejoin) {
     if (ec) {
-        DEBUG_LOG("%s timer: %s", timer_name.c_str(), ec.message().c_str());
+        DEBUG_LOG("{} timer: {}", timer_name.c_str(), ec.message().c_str());
         return;
     }
     callback();
