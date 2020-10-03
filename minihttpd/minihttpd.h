@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/smart_ptr/detail/spinlock.hpp>
 #include <boost/thread/lock_guard.hpp>
 
@@ -25,13 +25,8 @@ public:
     // if @port binded failed, program will be aborted. be care!!!
     MiniHttpd(EventLoop *loop, uint16_t port);
 
-    MiniHttpd(EventLoop *loop);
-
     // return true if @port binded successfully, otherwise return false
     bool bind(uint16_t port);
-
-    // if @port binded faild, program will be aborted. be care!!!
-    void bindOrDie(uint16_t port);
 
     // Set response content of request @path.
     // Safe to call from other threads.
@@ -47,12 +42,6 @@ public:
     bool
     setCallBack(const std::string &path, http_callback_fn cb, std::string *retmsg = nullptr);
 
-    // whether logging http response content
-    void enableLogging(bool on = true);
-
-    // enable ip filtering
-    void enableIpFilter(bool on = true);
-
     // set the timeout seconds for an HTTP request
     void setTimeout(int32_t seconds);
 
@@ -60,7 +49,6 @@ public:
 
     ~MiniHttpd();
     void stop();
-    struct evhttp *evHttp();
 
     static const std::string baseInfoPath;
     static const int kMaxHeaderLen = 8192;
@@ -86,8 +74,7 @@ private:
     bool enableIpFilter_;
     std::vector<uint32_t> ipRange_;
 
-    boost::scoped_ptr<ProcessInspector> processInspector_;
-    EventLoop *loop_;
+    std::unique_ptr<ProcessInspector> processInspector_;
     struct evhttp *const evhttp_;
     struct evhttp_bound_socket *boundSocket_;
     int32_t reqTimeout_;

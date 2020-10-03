@@ -1,29 +1,25 @@
 #include "minihttpd/eventloop.h"
 #include "minihttpd/timestamp.h"
-#include "current_thread.h"
 #include <sys/time.h>
 #include <event2/event.h>
 #include <cassert>
 #include <boost/thread/lock_guard.hpp>
+#include <thread>
 
 #include "common/log.h"
 
 namespace argus {
 namespace common {
 
-__thread EventLoop *t_loopInThisThread = 0;
+__thread EventLoop *t_loopInThisThread = nullptr;
 
 __thread int32_t run_times = 0;
-
-EventLoop *EventLoop::getEventLoopOfCurrentThread() {
-    return t_loopInThisThread;
-}
 
 EventLoop::EventLoop()
     : base_(::event_base_new()),
       looping_(false),
-      threadId_(CurrentThread::tid()),
-      wakeupEvent_(NULL),
+      threadId_(std::this_thread::get_id()),
+      wakeupEvent_(nullptr),
       timerNumsCreated_(0) {
     BLOG(info) << "Using Libevent with backend method "
               << ::event_base_get_method(base_);
@@ -112,16 +108,14 @@ void EventLoop::installTimerEvent(uint64_t timerId,
     assert(timer);
 
     struct timeval tv;
-    int64_t microSeconds =
-        static_cast<int64_t>(interval * Timestamp::kMicroSecondsPerSecond);
+    int64_t microSeconds = static_cast<int64_t>(interval * Timestamp::kMicroSecondsPerSecond);
     tv.tv_sec = static_cast<time_t>(interval);
     tv.tv_usec = static_cast<suseconds_t>(microSeconds % Timestamp::kMicroSecondsPerSecond);
     if (0 != ::event_add(timer, &tv)) {
         BLOG(fatal) << "EventLoop::installTimerEvent failed";
     }
 
-    std::map<uint64_t, struct event *>::iterator
-        timer_it = timer_.find(timerId);
+    auto timer_it = timer_.find(timerId);
     assert(timer_it == timer_.end());
 
     timer_[timerId] = timer;
@@ -199,8 +193,7 @@ void EventLoop::heartbeat() {
     for (it = oneShotTimerDeadLine_.begin();
          it != oneShotTimerDeadLine_.end();) {
         if (it->second + delta < current.microSecondsSinceEpoch()) {
-            std::map<uint64_t, struct event *>::iterator
-                timer_it = timer_.find(it->first);
+            auto timer_it = timer_.find(it->first);
             assert(timer_it != timer_.end());
             BLOG(info) << "EventLoop::heartbeat() clean oneshottimer "
                       << it->first;
@@ -237,7 +230,7 @@ void EventLoop::abortNotInLoopThread() {
     BLOG(fatal) << "EventLoop::abortNotInLoopThread - EventLoop "
                << (unsigned long) (this)
                << " was created in threadId_=" << threadId_
-               << " current thread id=" << CurrentThread::tid();
+               << " current thread id=" << std::this_thread::get_id();
 }
 
 void EventLoop::wakeup() {

@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <dirent.h>
 #include <pwd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <string>
 #include <sys/syscall.h>

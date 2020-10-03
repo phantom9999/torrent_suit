@@ -69,9 +69,9 @@ std::string ProcessInspector::openedFiles(const std::string &) {
 std::string ProcessInspector::threads(const std::string &) {
     std::vector<pid_t> threads = ProcessInfo::threads();
     std::string result;
-    for (size_t i = 0; i < threads.size(); ++i) {
+    for (int thread : threads) {
         char buf[32];
-        snprintf(buf, sizeof buf, "%d\n", threads[i]);
+        snprintf(buf, sizeof buf, "%d\n", thread);
         result += buf;
     }
     return result;

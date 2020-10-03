@@ -1,11 +1,11 @@
 #ifndef ARGUS_COMMON_EVENTLOOP_H_
 #define ARGUS_COMMON_EVENTLOOP_H_
 
-#include <inttypes.h>
+#include <cinttypes>
 #include "closure.h"
-#include "current_thread.h"
 #include <map>
 #include <queue>
+#include <thread>
 #include <boost/noncopyable.hpp>
 #include <boost/smart_ptr/detail/spinlock.hpp>
 
@@ -54,42 +54,34 @@ public:
     }
 
     bool isInLoopThread() const {
-        return threadId_ == CurrentThread::tid();
+        return threadId_ == std::this_thread::get_id();
     }
 
-    static EventLoop *getEventLoopOfCurrentThread();
+private:
+    void installTimerEvent(uint64_t timerId, double interval, event_callback_fn callback, int type, void *arg);
+    void innerCancel(uint64_t timerId);
+    void doPendingFunctors();
+    void heartbeat();
+    void freeTimers();
+    uint64_t newTimerId();
+    void abortNotInLoopThread();
+    void wakeupHandler(int, short);
+    static void wakeupHandler(int, short, void *);
+    static void heartbeat(int fd, short event, void *arg);
 
 private:
     struct event_base *const base_;
     bool looping_;
-    const pid_t threadId_;
+    const std::thread::id threadId_;
     struct event *wakeupEvent_;
     int wakeupFd_[2];
-
-    void installTimerEvent(uint64_t timerId,
-                           double interval,
-                           event_callback_fn callback,
-                           int type,
-                           void *arg);
-    void innerCancel(uint64_t timerId);
-
     std::vector<Closure<void> *> pendingFunctors_;
-    void doPendingFunctors();
-
-    void heartbeat();
-    void freeTimers();
-    static void heartbeat(int fd, short event, void *arg);
 
     std::map<uint64_t, struct event *> timer_;
     std::map<uint64_t, int64_t> oneShotTimerDeadLine_;
     volatile uint64_t timerNumsCreated_;
-    uint64_t newTimerId();
 
     boost::detail::spinlock lock_;
-
-    void abortNotInLoopThread();
-    void wakeupHandler(int, short);
-    static void wakeupHandler(int, short, void *);
 };
 
 } // namespace common

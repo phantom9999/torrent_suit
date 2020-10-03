@@ -28,7 +28,6 @@ MiniHttpd::MiniHttpd(EventLoop *loop, uint16_t port)
     : enableLogging_(true),
       enableIpFilter_(false),
       processInspector_(new(std::nothrow) ProcessInspector),
-      loop_(loop),
       evhttp_(::evhttp_new(loop->eventBase())),
       boundSocket_(nullptr),
       reqTimeout_(30) {
@@ -46,64 +45,12 @@ MiniHttpd::MiniHttpd(EventLoop *loop, uint16_t port)
     processInspector_->registerCallBacks(this);
 }
 
-MiniHttpd::MiniHttpd(EventLoop *loop)
-    : enableLogging_(true),
-      enableIpFilter_(false),
-      processInspector_(new(std::nothrow) ProcessInspector),
-      loop_(loop),
-      evhttp_(::evhttp_new(loop->eventBase())),
-      boundSocket_(nullptr),
-      reqTimeout_(30) {
-    ::evhttp_set_max_headers_size(evhttp_, MiniHttpd::kMaxHeaderLen);
-    ::evhttp_set_allowed_methods(evhttp_, EVHTTP_REQ_GET);
-    ::evhttp_set_timeout(evhttp_, reqTimeout_);
-    ::evhttp_set_gencb(evhttp_, requestCallback, this);
-
-    initPathCharacterMap();
-    processInspector_->registerCallBacks(this);
-}
-
 bool MiniHttpd::bind(uint16_t port) {
     if (nullptr == boundSocket_) {
         boundSocket_ =
             ::evhttp_bind_socket_with_handle(evhttp_, "0.0.0.0", port);
     }
     return (boundSocket_) ? true : false;
-}
-
-void MiniHttpd::bindOrDie(uint16_t port) {
-    if (NULL == boundSocket_) {
-        boundSocket_ =
-            ::evhttp_bind_socket_with_handle(evhttp_, "0.0.0.0", port);
-    }
-    assert(boundSocket_);
-}
-
-void MiniHttpd::enableLogging(bool flag) {
-    enableLogging_ = flag;
-}
-
-// ipRange_ record ip range <start, end>
-// |-----------------------------------------------|
-// | <start | end> | <start | end> | <start | end> |
-// |-----------------------------------------------|
-//
-void MiniHttpd::enableIpFilter(bool flag) {
-    enableIpFilter_ = flag;
-    if (enableIpFilter_ && ipRange_.empty()) {
-        // http://en.wikipedia.org/wiki/Private_network
-        ipRange_.push_back(ipToUint32("10.0.0.0"));
-        ipRange_.push_back(ipToUint32("10.255.255.255"));
-
-        ipRange_.push_back(ipToUint32("172.16.0.0"));
-        ipRange_.push_back(ipToUint32("172.31.255.255"));
-
-        ipRange_.push_back(ipToUint32("192.168.0.0"));
-        ipRange_.push_back(ipToUint32("192.168.255.255"));
-
-        ipRange_.push_back(ipToUint32("127.0.0.0"));
-        ipRange_.push_back(ipToUint32("127.255.255.255"));
-    }
 }
 
 void MiniHttpd::setTimeout(int32_t seconds) {
@@ -118,10 +65,6 @@ MiniHttpd::~MiniHttpd() {
 
 void MiniHttpd::stop() {
     ::evhttp_del_accept_socket(evhttp_, boundSocket_);
-}
-
-struct evhttp *MiniHttpd::evHttp() {
-    return evhttp_;
 }
 
 bool MiniHttpd::inAllowIps(std::string ipstr) {
