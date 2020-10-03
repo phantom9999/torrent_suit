@@ -3,7 +3,7 @@
 #include <boost/bind.hpp>
 #include <boost/system/error_code.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 namespace bbts {
 

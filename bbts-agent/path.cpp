@@ -10,7 +10,7 @@
 
 #include <boost/thread/tss.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 using std::string;
 

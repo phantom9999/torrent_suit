@@ -14,7 +14,7 @@
 #include <libtorrent/torrent_info.hpp>
 
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/string_util.h"
 
 using std::make_pair;

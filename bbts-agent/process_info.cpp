@@ -11,7 +11,7 @@
 #include <sstream>
 
 #include "common/LazySingleton.hpp"
-#include "bbts-agent/log.h"
+#include "common//log.h"
 #include "bbts-agent/path.h"
 
 using std::string;

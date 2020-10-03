@@ -10,7 +10,6 @@ target_link_libraries(
         -Xlinker "-("
         common_lib
         ${Boost_LIBRARIES}
-        ${LOG4CPP_LIB}
         -pthread
         -Xlinker "-)"
 )

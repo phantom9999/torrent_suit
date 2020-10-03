@@ -3,7 +3,7 @@
 #include <boost/bind.hpp>
 
 #include "common/LazySingleton.hpp"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/string_util.h"
 #include "bbts-agent/timer_util.h"
 
@@ -53,7 +53,6 @@ void TcpServer::stop() {
 }
 
 void TcpServer::run() {
-    OPEN_LOG_R();
     TRACE_LOG("tcp server thread run begin");
     boost::system::error_code ec;
     _ios.run(ec);
@@ -61,7 +60,6 @@ void TcpServer::run() {
         WARNING_LOG("[tcp server thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("tcp server thread run end");
-    CLOSE_LOG_R();
 }
 
 void TcpServer::accept_cb(shared_ptr<TcpConnection> connection, const error_code& ec) {

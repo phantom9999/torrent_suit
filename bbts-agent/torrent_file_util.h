@@ -6,7 +6,7 @@
 #include <boost/regex.hpp>
 #include <libtorrent/torrent_info.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/regex_match.hpp"
 
 namespace bbts {

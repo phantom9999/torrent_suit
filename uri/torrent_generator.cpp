@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #include "common/LazySingleton.hpp"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/torrent_file_util.h"
 #include "io.hpp"
@@ -35,7 +35,6 @@ void TorrentGenerator::start() {
 }
 
 void TorrentGenerator::run() {
-    OPEN_LOG_R();
     TRACE_LOG("torrent generator thread run begin");
     boost::asio::io_service::work work(_ios);
     boost::system::error_code ec;
@@ -44,7 +43,6 @@ void TorrentGenerator::run() {
         WARNING_LOG("[torrent generator thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("torrent generator thread run end");
-    CLOSE_LOG_R();
 }
 
 void TorrentGenerator::async_get_torrent(

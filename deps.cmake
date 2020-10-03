@@ -80,16 +80,6 @@ else()
     include_directories(${SNAPPY_H})
 endif()
 
-
-
-find_path(LOG4CPP_H NAMES log4cpp/Category.hh)
-find_library(LOG4CPP_LIB NAMES log4cpp)
-if(NOT LOG4CPP_H OR NOT LOG4CPP_LIB)
-    message(FATAL_ERROR "log4cpp not found")
-else()
-    include_directories(${LOG4CPP_H})
-endif()
-
 find_path(SQLITE_H NAMES sqlite3.h)
 find_library(SQLITE_LIB NAMES sqlite3)
 if (NOT SQLITE_H OR NOT SQLITE_LIB)

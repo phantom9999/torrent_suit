@@ -8,7 +8,7 @@
 #include "bbts-agent/peer_source_request_failed_alert.h"
 
 #include "bbts-agent/bbts_stat.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/statistics.hpp"
 #include "bbts-agent/thrift_tracker.h"
 #include "bbts-agent/tool/control_server.h"

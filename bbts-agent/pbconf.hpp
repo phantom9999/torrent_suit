@@ -9,7 +9,7 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 namespace bbts {
 

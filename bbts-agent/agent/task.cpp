@@ -13,7 +13,7 @@
 #include "common/encode.h"
 #include "bbts-agent/error_category.h"
 #include "common/LazySingleton.hpp"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"
 #include "bbts-agent/string_util.h"

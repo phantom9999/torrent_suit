@@ -1,6 +1,6 @@
 #include "disk_allocate_thread.h"
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 
 using std::string;
@@ -37,7 +37,6 @@ void DiskAllocateThread::notify_cluster_downloader(int allocated_pieces) {
 }
 
 void DiskAllocateThread::disk_allocate() {
-    OPEN_LOG_R();
     DEBUG_LOG("disk allocate thread start");
 
     boost::intrusive_ptr<torrent_info const> ti = _torrent.torrent_file();
@@ -129,7 +128,6 @@ void DiskAllocateThread::disk_allocate() {
     notify_cluster_downloader(ti->num_pieces());
     _is_end = true;
     TRACE_LOG("pre allocate thread exit");
-    CLOSE_LOG_R();
 }
 
 } // namespace tool

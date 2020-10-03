@@ -6,7 +6,7 @@
 
 #include "common/encode.h"
 #include "bbts-agent/config.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/unix_socket_client.h"
 #include "bbts-agent/sync_unix_socket_client.h"

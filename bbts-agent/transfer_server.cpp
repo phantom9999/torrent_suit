@@ -6,7 +6,7 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/transport/TSocket.h>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/process_info.h"
 
 using std::string;

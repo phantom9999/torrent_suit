@@ -6,7 +6,7 @@
 #include <boost/system/error_code.hpp>
 
 #include "bbts-agent/file.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 using std::string;
 using std::vector;

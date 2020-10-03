@@ -10,7 +10,7 @@
 
 #include <libtorrent/hasher.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/timer_util.h"
 #include "io.hpp"
 

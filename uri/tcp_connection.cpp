@@ -21,7 +21,7 @@
 #include "bbts-agent/config.h"
 #include "bbts-agent/string_util.h"
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "io.hpp"
 #include "uri_piece_request.h"
 #include "disk_manager.h"

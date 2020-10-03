@@ -42,7 +42,6 @@ target_link_libraries(
         common_lib
         torrent-rasterbar
         ${SQLITE_LIB}
-        ${LOG4CPP_LIB}
         ${Boost_LIBRARIES}
         ${THRIFT_LIB}
         ${Protobuf_LIBRARIES}
@@ -63,7 +62,6 @@ target_link_libraries(
         common_lib
         torrent-rasterbar
         ${SQLITE_LIB}
-        ${LOG4CPP_LIB}
         ${Boost_LIBRARIES}
         ${THRIFT_LIB}
         ${Protobuf_LIBRARIES}

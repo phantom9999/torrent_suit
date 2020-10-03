@@ -7,7 +7,7 @@
 
 #include "bbts-agent/consistent_hash_ring.hpp"
 #include "common/LazySingleton.hpp"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "io.hpp"
 
 using boost::shared_ptr;
@@ -40,7 +40,6 @@ void DiskManager::start() {
 }
 
 void DiskManager::run() {
-    OPEN_LOG_R();
     TRACE_LOG("disk manager thread run begin");
     boost::asio::io_service::work work(_ios);
     boost::system::error_code ec;
@@ -49,7 +48,6 @@ void DiskManager::run() {
         WARNING_LOG("[disk manager thread run fail: {}", ec.message().c_str());
     }
     TRACE_LOG("disk manager thread run end");
-    CLOSE_LOG_R();
 }
 
 void DiskManager::async_piece_request(shared_ptr<TcpConnection> connection,

@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/transport/TSocket.h>
 
-#include "log.h"
+#include "common/log.h"
 #include "process_info.h"
 
 using ::apache::thrift::protocol::TProtocol;

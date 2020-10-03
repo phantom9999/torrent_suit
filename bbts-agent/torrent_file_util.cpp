@@ -19,7 +19,7 @@
 
 #include "common/encode.h"
 #include "bbts-agent/file.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/options_parse.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"

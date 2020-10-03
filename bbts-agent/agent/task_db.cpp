@@ -7,7 +7,7 @@
 #include <boost/thread.hpp>
 #include <sqlite3.h>
 
-#include <bbts-agent/log.h>
+#include <common/log.h>
 #include <bbts-agent/timer_util.h>
 #include <boost/asio/io_service.hpp>
 

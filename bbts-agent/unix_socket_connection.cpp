@@ -14,7 +14,7 @@
 #include <google/protobuf/message.h>
 
 #include "bbts-agent/config.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 using std::vector;
 using boost::posix_time::seconds;

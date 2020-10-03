@@ -5,7 +5,7 @@
 
 #include "bbts-agent/bt_info.hpp"
 #include "bbts-agent/cluster_api.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/process_info.h"
 
@@ -257,7 +257,6 @@ void ClusterDownloader::notify_all() {
 }
 
 void ClusterDownloader::download() {
-    OPEN_LOG_R();
     int64_t downloaded_since_last = 0;
     scoped_array<char> buffer(new char[_btinfo->piece_length()]);
     while (!_should_stop) {
@@ -331,7 +330,6 @@ void ClusterDownloader::download() {
         ++_complete_threads_num;
     }
     DEBUG_LOG("cluster thread exit!");
-    CLOSE_LOG_R();
 }
 
 }  // namespace tool

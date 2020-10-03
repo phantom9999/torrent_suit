@@ -133,11 +133,10 @@ Downloader::Downloader(message::DownloadConfigure *configure) :
     string log_dir;
     string log_name;
     Path::slipt(_configure->download_log_file(), &log_dir, &log_name);
-    static bbts::LogInstance logInstance;
 }
 
 Downloader::~Downloader() {
-    CLOSE_LOG();
+
 }
 
 bool Downloader::get_ip_filter(ip_filter *filter) {
@@ -661,7 +660,7 @@ void Downloader::on_metadata_received() {
         parse_need_download_files<int>(_configure->include_regex(),
                 _configure->exclude_regex(), *ti, &file_priorities);
         _torrent.prioritize_files(file_priorities);
-        if (_configure->log_level() == LOG_LEVEL_DEBUG && is_patition_download()) {
+        if (is_patition_download()) {
             for (unsigned i = 0; i < file_priorities.size(); ++i) {
                 DEBUG_LOG("file {} priorities: {}", i, file_priorities[i]);
             }

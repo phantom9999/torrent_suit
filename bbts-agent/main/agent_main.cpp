@@ -7,7 +7,7 @@
 #include "bbts-agent/agent/task_manager.h"
 #include "bbts-agent/config.h"
 #include "bbts-agent/file.h"
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/path.h"
 #include "bbts-agent/pbconf.hpp"
 #include "bbts-agent/process_info.h"
@@ -159,8 +159,6 @@ int main(int argc, char* argv[]) {
     using namespace bbts;
     using namespace bbts::agent;
 
-    bbts::LogInstance logInstance;
-
     // 读取参数
     string conf_file(g_process_info->root_dir() + "/conf/agent.conf");
     string user_conf;
@@ -174,15 +172,7 @@ int main(int argc, char* argv[]) {
     }
 
     // 初始化日志
-    string log_conf_parent_dir = g_process_info->root_dir() + LOG_CONF_DIR;
-    string log_conf_name = LOG_CONF_FILE;
-    if (!g_agent_configure->log_conf().empty()) {
-        if (!Path::slipt(Path::trim(Path::absolute(g_agent_configure->log_conf())),
-                         &log_conf_parent_dir, &log_conf_name)) {
-            return 1;
-        }
-    }
-    if (!logInstance.loadConfig(log_conf_parent_dir + "/" + log_conf_name)) {
+    if (!bbts::blogInit("conf/agent_log.conf", "log")) {
         return 1;
     }
 

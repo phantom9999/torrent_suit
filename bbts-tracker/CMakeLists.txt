@@ -18,7 +18,6 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         ${Boost_LIBRARIES}
         ${Protobuf_LIBRARIES}
         ${LIBEVENT_LIB}
-        ${LOG4CPP_LIB}
         pthread rt
         -Xlinker "-)"
         )

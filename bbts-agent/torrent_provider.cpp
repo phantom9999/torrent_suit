@@ -9,7 +9,7 @@
 #include <thrift/transport/TSocket.h>
 #include <snappy.h>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 #include "bbts-agent/options_parse.h"
 #include "bbts-agent/process_info.h"
 #include "pb_config/configure.pb.h"
