@@ -8,6 +8,8 @@ set(CMAKE_USE_RELATIVE_PATHS ON)
 set(CMAKE_BUILD_TYPE "Debug")
 set(default_file_permissions OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ)
 set(default_excute_permissions OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
+
 
 if (APPLE)
     include(mac.cmake)

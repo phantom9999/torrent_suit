@@ -4,9 +4,9 @@ aux_source_directory(proto GKO3_TRACKER_SRC)
 
 INCLUDE(${PROJECT_SOURCE_DIR}/config_tracker.cmake)
 
-ADD_EXECUTABLE(gko3-tracker ${GKO3_TRACKER_SRC})
+ADD_EXECUTABLE(bbts-tracker ${GKO3_TRACKER_SRC})
 
-TARGET_LINK_LIBRARIES(gko3-tracker
+TARGET_LINK_LIBRARIES(bbts-tracker
         -Xlinker "-("
         gko3-protocol
         pb_conf
@@ -23,6 +23,6 @@ TARGET_LINK_LIBRARIES(gko3-tracker
         )
 
 INSTALL(
-        TARGETS gko3-tracker
+        TARGETS bbts-tracker
         RUNTIME
         DESTINATION bin)
