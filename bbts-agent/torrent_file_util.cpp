@@ -232,7 +232,7 @@ bool make_torrent(
         error_message->assign("path:");
         error_message->append(root_path);
         error_message->append(" is not exist");
-        WARNING_LOG("{}", error_message->c_str());
+        BLOG(warning) << error_message;
         return false;
     }
 
@@ -256,7 +256,7 @@ bool make_torrent(
     add_files(fs, root_path, filter, flags);
     if (fs.num_files() == 0) {
         error_message->assign("mkseed failed: no files");
-        WARNING_LOG("{}", error_message->c_str());
+        BLOG(warning) << error_message;
         return false;
     }
 
@@ -295,9 +295,8 @@ bool make_torrent(
         }
     }
 
-    for (vector<string>::const_iterator it = args.web_seeds.begin();
-            it != args.web_seeds.end(); ++it) {
-        t.add_url_seed(*it);
+    for (const auto & web_seed : args.web_seeds) {
+        t.add_url_seed(web_seed);
     }
 
     torrent->clear();
@@ -318,7 +317,7 @@ bool make_torrent(
         }
         if (!provider.upload_torrent_file(*infohash, source, *torrent)) {
             error_message->assign("upload torrent file to provider failed!");
-            WARNING_LOG("{}", error_message->c_str());
+            BLOG(warning) << error_message;
             return false;
         }
     }
@@ -585,7 +584,7 @@ bool make_torrent_dir(
         mode_t mode = modes[i];
         struct stat statbuf;
         if (stat(path.c_str(), &statbuf) != 0) {
-            if (!Path::mkdirs(path.c_str(), mode) != 0) {
+            if (!Path::mkdirs(path, mode) != 0) {
                 WARNING_LOG("mkdir {}({}) failed.", path.c_str(), mode);
                 return false;
             }

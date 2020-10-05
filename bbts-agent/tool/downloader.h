@@ -33,7 +33,7 @@ class ClusterDownloader;
 
 class Downloader : public boost::noncopyable {
 public:
-    Downloader(message::DownloadConfigure *configure);
+    explicit Downloader(message::DownloadConfigure *configure);
     ~Downloader();
     int download();
 
@@ -118,6 +118,7 @@ private:
     void on_peer_source_failed(const PeerSourceRequestFailedAlert *alert);
     bool on_peer_stat_alert(const PeerStatAlert *alert);
 
+private:
     static const int64_t kMaxSourceDisconnectTime = 10;
 
     message::DownloadConfigure *_configure;

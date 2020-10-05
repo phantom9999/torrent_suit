@@ -101,7 +101,7 @@ bool TcpServer::init() {
     _acceptor.bind(_endpoint, ec);
     if (ec) {
         WARNING_LOG("bind address[{}] failed: {}",
-                StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
+                StringUtil::to_string(_endpoint), ec.message());
         return false;
     }
 
@@ -109,13 +109,13 @@ bool TcpServer::init() {
     _acceptor.io_control(non_block, ec);
     if (ec) {
         WARNING_LOG("acceptor[{}] set non blocking failed: {}",
-                StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
+                StringUtil::to_string(_endpoint), ec.message());
         return false;
     }
     _acceptor.listen(128, ec);
     if (ec) {
         WARNING_LOG("listen[{}] failed: {}",
-                StringUtil::to_string(_endpoint).c_str(), ec.message().c_str());
+                StringUtil::to_string(_endpoint), ec.message());
         return false;
     }
 

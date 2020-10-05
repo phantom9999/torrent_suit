@@ -5,7 +5,7 @@
 #include <boost/asio/ip/address.hpp>
 #include <boost/system/error_code.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 using std::string;
 

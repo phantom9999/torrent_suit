@@ -10,7 +10,7 @@ class UnixSocketServerWithThread : public boost::noncopyable {
 public:
     UnixSocketServerWithThread() : _server(_io_service) {}
 
-    ~UnixSocketServerWithThread() {}
+    ~UnixSocketServerWithThread() = default;
 
     bool start(mode_t mode);
 

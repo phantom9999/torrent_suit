@@ -1,7 +1,4 @@
-
-
-#ifndef BBTS_AGENT_TASK_MANAGER_H
-#define BBTS_AGENT_TASK_MANAGER_H
+#pragma once
 
 #include <list>
 #include <map>
@@ -255,6 +252,7 @@ private:
     void on_torrent_error(const libtorrent::torrent_error_alert *alert);
     // void on_peer_disconnect(const libtorrent::peer_disconnected_alert *alert);
 
+private:
     // libtorrent中的session对象，管理所有任务
     boost::scoped_ptr<libtorrent::session> _session;
     // taskid => task
@@ -295,4 +293,3 @@ extern message::AgentConfigure *g_agent_configure;
 
 }  // namespace agent
 }  // namespace bbts
-#endif // BBTS_AGENT_TASK_MANAGER_H

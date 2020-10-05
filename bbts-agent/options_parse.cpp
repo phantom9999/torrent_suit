@@ -480,7 +480,7 @@ bool check_cluster_uri(const std::string &uri) {
 }
 
 bool check_download_configure(const message::DownloadConfigure &configure) {
-    TRACE_LOG("{}", configure.cmd().c_str());
+    BLOG(trace) << configure.cmd();
 
     if (configure.save_path().empty() && configure.muti_save_paths_size() == 0) {
         FATAL_LOG("no save path or muti save paths");

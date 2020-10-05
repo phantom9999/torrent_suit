@@ -11,13 +11,13 @@
 #include "bbts-agent/pbconf.hpp"
 #include "bbts-agent/process_info.h"
 #include "bbts-agent/string_util.h"
-#include "bbts-agent/tool/bbts_client.h"
 #include "bbts-agent/torrent_file_util.h"
 #include "bbts-agent/tool/downloader.h"
 #include "pb_config/configure.pb.h"
 #include "common/log.h"
-#include "help.h"
-#include "config.h"
+#include "bbts-agent/help.h"
+#include "bbts-agent/config.h"
+#include <google/protobuf/stubs/common.h>
 
 using std::make_pair;
 using std::map;
@@ -48,21 +48,21 @@ static int process_mkseed(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 'r' },
-        { "cluster", required_argument, NULL, 'C' },
-        { "webseed", required_argument, NULL, 'W' },
-        { "path", required_argument, NULL, 'p' },
-        { "size", required_argument, NULL, 's' },
-        { "link", no_argument, NULL, 'l' },
-        { "hash", no_argument, NULL, 'H' },
-        { "besthash", no_argument, NULL, 1 },
-        { "include-files", required_argument, NULL, 2 },
-        { "exclude-files", required_argument, NULL, 3 },
-        { "no-piece-hash", no_argument, NULL, 4 },
-        { "creator", required_argument, NULL, 5 },
-        { "comment", required_argument, NULL, 6 },
-        { "upload", no_argument, NULL, 7 },
-        { NULL, no_argument, NULL, 0 }
+        { "torrent", required_argument, nullptr, 'r' },
+        { "cluster", required_argument, nullptr, 'C' },
+        { "webseed", required_argument, nullptr, 'W' },
+        { "path", required_argument, nullptr, 'p' },
+        { "size", required_argument, nullptr, 's' },
+        { "link", no_argument, nullptr, 'l' },
+        { "hash", no_argument, nullptr, 'H' },
+        { "besthash", no_argument, nullptr, 1 },
+        { "include-files", required_argument, nullptr, 2 },
+        { "exclude-files", required_argument, nullptr, 3 },
+        { "no-piece-hash", no_argument, nullptr, 4 },
+        { "creator", required_argument, nullptr, 5 },
+        { "comment", required_argument, nullptr, 6 },
+        { "upload", no_argument, nullptr, 7 },
+        {nullptr, no_argument, nullptr, 0 }
     };
 
     string torrent_file;
@@ -78,7 +78,7 @@ static int process_mkseed(int argc, char* argv[]) {
                 break;
 
             case 'W':
-                make_torrent_args.web_seeds.push_back(optarg);
+                make_torrent_args.web_seeds.emplace_back(optarg);
                 break;
 
             case 'p':
@@ -102,11 +102,11 @@ static int process_mkseed(int argc, char* argv[]) {
                 break;
 
             case 2:
-                make_torrent_args.include_regex.push_back(optarg);
+                make_torrent_args.include_regex.emplace_back(optarg);
                 break;
 
             case 3:
-                make_torrent_args.exclude_regex.push_back(optarg);
+                make_torrent_args.exclude_regex.emplace_back(optarg);
                 break;
 
             case 4:
@@ -151,7 +151,7 @@ static int process_mkseed(int argc, char* argv[]) {
     error_code ec;
     File::write(torrent_file, torrent, ec);
     if (ec) {
-        fprintf(stderr, "write %s failed: %s.\n", torrent_file.c_str(), ec.message().c_str());
+        ERROR_LOG("write {} failed: {}.", torrent_file, ec.message());
         return 3;
     }
     fprintf(stdout, "%s\n", torrent_file.c_str());
@@ -164,9 +164,9 @@ static int process_dump(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 'r' },
-        { "debug", no_argument, NULL,  1 },
-        { NULL, no_argument, NULL,  0 }
+        { "torrent", required_argument, nullptr, 'r' },
+        { "debug", no_argument, nullptr,  1 },
+        {nullptr, no_argument, nullptr,  0 }
     };
 
     string torrent_file;
@@ -208,22 +208,22 @@ static int process_add(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 'r' },
-        { "infohash", required_argument, NULL, 'i' },
-        { "path", required_argument, NULL, 'p' },
-        { "fullpath", required_argument, NULL, 'n' },
-        { "seedtime", required_argument, NULL, 'S' },
-        { "uplimit", required_argument, NULL, 'u' },
-        { "connlimit", required_argument, NULL, 'c' },
-        { "cluster", required_argument, NULL, 'C' },
-        { "seed", no_argument, NULL, 1 },
-        { "nocheck", no_argument, NULL, 2 },
-        { "tracker", required_argument, NULL, 3 },
-        { "transfer", no_argument, NULL, 4 },
-        { "product", required_argument, NULL, 5 },
-        { "source", required_argument, NULL, 6 },
-        { "classpath", required_argument, NULL, 7 },
-        { NULL, no_argument, NULL, 0 }
+        { "torrent", required_argument, nullptr, 'r' },
+        { "infohash", required_argument, nullptr, 'i' },
+        { "path", required_argument, nullptr, 'p' },
+        { "fullpath", required_argument, nullptr, 'n' },
+        { "seedtime", required_argument, nullptr, 'S' },
+        { "uplimit", required_argument, nullptr, 'u' },
+        { "connlimit", required_argument, nullptr, 'c' },
+        { "cluster", required_argument, nullptr, 'C' },
+        { "seed", no_argument, nullptr, 1 },
+        { "nocheck", no_argument, nullptr, 2 },
+        { "tracker", required_argument, nullptr, 3 },
+        { "transfer", no_argument, nullptr, 4 },
+        { "product", required_argument, nullptr, 5 },
+        { "source", required_argument, nullptr, 6 },
+        { "classpath", required_argument, nullptr, 7 },
+        {nullptr, no_argument, nullptr, 0 }
     };
 
     while ((option = getopt_long(argc - 1, &argv[1], "r:i:p:n:S:u:c:C:", long_opt, &index)) != -1) {
@@ -349,24 +349,24 @@ static int process_serve(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 'r' },
-        { "path", required_argument, NULL, 'p' },
-        { "seedtime", required_argument, NULL, 'S' },
-        { "uplimit", required_argument, NULL, 'u' },
-        { "connlimit", required_argument, NULL, 'c' },
-        { "size", required_argument, NULL, 's' },
-        { "link", no_argument, NULL, 'l' },
-        { "hash", no_argument, NULL, 'H' },
-        { "seed", no_argument, NULL, 1 },
-        { "nocheck", no_argument, NULL, 2 },
-        { "besthash", no_argument, NULL, 3 },
-        { "include-files", required_argument, NULL, 4 },
-        { "exclude-files", required_argument, NULL, 5 },
-        { "tracker", required_argument, NULL, 6 },
-        { "upload", no_argument, NULL, 7 },
-        { "transfer", no_argument, NULL, 8},
-        { "product", required_argument, NULL, 9 },
-        { NULL, no_argument, NULL, 0 }
+        { "torrent", required_argument, nullptr, 'r' },
+        { "path", required_argument, nullptr, 'p' },
+        { "seedtime", required_argument, nullptr, 'S' },
+        { "uplimit", required_argument, nullptr, 'u' },
+        { "connlimit", required_argument, nullptr, 'c' },
+        { "size", required_argument, nullptr, 's' },
+        { "link", no_argument, nullptr, 'l' },
+        { "hash", no_argument, nullptr, 'H' },
+        { "seed", no_argument, nullptr, 1 },
+        { "nocheck", no_argument, nullptr, 2 },
+        { "besthash", no_argument, nullptr, 3 },
+        { "include-files", required_argument, nullptr, 4 },
+        { "exclude-files", required_argument, nullptr, 5 },
+        { "tracker", required_argument, nullptr, 6 },
+        { "upload", no_argument, nullptr, 7 },
+        { "transfer", no_argument, nullptr, 8},
+        { "product", required_argument, nullptr, 9 },
+        {nullptr, no_argument, nullptr, 0 }
     };
 
     string torrent_file;
@@ -500,70 +500,70 @@ static int process_download(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 'r' },
-        { "infohash", required_argument, NULL, 'i' },
-        { "url", required_argument, NULL, 'U' },
-        { "cluster", required_argument, NULL, 'C' },
-        { "webseed", required_argument, NULL, 'W' },
-        { "path", required_argument, NULL, 'p' },
-        { "fullpath", required_argument, NULL, 'n' },
-        { "seedtime", required_argument, NULL, 'S' },
-        { "port", required_argument, NULL, 'P' },
-        { "downlimit", required_argument, NULL, 'd' },
-        { "uplimit", required_argument, NULL, 'u' },
-        { "connlimit", required_argument, NULL, 'c' },
-        { "timeout", required_argument, NULL, 'O' },
-        { "offline", no_argument, NULL, 1 },
-        { "debug", no_argument, NULL, 2 },
-        { "log-level", required_argument, NULL, 3 },
-        { "progress-interval", required_argument, NULL, 4},
-        { "hang-timeout", required_argument, NULL, 5 },
-        { "include-files", required_argument, NULL, 6 },
-        { "exclude-files", required_argument, NULL, 7 },
-        { "continue", no_argument, NULL, 8 },
-        { "tmp-files", no_argument, NULL, 9 },
-        { "unix-socket", required_argument, NULL, 10 },
-        { "save-torrent", required_argument, NULL, 11 },
-        { "sndbuf", required_argument, NULL, 12 },
-        { "rcvbuf", required_argument, NULL, 13 },
-        { "hdfs-thread", required_argument, NULL, 14 },
-        { "ip-white", required_argument, NULL, 15 },
-        { "ip-black", required_argument, NULL, 16 },
-        { "mask", required_argument, NULL, 17 },
-        { "numwant", required_argument, NULL, 18 },
-        { "ainterval", required_argument, NULL, 19 },
-        { "tracker", required_argument, NULL, 20 },
-        { "tracker-failed-quit", no_argument, NULL, 21 },
-        { "classpath", required_argument, NULL, 22 },
-        { "pre-allocate", no_argument, NULL, 23 },
-        { "use-dio-read", no_argument, NULL, 24 },
-        { "use-dio-write", no_argument, NULL, 25 },
-        { "d-allocate", required_argument, NULL, 26 },
-        { "progress", no_argument, NULL, 27 },
-        { "ignore-hdfs-error", no_argument, NULL, 28 },
-        { "mem-limit", required_argument, NULL, 29 },
-        { "hdfs-opts", required_argument, NULL, 31 },
-        { "write-cache-line-size", required_argument, NULL, 32 },
-        { "read-cache-line-size", required_argument, NULL, 33 },
-        { "disable-hash-check", no_argument, NULL, 34 },
-        { "source", required_argument, NULL, 35 },
-        { "muti-save-paths", required_argument, NULL, 36 },
-        { "d-allocate-limit", required_argument, NULL, 37 },
-        { "product", required_argument, NULL, 38 },
-        { "max-hdfs-cache-pieces", required_argument, NULL, 41},
-        { "cache-size", required_argument, NULL, 42 },
-        { "dont-del-resume-file", no_argument, NULL, 43},
-        { "get-torrent", no_argument, NULL, 44},
-        { "transfer", no_argument, NULL, 45},
-        { "no-check-when-allocated", no_argument, NULL, 46},
-        { "force-transfer", required_argument, NULL, 47},
-        { "ld-library-path", required_argument, NULL, 48 },
-        { "no-p2p", no_argument, NULL, 49 },
-        { "enable-dynamic-hash-check", no_argument, NULL, 50 },
-        { "user-conf", required_argument, NULL, 51 },
-        { "dump-infohash", required_argument, NULL, 52 },
-        { "auto-add-time", required_argument, NULL, 53 },
-        { NULL, no_argument, NULL, 0 }
+        { "torrent", required_argument, nullptr, 'r' },
+        { "infohash", required_argument, nullptr, 'i' },
+        { "url", required_argument, nullptr, 'U' },
+        { "cluster", required_argument, nullptr, 'C' },
+        { "webseed", required_argument, nullptr, 'W' },
+        { "path", required_argument, nullptr, 'p' },
+        { "fullpath", required_argument, nullptr, 'n' },
+        { "seedtime", required_argument, nullptr, 'S' },
+        { "port", required_argument, nullptr, 'P' },
+        { "downlimit", required_argument, nullptr, 'd' },
+        { "uplimit", required_argument, nullptr, 'u' },
+        { "connlimit", required_argument, nullptr, 'c' },
+        { "timeout", required_argument, nullptr, 'O' },
+        { "offline", no_argument, nullptr, 1 },
+        { "debug", no_argument, nullptr, 2 },
+        { "log-level", required_argument, nullptr, 3 },
+        { "progress-interval", required_argument, nullptr, 4},
+        { "hang-timeout", required_argument, nullptr, 5 },
+        { "include-files", required_argument, nullptr, 6 },
+        { "exclude-files", required_argument, nullptr, 7 },
+        { "continue", no_argument, nullptr, 8 },
+        { "tmp-files", no_argument, nullptr, 9 },
+        { "unix-socket", required_argument, nullptr, 10 },
+        { "save-torrent", required_argument, nullptr, 11 },
+        { "sndbuf", required_argument, nullptr, 12 },
+        { "rcvbuf", required_argument, nullptr, 13 },
+        { "hdfs-thread", required_argument, nullptr, 14 },
+        { "ip-white", required_argument, nullptr, 15 },
+        { "ip-black", required_argument, nullptr, 16 },
+        { "mask", required_argument, nullptr, 17 },
+        { "numwant", required_argument, nullptr, 18 },
+        { "ainterval", required_argument, nullptr, 19 },
+        { "tracker", required_argument, nullptr, 20 },
+        { "tracker-failed-quit", no_argument, nullptr, 21 },
+        { "classpath", required_argument, nullptr, 22 },
+        { "pre-allocate", no_argument, nullptr, 23 },
+        { "use-dio-read", no_argument, nullptr, 24 },
+        { "use-dio-write", no_argument, nullptr, 25 },
+        { "d-allocate", required_argument, nullptr, 26 },
+        { "progress", no_argument, nullptr, 27 },
+        { "ignore-hdfs-error", no_argument, nullptr, 28 },
+        { "mem-limit", required_argument, nullptr, 29 },
+        { "hdfs-opts", required_argument, nullptr, 31 },
+        { "write-cache-line-size", required_argument, nullptr, 32 },
+        { "read-cache-line-size", required_argument, nullptr, 33 },
+        { "disable-hash-check", no_argument, nullptr, 34 },
+        { "source", required_argument, nullptr, 35 },
+        { "muti-save-paths", required_argument, nullptr, 36 },
+        { "d-allocate-limit", required_argument, nullptr, 37 },
+        { "product", required_argument, nullptr, 38 },
+        { "max-hdfs-cache-pieces", required_argument, nullptr, 41},
+        { "cache-size", required_argument, nullptr, 42 },
+        { "dont-del-resume-file", no_argument, nullptr, 43},
+        { "get-torrent", no_argument, nullptr, 44},
+        { "transfer", no_argument, nullptr, 45},
+        { "no-check-when-allocated", no_argument, nullptr, 46},
+        { "force-transfer", required_argument, nullptr, 47},
+        { "ld-library-path", required_argument, nullptr, 48 },
+        { "no-p2p", no_argument, nullptr, 49 },
+        { "enable-dynamic-hash-check", no_argument, nullptr, 50 },
+        { "user-conf", required_argument, nullptr, 51 },
+        { "dump-infohash", required_argument, nullptr, 52 },
+        { "auto-add-time", required_argument, nullptr, 53 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     while ((option = getopt_long(
@@ -870,12 +870,12 @@ static int process_list(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "task", required_argument, NULL, 't' },
-        { "attr", required_argument, NULL, 'a' },
-        { "infohash", required_argument, NULL, 'i' },
-        { "noheader", no_argument, NULL, 1 },
-        { "unix-socket", required_argument, NULL, 2 },
-        { NULL, no_argument, NULL, 0 }
+        { "task", required_argument, nullptr, 't' },
+        { "attr", required_argument, nullptr, 'a' },
+        { "infohash", required_argument, nullptr, 'i' },
+        { "noheader", no_argument, nullptr, 1 },
+        { "unix-socket", required_argument, nullptr, 2 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     bool no_header = false;
@@ -947,10 +947,10 @@ static int process_batch_ctrl(int argc, char* argv[], message::BatchCtrl::ctrl_t
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "task", required_argument, NULL, 't' },
-        { "infohash", required_argument, NULL, 'i' },
-        { "all", no_argument, NULL, 3 },
-        { NULL, no_argument, NULL, 0 }
+        { "task", required_argument, nullptr, 't' },
+        { "infohash", required_argument, nullptr, 'i' },
+        { "all", no_argument, nullptr, 3 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     bool ctrl_all = false;
@@ -1010,9 +1010,9 @@ static int process_getopt(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "task", required_argument, NULL, 't' },
-        { "unix-socket", required_argument, NULL, 1 },
-        { NULL, no_argument, NULL, 0 }
+        { "task", required_argument, nullptr, 't' },
+        { "unix-socket", required_argument, nullptr, 1 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     int64_t taskid = -1;
@@ -1070,13 +1070,13 @@ static int process_setopt(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "task", required_argument, NULL, 't' },
-        { "infohash", required_argument, NULL, 'i' },
-        { "downlimit", required_argument, NULL, 'd' },
-        { "uplimit", required_argument, NULL, 'u' },
-        { "connlimit", required_argument, NULL, 'c' },
-        { "unix-socket", required_argument, NULL, 1 },
-        { NULL, no_argument, NULL, 0 }
+        { "task", required_argument, nullptr, 't' },
+        { "infohash", required_argument, nullptr, 'i' },
+        { "downlimit", required_argument, nullptr, 'd' },
+        { "uplimit", required_argument, nullptr, 'u' },
+        { "connlimit", required_argument, nullptr, 'c' },
+        { "unix-socket", required_argument, nullptr, 1 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     int64_t taskid = -1;
@@ -1170,13 +1170,13 @@ static int process_rmfiles(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
     const struct option long_opt[] = {
-        { "torrent", required_argument, NULL, 't' },
-        { "path", required_argument, NULL, 'p' },
-        { "fullpath", required_argument, NULL, 'n' },
-        { "link", no_argument, NULL, 'l' },
-        { "in", no_argument, NULL, 1 },
-        { "not-in", no_argument, NULL, 2 },
-        { NULL, no_argument, NULL, 0 }
+        { "torrent", required_argument, nullptr, 't' },
+        { "path", required_argument, nullptr, 'p' },
+        { "fullpath", required_argument, nullptr, 'n' },
+        { "link", no_argument, nullptr, 'l' },
+        { "in", no_argument, nullptr, 1 },
+        { "not-in", no_argument, nullptr, 2 },
+        { nullptr, no_argument, nullptr, 0 }
     };
 
     DeleteFilesArgs delete_args;
@@ -1244,7 +1244,7 @@ int process(int argc, char* argv[]) {
         ("rmfiles", &process_rmfiles)
         ("help", &print_help)("--help", &print_help)("-h", &print_help)
         ("-v", &print_version)("--version", &print_version);
-    map<string, Process>::iterator it = process_map.find(argv[1]);
+    auto it = process_map.find(argv[1]);
     if (it == process_map.end()) {
         fprintf(stderr, "no this operation: %s\n", argv[1]);
         print_help(argc, argv);
@@ -1280,6 +1280,20 @@ bool init_download_configure(int argc, char* argv[]) {
 }
 
 } // namespace bbts
+
+
+
+
+int main(int argc, char* argv[]) {
+    if (!bbts::init_download_configure(argc, argv)) {
+        return 1;
+    }
+
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    int ret = bbts::process(argc, argv);
+    google::protobuf::ShutdownProtobufLibrary();
+    return ret;
+}
 
 
 

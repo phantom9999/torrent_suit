@@ -29,7 +29,7 @@ public:
             void(const boost::shared_ptr<libtorrent::ex_announce_response> &)> AnnounceCallback;
 
     explicit ThriftTracker(boost::asio::io_service& ios);
-    ~ThriftTracker() override;
+    ~ThriftTracker() override = default;
 
     bool have_seed() const {
         return _have_seed;

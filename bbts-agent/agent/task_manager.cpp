@@ -976,7 +976,7 @@ void TaskManager::process_task_by_torrent(torrent_handle torrent,
 }
 
 void TaskManager::on_torrent_finished(const libtorrent::torrent_finished_alert *alert) {
-    NOTICE_LOG("{}", alert->message().c_str());
+    BLOG(info) << alert->message();
     process_task_by_torrent(alert->handle, bind(&Task::to_seeding, _1));
 }
 
@@ -985,7 +985,7 @@ void TaskManager::on_listen_failed(const libtorrent::listen_failed_alert *alert)
     if (alert->sock_type == libtorrent::listen_failed_alert::tcp
             && ep.address().is_v4()
             && ep.port() == g_agent_configure->listen_port()) {
-        FATAL_LOG("{}.", alert->message().c_str());
+        BLOG(fatal) << alert->message();
         stop();
     }
 }
@@ -1059,7 +1059,7 @@ void TaskManager::process_alert() {
         case libtorrent::state_changed_alert::alert_type:
         case libtorrent::torrent_resumed_alert::alert_type:
         case libtorrent::torrent_paused_alert::alert_type:
-            NOTICE_LOG("{}", (*it)->message().c_str());
+            BLOG(info) << (*it)->message();
             break;
 
         case libtorrent::peer_error_alert::alert_type:
@@ -1070,27 +1070,27 @@ void TaskManager::process_alert() {
         case libtorrent::tracker_error_alert::alert_type:
         case libtorrent::file_error_alert::alert_type:
         case libtorrent::metadata_received_alert::alert_type:
-            WARNING_LOG("{}", (*it)->message().c_str());
+            BLOG(warning) << (*it)->message();
             break;
 
         case libtorrent::tracker_reply_alert::alert_type:
         case libtorrent::tracker_announce_alert::alert_type:
-            TRACE_LOG("{}", (*it)->message().c_str());
+            BLOG(trace) << (*it)->message();
             break;
 
         case libtorrent::peer_disconnected_alert::alert_type:
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             //on_peer_disconnect(static_cast<libtorrent::peer_disconnected_alert *>(*it));
             break;
 
         case libtorrent::performance_alert::alert_type:
         case libtorrent::peer_connect_alert::alert_type:
         case libtorrent::incoming_connection_alert::alert_type:
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
 
         default:
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
         }
 

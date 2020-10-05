@@ -19,18 +19,18 @@
 #
 #
 
-
-
-aux_source_directory(. AGENT_SRC)
-aux_source_directory(agent AGENT_SRC)
-aux_source_directory(proto AGENT_SRC)
-aux_source_directory(tool AGENT_SRC)
-aux_source_directory(torrent_plugins AGENT_SRC)
-
 include(${PROJECT_SOURCE_DIR}/config_agent.cmake)
-add_library(gko3 ${AGENT_SRC})
-add_executable(bbts-agent main/agent_main.cpp)
-add_executable(bbts-client main/client_main.cpp)
+
+aux_source_directory(. GKO_SRC)
+aux_source_directory(agent AGENT_SRC)
+aux_source_directory(proto GKO_SRC)
+aux_source_directory(tool CLIENT_SRC)
+aux_source_directory(torrent_plugins GKO_SRC)
+
+
+add_library(gko3 ${GKO_SRC})
+add_executable(bbts-agent ${AGENT_SRC})
+add_executable(bbts-client ${CLIENT_SRC})
 
 
 target_link_libraries(

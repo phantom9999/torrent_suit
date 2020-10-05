@@ -109,14 +109,14 @@ bool ClusterAPI::parse_library(const std::string &library) {
 
     _connect_cluster = (ConnectClusterFunc)dlsym(_cluster_library, "connect_cluster");
     if (!_connect_cluster) {
-        WARNING_LOG("{}", dlerror());
+        BLOG(warning) << dlerror();
         dlclose(_cluster_library);
         return false;
     }
 
     _close_cluster = (CloseClusterFunc)dlsym(_cluster_library, "close_cluster");
     if (!_close_cluster) {
-        WARNING_LOG("{}", dlerror());
+        BLOG(warning) << dlerror();
         dlclose(_cluster_library);
         return false;
     }
@@ -124,14 +124,14 @@ bool ClusterAPI::parse_library(const std::string &library) {
     read_piece_content = (ReadPieceContentFunc)dlsym(
             _cluster_library, "read_piece_content_from_cluster");
     if (!read_piece_content) {
-        WARNING_LOG("{}", dlerror());
+        BLOG(warning) << dlerror();
         dlclose(_cluster_library);
         return false;
     }
 
     read_file = (ReadFileFunc)dlsym(_cluster_library, "read_file_from_cluster");
     if (!read_file) {
-        WARNING_LOG("{}", dlerror());
+        BLOG(warning) << dlerror();
         dlclose(_cluster_library);
         return false;
     }

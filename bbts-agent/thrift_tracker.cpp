@@ -1,11 +1,5 @@
 #include "bbts-agent/thrift_tracker.h"
 
-#include <netinet/in.h>
-#include <sys/socket.h>
-
-#include <sstream>
-
-#include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -40,8 +34,6 @@ ThriftTracker::ThriftTracker(io_service& ios) :
         _announce_callback(boost::bind(&default_announce_callback, _1)) {
     set_service_name("tracker");
 }
-
-ThriftTracker::~ThriftTracker() {}
 
 void ThriftTracker::announce(const torrent_handle &handle, shared_ptr<ex_announce_request> req) {
     shared_ptr<AnnounceRequest> request(new AnnounceRequest());
@@ -107,7 +99,7 @@ void ThriftTracker::on_announce(
     shared_ptr<AnnounceResponse> response(new AnnounceResponse());
     bool announce_success = false;
     std::stringstream strm;
-    for (NodeVector::const_iterator it = trackers.begin(); it != trackers.end(); ++it) {
+    for (auto it = trackers.begin(); it != trackers.end(); ++it) {
         shared_ptr<TSocket> socket(new TSocket(it->first, it->second));
         socket->setConnTimeout(3000);
         socket->setSendTimeout(3000);
@@ -146,7 +138,7 @@ void ThriftTracker::on_announce(
         res->have_seed = _have_seed = response->have_seed;
         res->min_interval = response->min_interval;
         res->peers.resize(response->peers.size());
-        vector<Peer>::iterator it = response->peers.begin();
+        auto it = response->peers.begin();
         for (int i = 0; it != response->peers.end(); ++it, ++i) {
             ex_announce_peer &peer = res->peers[i];
             peer.ip = it->ip;

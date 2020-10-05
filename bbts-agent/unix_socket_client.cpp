@@ -5,7 +5,7 @@
 #include <boost/bind.hpp>
 #include <boost/array.hpp>
 
-#include "bbts-agent/log.h"
+#include "common/log.h"
 
 namespace bbts {
 

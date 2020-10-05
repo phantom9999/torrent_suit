@@ -22,6 +22,11 @@ do { \
   BOOST_LOG_TRIVIAL(fatal) << fmt::format("[{}:{}] " logFormat, __FILENAME__, __LINE__, ##arg); \
 } while (0)
 
+#define ERROR_LOG(logFormat, arg...) \
+do { \
+  BOOST_LOG_TRIVIAL(error) << fmt::format("[{}:{}] " logFormat, __FILENAME__, __LINE__, ##arg); \
+} while (0)
+
 #define WARNING_LOG(logFormat, arg...) \
 do { \
   BOOST_LOG_TRIVIAL(warning) << fmt::format("[{}:{}] " logFormat, __FILENAME__, __LINE__, ##arg); \

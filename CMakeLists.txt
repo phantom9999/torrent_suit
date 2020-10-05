@@ -48,6 +48,7 @@ add_subdirectory(common)
 
 add_subdirectory(test)
 
+add_subdirectory(demo)
 
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/output)

@@ -551,7 +551,7 @@ void Downloader::check_and_request_transfer(
 }
 
 bool Downloader::on_state_changed(const libtorrent::state_changed_alert *alert) {
-    NOTICE_LOG("{}", alert->message().c_str());
+    BLOG(info) << alert->message();
 
     intrusive_ptr<torrent_info const> ti = _torrent.torrent_file();
     if (alert->state != torrent_status::downloading_metadata && ti
@@ -725,7 +725,7 @@ void Downloader::on_peer_connect(const libtorrent::peer_connect_alert *alert) {
 
 void Downloader::on_peer_source_failed(const PeerSourceRequestFailedAlert *alert) {
     _source_peers[alert->ip].is_failed = true;
-    WARNING_LOG("{}", alert->message().c_str());
+    BLOG(warning) << alert->message();
 }
 
 bool Downloader::on_peer_stat_alert(const PeerStatAlert *alert) {
@@ -755,7 +755,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             const libtorrent::tcp::endpoint &ep = lf_alert->endpoint;
             if (lf_alert->sock_type == libtorrent::listen_failed_alert::tcp
                     && ep.address().is_v4() && ep.port() != 0) {
-                FATAL_LOG("{}", lf_alert->message().c_str());
+                BLOG(fatal) << lf_alert->message();
                 remove_torrent();
                 ret = -2;
             }
@@ -770,12 +770,12 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         case libtorrent::metadata_received_alert::alert_type:
-            NOTICE_LOG("{}", (*it)->message().c_str());
+            BLOG(info) << (*it)->message();
             on_metadata_received();
             break;
 
         case libtorrent::torrent_finished_alert::alert_type: {
-            TRACE_LOG("{}", (*it)->message().c_str());
+            BLOG(trace) << (*it)->message();
             if (!on_torrent_finished()) {
                 remove_torrent();
                 ret = -4;
@@ -784,7 +784,7 @@ void Downloader::process_alert(int *retval, bool loop) {
         }
 
         case libtorrent::storage_moved_alert::alert_type:
-            TRACE_LOG("{}", (*it)->message().c_str());
+            BLOG(trace) << (*it)->message();
             if (!on_storage_moved()) {
                 remove_torrent();
                 ret = -5;
@@ -802,7 +802,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         case libtorrent::torrent_removed_alert::alert_type: {
-            TRACE_LOG("{}", (*it)->message().c_str());
+            BLOG(trace) << (*it)->message();
             if (_is_timeout) {
                 ret = -7;
             } else if (_is_mem_exceed) {
@@ -815,13 +815,13 @@ void Downloader::process_alert(int *retval, bool loop) {
         }
 
         case libtorrent::storage_moved_failed_alert::alert_type:
-            FATAL_LOG("{}", (*it)->message().c_str());
+            BLOG(fatal) << (*it)->message();
             remove_torrent();
             ret = -8;
             break;
 
         case PeerStatAlert::ALERT_TYPE:
-            on_peer_stat_alert(static_cast<PeerStatAlert *>(*it));
+            on_peer_stat_alert(dynamic_cast<PeerStatAlert *>(*it));
             break;
 
         case libtorrent::listen_succeeded_alert::alert_type:
@@ -835,12 +835,12 @@ void Downloader::process_alert(int *retval, bool loop) {
         case libtorrent::tracker_reply_alert::alert_type:
         case libtorrent::tracker_announce_alert::alert_type:
         case libtorrent::torrent_checked_alert::alert_type:
-            TRACE_LOG("{}", (*it)->message().c_str());
+            BLOG(trace) << (*it)->message();
             break;
 
         case libtorrent::peer_blocked_alert::alert_type:
         case libtorrent::peer_ban_alert::alert_type:
-            NOTICE_LOG("{}", (*it)->message().c_str());
+            BLOG(info) << (*it)->message();
             break;
 
         case libtorrent::peer_error_alert::alert_type:
@@ -851,17 +851,17 @@ void Downloader::process_alert(int *retval, bool loop) {
         case libtorrent::file_error_alert::alert_type:
         case libtorrent::save_resume_data_failed_alert::alert_type:
         case libtorrent::fastresume_rejected_alert::alert_type:
-            WARNING_LOG("{}", (*it)->message().c_str());
+            BLOG(warning) << (*it)->message();
             break;
 
         case libtorrent::peer_disconnected_alert::alert_type:
             on_peer_disconnect((libtorrent::peer_disconnected_alert *)(*it));
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
 
         case libtorrent::peer_connect_alert::alert_type:
             on_peer_connect((libtorrent::peer_connect_alert *)(*it));
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
 
         case PeerSourceRequestFailedAlert::ALERT_TYPE:
@@ -870,7 +870,7 @@ void Downloader::process_alert(int *retval, bool loop) {
 
         case libtorrent::incoming_connection_alert::alert_type:
         case libtorrent::performance_alert::alert_type:
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
 
         case libtorrent::piece_finished_alert::alert_type:
@@ -878,7 +878,7 @@ void Downloader::process_alert(int *retval, bool loop) {
             break;
 
         default:
-            DEBUG_LOG("{}", (*it)->message().c_str());
+            BLOG(debug) << (*it)->message();
             break;
         }
         delete *it;
@@ -1314,7 +1314,7 @@ bool Downloader::check_and_add_source_peers(bool is_from_torrent_provider) {
             continue;
         }
 
-        tcp::resolver::query query(source_uri.host(), StringUtil::to_string(source_uri.port()));
+        tcp::resolver::query query(source_uri.host(), std::to_string(source_uri.port()));
         tcp::resolver::iterator endpoint_iterator = resolver.resolve(query, ec);
         if (ec) {
             WARNING_LOG("resolve source({}) failed: {}",

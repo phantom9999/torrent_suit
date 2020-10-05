@@ -21,7 +21,7 @@ inline static uint32_t BKDRHash(const char *str, size_t size) {
 template<typename Type>
 class KeyTypeRWLock {
 public:
-    KeyTypeRWLock(const std::string &key, char lock_type = 'w')
+    explicit KeyTypeRWLock(const std::string &key, char lock_type = 'w')
         : lock_type_(lock_type),
           current_shared_mutex_(NULL) {
         SharedMutexPoolType

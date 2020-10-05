@@ -81,7 +81,7 @@ void TcpConnection::close() {
 void TcpConnection::write_data_cb(const error_code &ec, size_t bytes_transferred) {
     if (ec) {
         DEBUG_LOG("write data to remote({}): {}",
-                StringUtil::to_string(_remote).c_str(), ec.message().c_str());
+                StringUtil::to_string(_remote), ec.message());
         close();
         return;
     }
@@ -338,7 +338,7 @@ void TcpConnection::on_bt_message(uint8_t type, Buffer::iterator i, Buffer::iter
 void TcpConnection::read_cb(const error_code &ec, size_t readed) {
     if (ec) {
         DEBUG_LOG("read from remote({}): {}",
-                StringUtil::to_string(_remote).c_str(), ec.message().c_str());
+                StringUtil::to_string(_remote), ec.message());
         close();
         return;
     }
