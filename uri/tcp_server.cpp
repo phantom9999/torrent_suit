@@ -105,8 +105,7 @@ bool TcpServer::init() {
         return false;
     }
 
-    Tcp::acceptor::non_blocking_io non_block(true);
-    _acceptor.io_control(non_block, ec);
+    _acceptor.non_blocking(true, ec);
     if (ec) {
         WARNING_LOG("acceptor[{}] set non blocking failed: {}",
                 StringUtil::to_string(_endpoint), ec.message());
@@ -340,16 +339,20 @@ void TcpServer::calculate_connection_quota() {
             }
         } else if (upload_data.total_wait_bytes == 0
             && upload_data.total_upload_per_unit != 0) {
-            double rate = static_cast<double>(conn->total_upload_per_unit()) / upload_data.total_upload_per_unit;
-            conn->set_upload_quota(static_cast<int64_t>(rate * upload_data.upload_limit));
+            double rate = static_cast<double>(conn->total_upload_per_unit()) / static_cast<double>(upload_data
+                .total_upload_per_unit);
+            conn->set_upload_quota(static_cast<int64_t>(rate * static_cast<double>(upload_data.upload_limit)));
         } else if (upload_data.total_wait_bytes != 0
             && upload_data.total_upload_per_unit == 0) {
-            double rate = static_cast<double>(conn->wait_write_size()) / upload_data.total_wait_bytes;
-            conn->set_upload_quota(static_cast<int64_t>(rate * upload_data.upload_limit));
+            double rate = static_cast<double>(conn->wait_write_size()) / static_cast<double>(upload_data
+                .total_wait_bytes);
+            conn->set_upload_quota(static_cast<int64_t>(rate * static_cast<double>(upload_data.upload_limit)));
         } else {
-            double rate = 0.3 * static_cast<double>(conn->total_upload_per_unit()) / upload_data.total_upload_per_unit
-                + 0.7 * static_cast<double>(conn->wait_write_size()) / upload_data.total_wait_bytes;
-            conn->set_upload_quota(static_cast<int64_t>(rate * upload_data.upload_limit));
+            double rate = 0.3 * static_cast<double>(conn->total_upload_per_unit()) / static_cast<double>(upload_data
+                .total_upload_per_unit)
+                + 0.7 * static_cast<double>(conn->wait_write_size()) / static_cast<double>(upload_data
+                    .total_wait_bytes);
+            conn->set_upload_quota(static_cast<int64_t>(rate * static_cast<double>(upload_data.upload_limit)));
         }
 
         DEBUG_LOG("{}, conn:{}, upload_quota:{}, conn_total_wait:{}, conn_total_per:{}, total_wait:{}, total_send:{}",

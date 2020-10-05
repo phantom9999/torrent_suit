@@ -76,8 +76,8 @@ void TorrentGenerator::get_torrent(
     // construct return message
     message.append(infohash);
     message.append("\n");
-    for (size_t i = 0; i < torrent.size(); ++i) {
-        message.append(1, torrent.at(i));
+    for (char i : torrent) {
+        message.append(1, i);
     }
     message.append("\n");
     message.append("TORRENT_END\n");

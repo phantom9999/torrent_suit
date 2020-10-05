@@ -13,6 +13,7 @@
 #include "common/LazySingleton.hpp"
 #include "common//log.h"
 #include "bbts-agent/path.h"
+#include <boost/filesystem.hpp>
 
 using std::string;
 
@@ -63,7 +64,9 @@ ProcessInfo::ProcessInfo() {
     _uid = getuid();
     _pid = getpid();
     _program = detail::get_program_path();
-    _root_dir = Path::parent_dir(Path::parent_dir(_program));
+    boost::filesystem::path programPath{_program};
+    _root_dir = programPath.parent_path().parent_path().string();
+    BLOG(debug) << _root_dir;
 }
 
 string ProcessInfo::get_machine_room(const string &name, bool is_hdfs) {

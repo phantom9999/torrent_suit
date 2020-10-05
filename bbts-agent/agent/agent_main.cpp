@@ -19,10 +19,6 @@ using std::string;
 using bbts::message::AgentConfigure;
 using boost::posix_time::hours;
 
-// 默认的日志配置文件
-#define LOG_CONF_DIR  "/conf"
-#define LOG_CONF_FILE "log.conf"
-
 namespace bbts {
 namespace agent {
 

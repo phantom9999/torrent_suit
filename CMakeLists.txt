@@ -5,7 +5,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_SUPPRESS_REGENERATION 1)
 set(CMAKE_USE_RELATIVE_PATHS ON)
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 set(default_file_permissions OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ)
 set(default_excute_permissions OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/,,$(abspath $<))\"'")
@@ -47,9 +47,6 @@ add_subdirectory(pb_config)
 add_subdirectory(common)
 
 add_subdirectory(test)
-
-add_subdirectory(demo)
-
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/output)
 

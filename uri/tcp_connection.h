@@ -100,11 +100,11 @@ public:
 
     void close();
 
-    const int64_t id() const {
+    int64_t id() const {
         return _id;
     }
 
-    const time_t tick_timestamp() const {
+    time_t tick_timestamp() const {
         return _tick_timestamp;
     }
 
@@ -112,23 +112,23 @@ public:
         return _infohash;
     }
 
-    const int64_t wait_write_size() const {
+    int64_t wait_write_size() const {
         return _wait_write_size;
     }
 
-    const int64_t total_upload_per_unit() const {
+    int64_t total_upload_per_unit() const {
         return _total_upload_per_unit;
     }
 
-    const int64_t upload_quota() const {
+    int64_t upload_quota() const {
         return _upload_quota;
     }
 
-    const bool is_provider_request() const {
+    bool is_provider_request() const {
         return _is_provider_request;
     }
 
-    const int active_timeout() const {
+    int active_timeout() const {
         return _active_timeout;
     }
 
@@ -144,9 +144,6 @@ public:
     }
 
     std::string to_string();
-
-
-
 
 private:
     TcpConnection(boost::asio::io_service &io_service, int64_t id);

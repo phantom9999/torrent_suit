@@ -22,13 +22,13 @@ namespace multi_index = boost::multi_index;
 
 struct BlockItem {
     std::string infohash;
-    uint32_t piece_index;
-    uint32_t piece_offset;
-    uint32_t size;
-    time_t expired_time;
+    uint32_t piece_index{0};
+    uint32_t piece_offset{0};
+    uint32_t size{0};
+    time_t expired_time{0};
     boost::shared_ptr<Buffer> buffer;
 
-    BlockItem() : piece_index(0), piece_offset(0), size(0), expired_time(0) {}
+    BlockItem() = default;
 
     BlockItem(const URIPieceRequest &r) :
         piece_index(r.piece_index),

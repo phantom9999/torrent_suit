@@ -118,12 +118,15 @@ else()
     include_directories(${FORMAT_H})
 endif()
 
+#add_compile_definitions(
+#        -pedantic-errors -Wall -Wextra -pedantic -Wold-style-cast -Wundef
+#        -Wredundant-decls -Wwrite-strings -Wpointer-arith
+#        -Wcast-qual -Wformat=2 -Wmissing-include-dirs -Wcast-align
+#        -Wctor-dtor-privacy -Wdisabled-optimization -Winvalid-pch -Woverloaded-virtual
+#        -Wconversion -Wswitch-enum -Wundef -Winline -Wreorder -Wswitch
+#)
 add_compile_options(
-        -g -fPIC -ggdb -w -Wall -pipe -fpermissive -ftemplate-depth-128
-        -Wno-unused-function -Wno-unused-parameter -Wno-invalid-offsetof
-        -Wno-deprecated-declarations
-        -Winline -Wpointer-arith -Wwrite-strings -Woverloaded-virtual
-        -Wreorder -Wswitch -Wformat
+        -fPIC -ggdb -W -pipe -fpermissive -ftemplate-depth-128
 )
 
 

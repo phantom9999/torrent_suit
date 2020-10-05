@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
         printf("usage: %s port\n", argv[0]);
         return 1;
     }
-    bbts::LogInstance logInstance("conf/log.conf");
+    // bbts::LogInstance logInstance("conf/log.conf");
 
     bbts::g_disk_manager->start();
     tcp::endpoint listen_endpoint(tcp::v4(), atoi(argv[1]));

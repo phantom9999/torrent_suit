@@ -111,8 +111,8 @@ static string GenerateTrackerId(int port) {
         string::size_type pos = hostname.rfind(".baidu.com");
         hostname = hostname.substr(0, pos);
     }
-    DLOG(info) << "hostname is:" << hostname;
-    return (boost::format("%s:%d") % hostname % port).str();
+    BLOG(debug) << "hostname is:" << hostname;
+    return fmt::format("{}:{}", hostname, port);
 }
 
 /**

@@ -18,6 +18,7 @@ TARGET_LINK_LIBRARIES(bbts-tracker
         ${Boost_LIBRARIES}
         ${Protobuf_LIBRARIES}
         ${LIBEVENT_LIB}
+        ${FORMAT_LIB}
         pthread rt
         -Xlinker "-)"
         )

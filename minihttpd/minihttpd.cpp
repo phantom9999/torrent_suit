@@ -144,12 +144,13 @@ void MiniHttpd::requestCallback(struct evhttp_request *req) {
 
     BLOG(info) << "response to " << req->remote_host << ":" << req->remote_port
               << ". path='" << path << "', query='" << query << "'";
-    DLOG(info) << "response content:\n" << response;
+    BLOG(debug) << "response content:\n" << response;
     struct evbuffer *evb = evbuffer_new();
     evbuffer_add(evb, response.data(), response.size());
     ::evhttp_send_reply(req, HTTP_OK, "OK", evb);
     evbuffer_free(evb);
 }
+
 
 void MiniHttpd::getSupportedUri(std::string *content) {
     std::map<std::string, http_callback_fn>::iterator cb_ite;

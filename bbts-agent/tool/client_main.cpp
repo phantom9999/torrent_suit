@@ -35,15 +35,6 @@ using bbts::tool::BBTSClient;
 
 namespace bbts {
 
-// extern int print_help(int argc, char *argv[]);
-// extern int print_version(int argc, char *argv[]);
-/*
-namespace group {
-extern int bbts_group(int argc, char* argv[]);
-}*/
-
-
-
 static int process_mkseed(int argc, char* argv[]) {
     int option = -1;
     int index = -1;
@@ -1222,10 +1213,6 @@ static int process_rmfiles(int argc, char* argv[]) {
 }
 
 int process(int argc, char* argv[]) {
-    if (argc < 2) {
-        print_help(argc, argv);
-        return 1;
-    }
 
     typedef boost::function<int (int argc, char* argv[])> Process;
     map<string, Process> process_map = map_list_of<string, Process>
@@ -1255,24 +1242,14 @@ int process(int argc, char* argv[]) {
 }
 
 bool init_download_configure(int argc, char* argv[]) {
-    if (argc < 2) {
-        // print help in bbts::process()
-        return true;
-    }
-
-    if (strncmp(argv[1], "bbts-agent", strlen("bbts-agent")) == 0) {
-        // if is bbts-agent, not need load_download_configure
-        return true;
-    }
-
-    string conf_file(g_process_info->root_dir() + "/conf/download.conf");
+    string conf_file(g_process_info->root_dir() + "/conf/client.conf");
     string user_conf;
     if (bbts::get_user_conf_file(argc, argv, &user_conf)) {
         conf_file.assign(user_conf);
     }
     DownloadConfigure *configure = LazySingleton<DownloadConfigure>::instance();
     if (!load_pbconf(conf_file, configure)) {
-        fprintf(stderr, "load download.conf failed.\n");
+        fprintf(stderr, "load client.conf failed.\n");
         return false;
     }
     BBTSClient::set_default_endpoint(configure->socket_file());
@@ -1285,6 +1262,11 @@ bool init_download_configure(int argc, char* argv[]) {
 
 
 int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        bbts::print_help(argc, argv);
+        return 1;
+    }
+
     if (!bbts::init_download_configure(argc, argv)) {
         return 1;
     }
