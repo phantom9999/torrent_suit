@@ -15,7 +15,7 @@ namespace bbts {
 
 class SyncUnixSocketClient : public boost::noncopyable {
 public:
-    SyncUnixSocketClient(boost::asio::io_service &ios);
+    explicit SyncUnixSocketClient(boost::asio::io_service &ios);
     ~SyncUnixSocketClient();
     bool connect(const UnixSocketConnection::EndPoint &endpoint);
     bool write_data(const boost::shared_ptr<const std::vector<char> > &data);

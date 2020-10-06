@@ -1,16 +1,15 @@
 # 依赖包括:
 # - boost
-# - libevent 包管理
+# - libevent
 # - thrift
 # - protobuf
 # - snappy
-# - log4cpp
 # - sqlite 包管理
 # - hiredis
 # - jdk
 # - hadoop
 # - zlib 包管理
-# - openssl 包管理
+# - openssl
 #
 
 link_directories(.)

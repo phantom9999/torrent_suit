@@ -1,5 +1,4 @@
-FROM centos
-#FROM fedora
+FROM fedora
 
 MAINTAINER phantom9999
 
