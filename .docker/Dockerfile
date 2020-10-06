@@ -1,4 +1,4 @@
-FROM centos:8
+FROM centos:7
 
 RUN yum install -y cmake gcc-c++ make autoconf automake libtool flex byacc zlib-devel openssl-devel sqlite-devel; \
         yum clean all; \
