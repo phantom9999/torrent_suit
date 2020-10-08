@@ -2,6 +2,6 @@
 set -x
 
 sh proto_gen.sh ;
-cmake .;
+cmake3 .;
 make -j4
 
