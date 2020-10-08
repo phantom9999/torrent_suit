@@ -15,14 +15,14 @@ public:
 
     ~LibtorrentPlugin() override = default;
 
-    void added(boost::weak_ptr<libtorrent::aux::session_impl> impl) override {
+    void added(libtorrent::aux::session_impl* impl) override {
         _impl = impl;
     }
 
     void on_tick() override;
 
 private:
-    boost::weak_ptr<libtorrent::aux::session_impl> _impl;
+    libtorrent::aux::session_impl* _impl{nullptr};
     uint64_t _tick_count{0};
     int _release_file_interval;
 };

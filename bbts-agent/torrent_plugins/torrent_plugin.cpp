@@ -37,9 +37,8 @@ namespace bbts {
 
 void LibtorrentPlugin::on_tick() {
     if (++_tick_count % _release_file_interval == 0) {
-        shared_ptr<session_impl> impl = _impl.lock();
-        if (impl) {
-            impl->release_files();
+        if (_impl != nullptr) {
+            _impl->release_files();
         }
     }
 }

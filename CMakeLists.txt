@@ -28,14 +28,14 @@ install(DIRECTORY jars/ DESTINATION log)
 
 
 include_directories(.)
-include_directories(libtorrent_0_16_5/include)
+include_directories(libtorrent-rasterbar-1.0.0/include)
 
 add_subdirectory(bbts-agent)
 add_subdirectory(bbts-tracker)
 add_subdirectory(clientmock)
 add_subdirectory(file_utils)
 if (NOT APPLE)
-    add_subdirectory(libtorrent_0_16_5)
+    add_subdirectory(libtorrent-rasterbar-1.0.0)
 endif(NOT APPLE)
 
 

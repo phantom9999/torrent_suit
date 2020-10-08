@@ -1,30 +1,32 @@
 FROM centos:7
 
-RUN yum install -y cmake gcc-c++ make autoconf automake libtool flex byacc zlib-devel openssl-devel sqlite-devel; \
+RUN yum install -y cmake gcc-c++ make autoconf automake libtool flex byacc \
+    zlib-devel openssl-devel sqlite-devel snappy-devel libevent-devel \
+    protobuf-compiler protobuf-devel protobuf-static; \
         yum clean all; \
         rm -rf /var/cache/yum/*;
 
 
 #RUN tar -xzf openssl-1.0.1g.tar.gz; cd openssl-1.0.1g; make -j8 && make install; cd ..; rm -rf openssl-1.0.1g;
 
-RUN tar -xf snappy-1.1.8.tar.gz; \
-    cd snappy-1.1.8; \
-    cmake .; \
-    make -j8 && make install; \
-    cd ..; rm -rf snappy-1.1.8;
+#RUN tar -xf snappy-1.1.8.tar.gz; \
+#    cd snappy-1.1.8; \
+#    cmake .; \
+#    make -j8 && make install; \
+#    cd ..; rm -rf snappy-1.1.8;
 
-RUN tar -xf libevent-2.1.12-stable.tar.gz; \
-    cd libevent-2.1.12-stable; \
-    ./configure --enable-shared=no --with-pic; \
-    make -j8 && make install; \
-    cd ..; rm -rf libevent-2.1.12-stable;
+#RUN tar -xf libevent-2.1.12-stable.tar.gz; \
+#    cd libevent-2.1.12-stable; \
+#    ./configure --enable-shared=no --with-pic; \
+#    make -j8 && make install; \
+#    cd ..; rm -rf libevent-2.1.12-stable;
 
-RUN tar -xf protobuf-3.7.0.tar.gz; \
-    cd protobuf-3.7.0; \
-    sh autogen.sh; \
-    ./configure --with-pic --enable-shared=no; \
-    make -j8 && make install; \
-    cd ..; rm -rf protobuf-3.7.0;
+#RUN tar -xf protobuf-3.7.0.tar.gz; \
+#    cd protobuf-3.7.0; \
+#    sh autogen.sh; \
+#    ./configure --with-pic --enable-shared=no; \
+#    make -j8 && make install; \
+#    cd ..; rm -rf protobuf-3.7.0;
 
 RUN tar -xf boost_1_58_0.tar.gz \
     cd boost_1_58_0; \

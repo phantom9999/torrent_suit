@@ -1,0 +1,1 @@
+ -DTORRENT_NO_DEPRECATE  -DTORRENT_DISABLE_ENCRYPTION  -DTORRENT_DISABLE_GEO_IP  -DTORRENT_DISABLE_DHT  -DBOOST_ASIO_HASH_MAP_BUCKETS=1021  -DBOOST_EXCEPTION_DISABLE  -DBOOST_ASIO_ENABLE_CANCELIO  -DBOOST_ASIO_DYN_LINK -I/home/users/liuming03/workspace/op/oped/noah/thirdparty/libtorrent/../../../../../third-64/boost/include -I./ -lrt -lpthread  -L./ -lboost_system  -lpthread    

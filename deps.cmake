@@ -125,7 +125,7 @@ endif()
 #        -Wconversion -Wswitch-enum -Wundef -Winline -Wreorder -Wswitch
 #)
 add_compile_options(
-        -fPIC -ggdb -W -pipe -fpermissive -ftemplate-depth-128
+        -fPIC -ggdb -w -pipe -fpermissive -ftemplate-depth-128
 )
 
 
