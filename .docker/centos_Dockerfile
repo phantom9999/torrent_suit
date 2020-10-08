@@ -1,18 +1,43 @@
-FROM fedora
+FROM centos:7
 
-MAINTAINER phantom9999
+RUN yum install -y epel-release; \
+    yum clean all; \
+    rm -rf /var/cache/yum/*;
 
-RUN yum -y install epel-release.noarch yum-plugin-fastestmirror.noarch
+RUN yum install -y cmake3 gcc-c++ make autoconf automake libtool flex byacc \
+    zlib-devel bzip2-devel openssl-devel sqlite-devel snappy-devel libevent-devel \
+        yum clean all; \
+        rm -rf /var/cache/yum/*;
 
-RUN yum -y install cmake3 gcc-c++ make
-RUN yum -y install sqlite-devel boost-devel boost-test \
-    libevent-devel \
-    thrift-devel hiredis-devel protobuf-devel \
-    snappy-devel log4cpp-devel openssl-devel
-#RUN yum -y install java-1.8.0-openjdk-devel.x86_64
+RUN tar -xf protobuf-3.7.0.tar.gz; \
+    cd protobuf-3.7.0; \
+    sh autogen.sh; \
+    ./configure --with-pic --enable-shared=no; \
+    make -j8 && make install; \
+    cd ..; rm -rf protobuf-3.7.0;
 
+RUN tar -xf boost_1_58_0.tar.gz; \
+    cd boost_1_58_0; \
+    sh bootstrap.sh; \
+    ./b2 variant=release link=static threading=multi runtime-link=shared -j8 install; \
+    cd ..; rm -rf boost_1_58_0;
 
-ADD . /root/torrent
-RUN cd /root/torrent/; sh proto_gen.sh ;cmake3 . -DBOOST_TEST_DYN_LINK=1; make -j4
+RUN tar -xf thrift-0.10.0.tar.gz; \
+    cd thrift-0.10.0; \
+    sh bootstrap.sh; \
+    ./configure --with-perl=no --with-python=no --with-pic --enable-shared=no; \
+    make -j8 && make install; \
+    cd ..; rm -rf thrift-0.10.0;
+
+RUN tar -xf fmt-7.0.3.tar.gz; \
+    cd fmt-7.0.3; \
+    cmake3 -DFMT_TEST=NO .; make -j8 && make install; \
+    cd ..; rm -rf fmt-7.0.3;
+
+RUN tar -xf hiredis-0.13.3.tar.gz; \
+    cd hiredis-0.13.3; \
+    make -j8 && make install; \
+    rm /usr/local/lib/libhiredis.so.0.13 /usr/local/lib/libhiredis.so; \
+    cd ..; rm -rf hiredis-0.13.3;
 
 

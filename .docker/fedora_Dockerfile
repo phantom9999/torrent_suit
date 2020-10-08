@@ -1,0 +1,18 @@
+FROM fedora
+
+MAINTAINER phantom9999
+
+RUN yum -y install epel-release.noarch yum-plugin-fastestmirror.noarch
+
+RUN yum -y install cmake3 gcc-c++ make
+RUN yum -y install sqlite-devel boost-devel boost-test \
+    libevent-devel \
+    thrift-devel hiredis-devel protobuf-devel \
+    snappy-devel log4cpp-devel openssl-devel
+#RUN yum -y install java-1.8.0-openjdk-devel.x86_64
+
+
+ADD . /root/torrent
+RUN cd /root/torrent/; sh proto_gen.sh ;cmake3 . -DBOOST_TEST_DYN_LINK=1; make -j4
+
+
